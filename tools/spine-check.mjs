@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Copyright (c) 2026 Johnny Chu (Chu Hoàng Anh) / BizCity. GPL-2.0-or-later. See LICENSE.
 // @bizcity-layer platform
+// [2026-11-24 06:05 PM Johnny Chu - Chu Hoàng Anh] SPINE-2 — chuẩn đã duyệt: bỏ -draft, cảnh báo manifest còn -draft.
 // [2026-11-24 05:08 PM Johnny Chu - Chu Hoàng Anh] SPINE-1 — bộ kiểm lane MANIFEST cho bizcity_spine@1: SC-SPINE-2 (vector schema) + SC-SPINE-1 (bizcity.app.json + luật chéo §5). Không phụ thuộc gói ngoài (R-PLAT-5): bộ kiểm JSON Schema tối thiểu đủ cho schema của spine.
 //
 //   node tools/spine-check.mjs                       # kiểm vector (SC-SPINE-2)
@@ -128,6 +129,8 @@ function checkManifest(file) {
   for (const a of m.sync?.outbox || []) if (!owns.includes(a)) out.push({ id: 'SC-SPINE-1', level: 'fail', where, msg: `outbox "${a}" chỉ cho trục mình làm chủ (R-SPINE-7)` });
   if (FREE_LICENSES.includes(m.license) && m.paid === true) out.push({ id: 'SC-SPINE-1', level: 'fail', where, msg: 'license mở nhưng paid=true — mọi ứng dụng Bizcity Open 0đ (chủ chốt 2026-11-24)' });
   if (!m.contracts.some((c) => c.startsWith('bizcity_spine@'))) out.push({ id: 'SC-SPINE-1', level: 'warn', where, msg: 'chưa khai bizcity_spine@1' });
+  // [2026-11-24 06:05 PM Johnny Chu - Chu Hoàng Anh] SPINE-2 — chuẩn đã duyệt: còn ghi -draft thì nhắc đổi.
+  if (String(m.schema).endsWith('-draft') || m.contracts.some((c) => c.endsWith('-draft'))) out.push({ id: 'SC-SPINE-1', level: 'warn', where, msg: 'còn hậu tố -draft; chuẩn đã duyệt 2026-11-24, đổi sang bizcity_app@1 / bizcity_spine@1' });
   return out;
 }
 
@@ -138,7 +141,7 @@ const mi = args.indexOf('--manifest');
 const manifests = mi >= 0 ? args.slice(mi + 1).filter((a) => !a.startsWith('--')) : [];
 const findings = manifests.length ? manifests.flatMap((f) => checkManifest(resolve(f))) : checkVectors();
 const fails = findings.filter((f) => f.level === 'fail').length;
-const result = { tool: 'spine-check', standard: 'bizcity_spine@1-draft', scope: manifests.length ? manifests : 'vectors', findings, verdict: fails ? 'KHÔNG ĐẠT' : 'ĐẠT' };
+const result = { tool: 'spine-check', standard: 'bizcity_spine@1', scope: manifests.length ? manifests : 'vectors', findings, verdict: fails ? 'KHÔNG ĐẠT' : 'ĐẠT' };
 if (asJson) console.log(JSON.stringify(result, null, 2));
 else {
   for (const f of findings) console.log(`${f.level === 'fail' ? '✗' : '!'} ${f.id} ${f.where}: ${f.msg}`);

@@ -2,7 +2,7 @@
 
 <!-- [2026-11-24 05:08 PM Johnny Chu - Chu Hoàng Anh] SPINE-1 — ADR đầu của bizcity-platform: chuẩn định danh / bản sao / gửi sau / đối chiếu xuyên app, máy đọc được, kiểm được ở mọi repo. -->
 
-**Trạng thái:** Đề xuất (chờ chủ duyệt Q-SPINE-1..4) · **Ngày:** 2026-11-24 · **Mức:** K1 (thêm hợp đồng, không đổi hành vi app nào)
+**Trạng thái:** **Chấp nhận** — chủ dự án duyệt 2026-11-24 (Q-SPINE-1..4) <!-- [2026-11-24 06:05 PM Johnny Chu - Chu Hoàng Anh] SPINE-2 --> · **Ngày:** 2026-11-24 · **Mức:** K1 (thêm hợp đồng, không đổi hành vi app nào)
 
 ## Bối cảnh
 
@@ -23,7 +23,7 @@ Từng mảnh đã có nhưng rải ở nhiều repo và nhiều tên: `item_id`
 - Repo sản phẩm thêm hai tệp: `bizcity.app.json` và `docs/canon/README.md` (trỏ về canon + chuẩn này + trục của riêng app). Không đổi mã.
 - open-ketoan cần mở changefeed `since` + digest cho danh mục (Q-SPINE-3) để bridge và cake kéo theo cursor; việc đó đi theo R-FLOW của open-ketoan.
 - Bộ kiểm lane CONTRACT (SC-SPINE-4..6) là việc tiếp theo; bản này mới có lane MANIFEST (SC-SPINE-1, 2).
-- Khi `bizcity.app.json` được duyệt chính thức, bỏ hậu tố `-draft` và bump phiên bản chuẩn.
+- Đã duyệt 2026-11-24: bỏ hậu tố `-draft`; schema còn nhận `bizcity_app@1-draft` một thời gian kèm cảnh báo.
 
 ## Phương án đã bỏ
 
