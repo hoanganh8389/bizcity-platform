@@ -1,0 +1,4 @@
+# Script bash chạy trong Git Bash / container: giữ LF kể cả khi core.autocrlf=true (CRLF làm bash báo $'': command not found)
+*.sh text eol=lf
+*.php text eol=lf
+*.yml text eol=lf
