@@ -10,3 +10,4 @@
 - **R-PLAT-4** mọi thay đổi: dấu R-SIG `[YYYY-MM-DD HH:MM AM/PM Johnny Chu - Chu Hoàng Anh] <CODE> — …` theo giờ máy (**không** tên agent / model), mức K0–K3, CHANGELOG, test ma trận open-ketoan + open-cake.
 - **R-PLAT-5** không thêm phụ thuộc khi chưa có lý do trong ADR.
 - Chỉ qua PR; không đẩy thẳng `main` khi đã có mã.
+- **R-PLAT-6** đổi `docs/standard/BIZCITY-SPINE-v1.md` ⇒ đổi cùng PR: schema `packages/contracts/schema/spine/`, vector, `tools/spine-check.mjs`; chạy `node tools/spine-check.mjs` phải ĐẠT. Thêm trục mới cần ADR (chuẩn §7). <!-- [2026-11-24 05:08 PM Johnny Chu - Chu Hoàng Anh] SPINE-1 -->

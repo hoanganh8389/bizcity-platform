@@ -16,6 +16,10 @@ Một nguồn duy nhất cho phần nền mà **mọi** app Bizcity Open (open-k
 | `@bizcity/conformance` | khung selfcheck + kiểm chung (SC-*, H-*) | `open-ketoan/tests/conformance` (phần chung) |
 | `@bizcity/flex` *(về sau)* | lớp dữ liệu mềm (`user_meta`, `entity_meta`, `record_types`, `records`) | bản đầu ở `open-cake/packages/flex`; vào đây ở **P7** |
 
+## Chuẩn xuyên app
+
+- **[`bizcity_spine@1`](docs/standard/BIZCITY-SPINE-v1.md)** — định danh và danh mục chuẩn (item, ĐVT, chi nhánh, đối tượng, khách, chứng từ, tenant, người dùng), tự đứng + đồng bộ. Mã app viết bằng gì cũng được; hình trên dây phải giống nhau. Máy đọc: `packages/contracts/schema/spine/`. Kiểm: `node tools/spine-check.mjs` (vector) · `--manifest <bizcity.app.json>` (repo app). [ADR-0001](docs/adr/ADR-0001-spine-xuyen-app.md). <!-- [2026-11-24 05:08 PM Johnny Chu - Chu Hoàng Anh] SPINE-1 -->
+
 ## Kế hoạch và luật
 
 - Kế hoạch P0–P7, quyết định D-PLAT-1..6, luật R-PLAT-1..5: [open-hub/docs/canon/KE-HOACH-GOI-CHUNG-BIZCITY-PLATFORM.md](https://github.com/hoanganh8389/open-hub/blob/main/docs/canon/KE-HOACH-GOI-CHUNG-BIZCITY-PLATFORM.md)
