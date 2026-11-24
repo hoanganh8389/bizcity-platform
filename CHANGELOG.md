@@ -3,6 +3,7 @@
 ## [Chưa phát hành]
 
 ### Thêm
+- 2026-11-24 — P2b-2 (K1): migration NỀN `packages/platform/db/migrations/0001_platform_nen_tang.sql` (26 bảng nền + 16 hàm, RLS FORCE) gom từ open-ketoan 6ad77b6 bằng pg_dump; bỏ 3 trigger + 1 khoá ngoại kế toán; `PLATFORM_MIGRATIONS_DIR`; gói khai `files` gồm `db`; `tools/gom-migration-nen.cjs` tái tạo được; test nền trên Postgres thật (npm test 6 ca).
 - 2026-11-24 — P2b-1 (K1): trình chạy migration chung mọi app — nhiều nguồn `sources` (nền 00xx + app 01xx, trùng tên ⇒ dừng, D-PLAT-5), cổng `hooks` (R-PLAT-2); phần riêng open-ketoan (gộp file gốc, đổi tên, xuất nhật ký cũ) tách sang `migrate-ketoan-legacy.ts`, không chạy mặc định; `pendingMigrations(client, …)` nhận kết nối. Test `node:test` trên Postgres thật (`npm test`, 5 ca).
 - 2026-11-24 — SPINE-1.1 (K1, chủ duyệt open-cake Q-017-1/2): `uom` nhận tên ĐVT có dấu của chủ (Cái, Thùng — khớp open-ketoan / open-pos H-9); `partner.code` từ open-cake: SĐT đã xác minh → `CAKE-<contact_id>` → `KHACH-LE`. Chuẩn + schema + vector cùng PR (R-PLAT-6); spine-check ĐẠT.
 - 2026-11-24 — **chủ duyệt `bizcity_spine@1` 1.0.0** (Q-SPINE-1..4): bỏ hậu tố -draft ở chuẩn, ADR-0001, schema, công cụ; vị trí kho / lô ở lớp mềm; open-ketoan sẽ mở changefeed + digest (R-FLOW); manifest ở gốc mọi repo kể cả plugin WordPress. <!-- [2026-11-24 06:05 PM Johnny Chu - Chu Hoàng Anh] SPINE-2 -->
