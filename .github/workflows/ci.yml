@@ -1,0 +1,27 @@
+# [2026-11-24 06:31 PM Johnny Chu - Chu Hoàng Anh] P2b-5 — CI: mọi PR và main chạy npm test (build + test kiểu + node:test trên Postgres 16 thật) và bộ kiểm SPINE.
+name: ci
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env: { POSTGRES_PASSWORD: x }
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 2s --health-timeout 5s --health-retries 20
+    env:
+      TEST_DATABASE_URL: postgres://postgres:x@localhost:5432/postgres
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - run: npm test
+      - run: node tools/spine-check.mjs

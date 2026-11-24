@@ -30,7 +30,16 @@ Một nguồn duy nhất cho phần nền mà **mọi** app Bizcity Open (open-k
 
 ## Phát hành
 
-GitHub Packages của `hoanganh8389` (Q-PLAT-2), SemVer; chuyển npm công khai `@bizcity` khi có người dùng ngoài.
+<!-- [2026-11-24 06:31 PM Johnny Chu - Chu Hoàng Anh] P2b-5 — chủ chốt 2026-11-24: phát hành bằng tệp .tgz đính kèm GitHub Release (GitHub Packages chỉ nhận phạm vi @hoanganh8389; giữ tên @bizcity/*). -->
+
+Gắn tag `vX.Y.Z` (phiên bản trong `packages/*/package.json` phải khớp) ⇒ workflow `release` build + test (Postgres 16) + bộ kiểm SPINE ⇒ `tools/dong-goi.mjs` đóng 2 tệp ⇒ GitHub Release đính kèm. App cài bằng URL, không cần token:
+
+```json
+"@bizcity/contracts": "https://github.com/hoanganh8389/bizcity-platform/releases/download/v0.2.0/bizcity-contracts-0.2.0.tgz",
+"@bizcity/platform":  "https://github.com/hoanganh8389/bizcity-platform/releases/download/v0.2.0/bizcity-platform-0.2.0.tgz"
+```
+
+SemVer; đổi sang registry (npm công khai `@bizcity` hoặc GitHub Packages khi có tổ chức) chỉ sửa hai dòng này ở app. CI (`ci.yml`) chạy cùng bộ kiểm trên mọi PR.
 
 ## Giấy phép
 
