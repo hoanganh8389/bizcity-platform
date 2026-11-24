@@ -1,8 +1,9 @@
 # `bizcity_spine@1` — Xương sống xuyên app: định danh, danh mục chuẩn, tự đứng và đồng bộ
 
+<!-- [2026-11-24 05:43 PM Johnny Chu - Chu Hoàng Anh] SPINE-1.1 — chủ duyệt 2026-11-24 (open-cake Q-017-1/2): uom = tên ĐVT của chủ (Unicode có dấu như open-ketoan product_units.unit và 40 tên chuẩn open-pos H-9), không còn ASCII; partner.code từ open-cake = SĐT đã xác minh trước (khớp open-pos), không có mới CAKE-<contact_id>. -->
 <!-- [2026-11-24 05:08 PM Johnny Chu - Chu Hoàng Anh] SPINE-1 — chuẩn xuyên app bản đầu: tám trục định danh, bốn hình thức tham chiếu, bốn kiểu bảng (chủ · bản sao · gửi sau · đối chiếu), luật R-SPINE, kiểm SC-SPINE. Chủ chỉ đạo 2026-11-24: "mã lập trình có thể khác nhau, nhưng api contracts phải xuyên suốt". -->
 
-> **Phiên bản:** 1.0.0 · 2026-11-24 · **Trạng thái:** **Chấp nhận** — chủ dự án duyệt 2026-11-24 (Q-SPINE-1..4, §9) <!-- [2026-11-24 06:05 PM Johnny Chu - Chu Hoàng Anh] SPINE-2 --> · **Thuộc:** `@bizcity/contracts` (gói nền chung)
+> **Phiên bản:** 1.1.0 · 2026-11-24 · **Trạng thái:** **Chấp nhận** — chủ dự án duyệt 2026-11-24 (Q-SPINE-1..4, §9; 1.1: open-cake Q-017-1/2) <!-- [2026-11-24 06:05 PM Johnny Chu - Chu Hoàng Anh] SPINE-2 --> · **Thuộc:** `@bizcity/contracts` (gói nền chung)
 > **Đứng dưới:** [BIZCITY OPEN CANON](https://github.com/hoanganh8389/open-hub/blob/main/docs/canon/BIZCITY-OPEN-CANON-v1.md) §3 (bốn trục dữ liệu), [chuẩn dữ liệu trục cứng + lớp mềm](https://github.com/hoanganh8389/open-hub/blob/main/docs/canon/CHUAN-DU-LIEU-TRUC-VA-LOP-MEM.md), luật tối thượng P-0 của chương trình open-pos ⇄ open-ketoan ([ADR-OKT-1](https://github.com/hoanganh8389/bizcity-open-setup/blob/main/docs/chuong-trinh/OKT/00-ADR-OKT-1.md)).
 > **Máy đọc:** `packages/contracts/schema/spine/*.schema.json` · vector kiểm `schema/spine/vectors/` · lệnh `node tools/spine-check.mjs`.
 
@@ -29,9 +30,9 @@ Hệ đã có từng mảnh: `item_id` bất biến (open-ketoan ADR-0017), `doc
 | **tenant** (đơn vị / site) | `tenant` | slug `^[a-z][a-z0-9-]{1,30}$` = `tenants.code` của open-ketoan = slug site trong registry open-setup | **open-setup** (registry); open-ketoan cấp `tenant_id` bigint **nội bộ**, không lộ ra dây | slug trong mọi payload, sự kiện; khoá `X-Api-Key` gắn một tenant | R-CANON-13, R-TEN-* |
 | **user** (người dùng) | `sub` | `^wp:[0-9]+$` (WordPress user ID của bizcity, chủ chốt 2026-11-24); dự phòng `^biz:[A-Za-z0-9_-]{1,64}$` cho tài khoản không qua WordPress | **WordPress (bizcity)** qua SSO | bảng người dùng cục bộ: `sub` → vai; **quyền vẫn ở từng app** | canon §4 người dùng chung, `bizcity_authorization@1` |
 | **item** (mặt hàng) | `item_id` | ULID Crockford 26 ký tự `^[0-9A-HJKMNP-TV-Z]{26}$` | **open-ketoan** (`items`, `item_codes` có hiệu lực) | bản sao + ảnh chụp mã tại ngày (`item_code_at`); **không tự tạo mặt hàng từ chứng từ** | `bizcity_item_master@1`, R-ITEM-0..9, IN-ITEM-* |
-| **uom** (đơn vị tính) | `uom` + `ratio` | `uom` `^[A-Za-z0-9_.-]{1,20}$`; `ratio` số > 0 so với **đơn vị gốc của item** (`product_units.unit`, `ratio`, `is_default`) | **open-ketoan**, thuộc item master | sao chép cùng item; dòng chứng từ gửi `uom` + `qty`, **không gửi ratio** (chủ giữ); ĐVT không khai cho item ⇒ `IN-ITEM-003` | `bizcity_item_master@1` |
+| **uom** (đơn vị tính) | `uom` + `ratio` | `uom` = **tên ĐVT đúng như chủ lưu** (`product_units.unit`), Unicode có dấu, 1–20 ký tự, không khoảng trắng, phân biệt hoa thường (`Cái`, `Thùng`, `Lốc_6`; 40 tên chuẩn ở open-pos H-9) — `^[^\s]{1,20}$`; `ratio` số > 0 so với **đơn vị gốc của item** (`product_units.unit`, `ratio`, `is_default`) | **open-ketoan**, thuộc item master | sao chép cùng item; dòng chứng từ gửi `uom` + `qty`, **không gửi ratio** (chủ giữ); ĐVT không khai cho item ⇒ `IN-ITEM-003` | `bizcity_item_master@1` |
 | **branch** (chi nhánh / kho) | `branch_code` | `^[A-Z0-9_.-]{1,20}$`; `branch_id` bigint nội bộ không lộ | **open-ketoan** (`branches`, `accounting_unit_id`) | POS: mỗi blog khai một `branch_code` (OKT S002-5); chuyển kho dùng `fromBranchCode` / `toBranchCode` | `bizcity_master_data@1` |
-| **partner** (đối tượng công nợ) | `partner.code` | `^[A-Za-z0-9_.-]{1,40}$`; `partner_id` bigint nội bộ không lộ | **open-ketoan**; ngoài gửi **mã**, một chiều | gửi `code`; open-cake dùng `CAKE-<contact_id>`; lưu `partner_ref {code}` | R-MD-1, R-MD-2 |
+| **partner** (đối tượng công nợ) | `partner.code` | `^[A-Za-z0-9_.-]{1,40}$`; `partner_id` bigint nội bộ không lộ | **open-ketoan**; ngoài gửi **mã**, một chiều | gửi `code`; open-cake gửi **số điện thoại đã xác minh** (cùng quy ước open-pos, để một người mua ở quầy và nhắn Fanpage là **một** đối tượng), không có số thì `CAKE-<contact_id>`, khách vãng lai `KHACH-LE`; lưu `partner_ref {code}` | R-MD-1, R-MD-2 |
 | **contact** (người / tổ chức tiếp xúc) | `contact_id` | ULID | **open-cake** | app khác mang **danh tính có bằng chứng** (`phone`, `email`, `tax_code`, `zalo_uid`, `fb_psid`), **không** mang `contact_id` tự đặt | R-CANON-1, R-CANON-3 |
 | **document** (chứng từ) | `doc_ref` | `^[a-z][a-z0-9_-]*(\.[a-z][a-z0-9_-]*)*:[A-Za-z0-9_.-]{1,64}$` = `<module>.<loại>:<id>`, bất biến (ví dụ vàng của canon: `cake.order_request:01J…`, `pos.order:8812`, `bizcity.ledger.event:<docKey>`) | **app phát hành** chứng từ đó | liên kết chéo ghi `doc_ref` **của app kia** vào `document_links (from, to, role)`; không có `root_document_id` tự đặt | `bizcity_document@1`, R-DOC-CONT-1, R-CANON-11 |
 
@@ -175,6 +176,8 @@ Ba lane và bốn mức C0–C3: [open-hub · DE-XUAT-BO-KIEM-TUONG-THICH](https
 | Q-SPINE-4 | `bizcity.app.json` ở gốc mọi repo, kể cả plugin WordPress | **Duyệt.** Repo chưa có thì thêm bằng PR chỉ tài liệu |
 
 ## 10. Lịch sử
+
+- **1.1.0 (2026-11-24):** `uom` nhận tên ĐVT có dấu của chủ (bản 1.0 bắt ASCII — lệch dữ liệu thật của open-ketoan / open-pos); `partner.code` từ open-cake: SĐT đã xác minh → `CAKE-<contact_id>` → `KHACH-LE`. Nguồn: open-cake PHASE-017 `20-DOI-CHIEU-SPINE-VA-LEAN.md` S5, S6.
 
 - **1.0.0 (2026-11-24):** chủ duyệt Q-SPINE-1..4; bỏ hậu tố `-draft` ở `bizcity_spine@1`, `bizcity_app@1`, `bizcity_sync@1`. <!-- [2026-11-24 06:05 PM Johnny Chu - Chu Hoàng Anh] SPINE-2 -->
 - **1.0.0-draft (2026-11-24):** bản đầu. Tám trục, bốn hình thức tham chiếu, bốn kiểu bảng, R-SPINE-1..10, SC-SPINE-1..6, manifest `bizcity_app@1-draft`, ánh xạ P-0 ý 4.
