@@ -2,7 +2,7 @@
 
 <!-- [2026-11-24 03:10 PM Johnny Chu - Chu Hoàng Anh] PLATFORM-SPLIT — chủ chốt 2026-11-24: tách @bizcity/platform thành gói chung một nguồn (Q-PLAT-1 tên repo bizcity-platform, Q-PLAT-2 phát hành GitHub Packages trước). -->
 
-> **Trạng thái:** 🟡 khởi tạo — **chưa có mã**. Mã vào ở bước **P2** của kế hoạch bằng `git subtree split` từ `open-ketoan/packages/platform` (giữ lịch sử), sau khi P0 (kiểm kê) và P1 (hợp đồng nền) xong.
+> **Trạng thái:** 🟡 **P2a xong (2026-11-24)** — `packages/platform` (212 commit) và `packages/contracts` (125 commit) nhập từ open-ketoan `6ad77b6` bằng `git subtree`, **giữ lịch sử**; `@ketoan/contracts` đổi tên `@bizcity/contracts`; build + typecheck đứng riêng 0 lỗi. **Giai đoạn 0 — chưa tách sạch:** hai gói vẫn còn phần kế toán (`masterdata/`, mã lỗi / loại chứng từ kế toán, kiểu DB toàn bộ) — P2b gỡ bằng cổng đăng ký theo kiểm kê open-ketoan PHASE-041 `10-KIEM-KE.md`. open-ketoan chưa dùng gói này (P6, hoãn).
 
 Một nguồn duy nhất cho phần nền mà **mọi** app Bizcity Open (open-ketoan, open-cake, …) cùng dựa vào: HTTP và phong bì lỗi, xác thực và phân quyền, action runtime, sự kiện (outbox), bằng chứng, cài đặt, tài liệu / chứng từ chung, nhiều site (registry, router, provisioner, migrate, backup), nhật ký, số đo, trace, chẩn đoán. **Không** chứa nghiệp vụ của app nào.
 
