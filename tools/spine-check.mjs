@@ -6,16 +6,14 @@
 //
 //   node tools/spine-check.mjs                       # kiểm vector (SC-SPINE-2)
 //   node tools/spine-check.mjs --manifest <tệp…>     # kiểm bizcity.app.json của repo khác (SC-SPINE-1)
-//   node tools/spine-check.mjs --json                # in kết quả JSON (cho CI / bizcity.vn)
+//   node tools/spine-check.mjs --json                # in kết quả JSON theo bizcity_conformance_report@1 (cho CI / bizcity.vn)
 //
 // Kết luận ĐẠT / KHÔNG ĐẠT theo cổng: một phát hiện mức fail là KHÔNG ĐẠT (mã thoát 1).
 
 import { readFileSync, readdirSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
-
-const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const SCHEMA_DIR = join(ROOT, 'packages/contracts/schema/spine');
+import { join, resolve } from 'node:path';
+// [2026-11-24 08:10 PM Johnny Chu - Chu Hoàng Anh] SPINE-4 — bộ kiểm JSON Schema dùng chung với spine-contract (tools/lib/json-schema.mjs); bỏ bản sao ở tệp này.
+import { SCHEMA_DIR, loadSchema, validate } from './lib/json-schema.mjs';
 
 /* ── Trục chuẩn và chủ (BIZCITY-SPINE-v1.md §2). Trục sổ riêng của app không nằm đây. ── */
 const AXIS_OWNER = {
@@ -29,56 +27,6 @@ const AXIS_OWNER = {
   document: '*', // mỗi app làm chủ chứng từ mình phát hành
 };
 const FREE_LICENSES = ['GPL-2.0-or-later', 'GPL-2.0-only', 'GPL-3.0-or-later', 'AGPL-3.0-or-later', 'MIT', 'Apache-2.0'];
-
-/* ── Bộ kiểm JSON Schema tối thiểu (draft 2020-12, phần dùng trong schema/spine) ── */
-function loadSchema(name) {
-  return JSON.parse(readFileSync(join(SCHEMA_DIR, name), 'utf8'));
-}
-function deref(root, ref) {
-  if (!ref.startsWith('#/')) throw new Error('chỉ hỗ trợ $ref nội bộ: ' + ref);
-  return ref.slice(2).split('/').reduce((o, k) => o[k], root);
-}
-function typeOf(v) {
-  if (v === null) return 'null';
-  if (Array.isArray(v)) return 'array';
-  if (Number.isInteger(v)) return 'integer';
-  return typeof v;
-}
-function validate(root, schema, value, path = '$', errs = []) {
-  if (schema.$ref) return validate(root, deref(root, schema.$ref), value, path, errs);
-  const t = typeOf(value);
-  if (schema.type) {
-    const ok = [].concat(schema.type).some((x) => x === t || (x === 'number' && t === 'integer'));
-    if (!ok) { errs.push(`${path}: kiểu ${t}, cần ${schema.type}`); return errs; }
-  }
-  if (schema.const !== undefined && value !== schema.const) errs.push(`${path}: phải là ${JSON.stringify(schema.const)}`);
-  if (schema.enum && !schema.enum.includes(value)) errs.push(`${path}: không trong ${JSON.stringify(schema.enum)}`);
-  if (t === 'string') {
-    if (schema.pattern && !new RegExp(schema.pattern, 'u').test(value)) errs.push(`${path}: "${value}" không khớp ${schema.pattern}`);
-    if (schema.minLength !== undefined && value.length < schema.minLength) errs.push(`${path}: ngắn hơn ${schema.minLength}`);
-    if (schema.maxLength !== undefined && value.length > schema.maxLength) errs.push(`${path}: dài hơn ${schema.maxLength}`);
-  }
-  if (t === 'integer' || t === 'number') {
-    if (schema.minimum !== undefined && value < schema.minimum) errs.push(`${path}: nhỏ hơn ${schema.minimum}`);
-  }
-  if (t === 'array') {
-    if (schema.minItems !== undefined && value.length < schema.minItems) errs.push(`${path}: ít hơn ${schema.minItems} phần tử`);
-    if (schema.uniqueItems && new Set(value.map((x) => JSON.stringify(x))).size !== value.length) errs.push(`${path}: có phần tử trùng`);
-    if (schema.items) value.forEach((v, i) => validate(root, schema.items, v, `${path}[${i}]`, errs));
-  }
-  if (t === 'object') {
-    for (const k of schema.required || []) if (!(k in value)) errs.push(`${path}: thiếu "${k}"`);
-    for (const [k, sub] of Object.entries(schema.properties || {})) if (k in value) validate(root, sub, value[k], `${path}.${k}`, errs);
-    if (schema.additionalProperties === false) {
-      for (const k of Object.keys(value)) if (!(schema.properties && k in schema.properties)) errs.push(`${path}: thuộc tính lạ "${k}"`);
-    }
-  }
-  if (schema.allOf) for (const s of schema.allOf) validate(root, s, value, path, errs);
-  if (schema.anyOf && !schema.anyOf.some((s) => validate(root, s, value, path, []).length === 0)) errs.push(`${path}: không thoả anyOf`);
-  if (schema.oneOf && schema.oneOf.filter((s) => validate(root, s, value, path, []).length === 0).length !== 1) errs.push(`${path}: oneOf phải đúng một`);
-  if (schema.not && validate(root, schema.not, value, path, []).length === 0) errs.push(`${path}: vi phạm "not"`);
-  return errs;
-}
 
 /* ── SC-SPINE-2: vector ── */
 function checkVectors() {
@@ -141,7 +89,18 @@ const mi = args.indexOf('--manifest');
 const manifests = mi >= 0 ? args.slice(mi + 1).filter((a) => !a.startsWith('--')) : [];
 const findings = manifests.length ? manifests.flatMap((f) => checkManifest(resolve(f))) : checkVectors();
 const fails = findings.filter((f) => f.level === 'fail').length;
-const result = { tool: 'spine-check', standard: 'bizcity_spine@1', scope: manifests.length ? manifests : 'vectors', findings, verdict: fails ? 'KHÔNG ĐẠT' : 'ĐẠT' };
+// [2026-11-24 08:10 PM Johnny Chu - Chu Hoàng Anh] SPINE-4 — kết quả theo bizcity_conformance_report@1 (schema/spine/conformance-report.schema.json): bizcity.vn đọc tệp này để hiện nhãn.
+const checkIds = manifests.length ? ['SC-SPINE-1'] : ['SC-SPINE-2'];
+const checks = checkIds.map((id) => ({ id, status: findings.some((f) => f.id === id && f.level === 'fail') ? 'fail' : (findings.some((f) => f.id === id && f.level === 'warn') ? 'warn' : 'pass') }));
+const appIds = manifests.map((f) => { try { return JSON.parse(readFileSync(resolve(f), 'utf8')).id; } catch { return null; } }).filter(Boolean);
+const result = {
+  schema: 'bizcity_conformance_report@1', tool: 'spine-check', tool_version: '1.1.0', standard: 'bizcity_spine@1',
+  ran_at: new Date().toISOString(), lane: 'MANIFEST',
+  ...(appIds.length === 1 ? { app_id: appIds[0] } : {}),
+  scope: manifests.length ? manifests : 'vectors',
+  ...(manifests.length && !fails ? { level: 'C0' } : {}),
+  checks, findings, verdict: fails ? 'KHÔNG ĐẠT' : 'ĐẠT',
+};
 if (asJson) console.log(JSON.stringify(result, null, 2));
 else {
   for (const f of findings) console.log(`${f.level === 'fail' ? '✗' : '!'} ${f.id} ${f.where}: ${f.msg}`);

@@ -97,7 +97,7 @@ Một app có thể có cả bốn kiểu; manifest khai kiểu nào cho trục 
 | Tra mã | `GET /api/v1/<trục>/resolve?code=…&as_of=…` (hoặc hàm resolve trong cửa nạp) → `{ id, code_at, status }` | C1 |
 | Nhận gửi sau | mọi route ghi nhận `Idempotency-Key`, trả cùng kết quả cho cùng khoá | C1 |
 
-Hiện trạng open-ketoan: tra mã + Idempotency đã có; changefeed `since` / digest chưa có. **Q-SPINE-3 (chủ duyệt 2026-11-24):** open-ketoan mở changefeed + digest cho `items`, `partners`, `branches`; việc đi theo R-FLOW của open-ketoan (giữ chỗ ở CLAIMS.md, PR tài liệu chốt thiết kế rồi PR mã).
+Hiện trạng open-ketoan: tra mã + Idempotency đã có; **changefeed + digest đã có** (`GET /api/v1/sync/:axis`, `/digest` — open-ketoan #621, #623; migration 0182) <!-- [2026-11-24 08:40 PM Johnny Chu - Chu Hoàng Anh] SPINE-4 -->. **Q-SPINE-3 (chủ duyệt 2026-11-24):** open-ketoan mở changefeed + digest cho `items`, `partners`, `branches`; việc đi theo R-FLOW của open-ketoan (giữ chỗ ở CLAIMS.md, PR tài liệu chốt thiết kế rồi PR mã).
 
 ### 4.2 Ánh xạ vào mô hình POS đã chốt (P-0 ý 4)
 
@@ -146,8 +146,8 @@ Luật manifest (kiểm bằng `spine-check --manifest`): `owns` ∩ `uses` = �
 | SC-SPINE-1 | MANIFEST | `bizcity.app.json` đúng schema + luật §5 | **có** (`tools/spine-check.mjs`) |
 | SC-SPINE-2 | MANIFEST | vector `schema/spine/vectors/*` đạt (ID đúng dạng, `*Ref` đúng hình, `doc_ref` đúng khuôn) | **có** |
 | SC-SPINE-3 | HOUSE | không cột `sku` / `code` làm khoá ngoại ở bảng sổ; không `UPDATE` cột `id` trục; bản sao không có cột ghi đè cột chủ | chưa (TS: SC-ITEM-* một phần) |
-| SC-SPINE-4 | CONTRACT | gửi `code` lạ ⇒ bị giữ, không tạo; gửi `id` lạ ⇒ từ chối; gửi lặp cùng `Idempotency-Key` ⇒ một kết quả | chưa |
-| SC-SPINE-5 | CONTRACT | changefeed có `cursor`, thứ tự ổn định, có tombstone; digest khớp | chưa |
+| SC-SPINE-4 | CONTRACT | gửi `code` lạ ⇒ bị giữ, không tạo; gửi `id` lạ ⇒ từ chối; gửi lặp cùng `Idempotency-Key` ⇒ một kết quả | **có** (`tools/spine-contract.mjs`, profile `ledger`; phần ghi cần `--allow-write`, chỉ bản thử) |
+| SC-SPINE-5 | CONTRACT | changefeed có `cursor`, thứ tự ổn định, có tombstone; digest khớp | **có** — lần chạy đầu bắt lỗi con trỏ rỗng ở open-ketoan, sửa ở open-ketoan #623 <!-- [2026-11-24 08:40 PM Johnny Chu - Chu Hoàng Anh] SPINE-4 --> |
 | SC-SPINE-6 | CONTRACT | chuỗi vàng: một `contact_id` → `partner.code` → `item_id` → `doc_ref` POS → `doc_ref` kế toán, `document_links` liền (DOD-SYS-2) | chưa |
 
 Ba lane và bốn mức C0–C3: [open-hub · DE-XUAT-BO-KIEM-TUONG-THICH](https://github.com/hoanganh8389/open-hub/blob/main/docs/DE-XUAT-BO-KIEM-TUONG-THICH.md). Mức **C1** = đạt SC-SPINE-1, 2, 4; **C2** = thêm 3, 5; **C3** = thêm 6 + MCP + tri thức.

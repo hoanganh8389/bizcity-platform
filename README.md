@@ -18,7 +18,8 @@ Một nguồn duy nhất cho phần nền mà **mọi** app Bizcity Open (open-k
 
 ## Chuẩn xuyên app
 
-- **[`bizcity_spine@1`](docs/standard/BIZCITY-SPINE-v1.md)** — định danh và danh mục chuẩn (item, ĐVT, chi nhánh, đối tượng, khách, chứng từ, tenant, người dùng), tự đứng + đồng bộ. Mã app viết bằng gì cũng được; hình trên dây phải giống nhau. Máy đọc: `packages/contracts/schema/spine/`. Kiểm: `node tools/spine-check.mjs` (vector) · `--manifest <bizcity.app.json>` (repo app). [ADR-0001](docs/adr/ADR-0001-spine-xuyen-app.md). <!-- [2026-11-24 05:08 PM Johnny Chu - Chu Hoàng Anh] SPINE-1 -->
+- **[`bizcity_spine@1`](docs/standard/BIZCITY-SPINE-v1.md)** — định danh và danh mục chuẩn (item, ĐVT, chi nhánh, đối tượng, khách, chứng từ, tenant, người dùng), tự đứng + đồng bộ. Mã app viết bằng gì cũng được; hình trên dây phải giống nhau. Máy đọc: `packages/contracts/schema/spine/`. Kiểm: `node tools/spine-check.mjs` (vector) · `--manifest <bizcity.app.json>` (repo app). [ADR-0001](docs/adr/ADR-0001-spine-xuyen-app.md).
+- **Bộ kiểm tương thích** — lane MANIFEST `node tools/spine-check.mjs` · lane CONTRACT (hộp đen) `node tools/spine-contract.mjs --target <url> --api-key <khoá> --profile ledger [--allow-write]`; kết quả theo [`bizcity_conformance_report@1`](docs/standard/BIZCITY-CONFORMANCE-REPORT-v1.md). Hợp đồng kèm: [`bizcity_identity@1`](docs/standard/BIZCITY-IDENTITY-v1.md) (người dùng + SSO từ WordPress), [`bizcity_knowledge@1`](docs/standard/BIZCITY-KNOWLEDGE-v1.md) (công cụ tri thức chỉ đọc cho Twin Brain). <!-- [2026-11-24 08:40 PM Johnny Chu - Chu Hoàng Anh] SPINE-4 --> <!-- [2026-11-24 05:08 PM Johnny Chu - Chu Hoàng Anh] SPINE-1 -->
 
 ## Kế hoạch và luật
 
