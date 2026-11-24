@@ -2,7 +2,7 @@
 
 <!-- [2026-11-24 05:08 PM Johnny Chu - Chu Hoàng Anh] SPINE-1 — chuẩn xuyên app bản đầu: tám trục định danh, bốn hình thức tham chiếu, bốn kiểu bảng (chủ · bản sao · gửi sau · đối chiếu), luật R-SPINE, kiểm SC-SPINE. Chủ chỉ đạo 2026-11-24: "mã lập trình có thể khác nhau, nhưng api contracts phải xuyên suốt". -->
 
-> **Phiên bản:** 1.0.0-draft · 2026-11-24 · **Trạng thái:** Đề xuất, chờ chủ duyệt (Q-SPINE §9) · **Thuộc:** `@bizcity/contracts` (gói nền chung)
+> **Phiên bản:** 1.0.0 · 2026-11-24 · **Trạng thái:** **Chấp nhận** — chủ dự án duyệt 2026-11-24 (Q-SPINE-1..4, §9) <!-- [2026-11-24 06:05 PM Johnny Chu - Chu Hoàng Anh] SPINE-2 --> · **Thuộc:** `@bizcity/contracts` (gói nền chung)
 > **Đứng dưới:** [BIZCITY OPEN CANON](https://github.com/hoanganh8389/open-hub/blob/main/docs/canon/BIZCITY-OPEN-CANON-v1.md) §3 (bốn trục dữ liệu), [chuẩn dữ liệu trục cứng + lớp mềm](https://github.com/hoanganh8389/open-hub/blob/main/docs/canon/CHUAN-DU-LIEU-TRUC-VA-LOP-MEM.md), luật tối thượng P-0 của chương trình open-pos ⇄ open-ketoan ([ADR-OKT-1](https://github.com/hoanganh8389/bizcity-open-setup/blob/main/docs/chuong-trinh/OKT/00-ADR-OKT-1.md)).
 > **Máy đọc:** `packages/contracts/schema/spine/*.schema.json` · vector kiểm `schema/spine/vectors/` · lệnh `node tools/spine-check.mjs`.
 
@@ -37,7 +37,7 @@ Hệ đã có từng mảnh: `item_id` bất biến (open-ketoan ADR-0017), `doc
 
 Ngoài tám trục còn **sổ riêng của từng app** (bút toán, `txn_id` giao dịch ba chân, sổ chạm khách): mỗi app **một** trục sổ riêng và không giữ trục sổ của app khác (R-CANON-1). Trục sổ riêng khai trong manifest `axes.owns`.
 
-**Mở, chưa chuẩn (Q-SPINE-2):** vị trí trong kho (`location_code` dưới `branch_code`), lô (`lot`). Hiện kho theo chi nhánh; app cần vị trí / lô thì giữ ở lớp mềm (`entity_meta`) cho tới khi có chủ.
+**Quyết định (Q-SPINE-2, chủ duyệt 2026-11-24):** vị trí trong kho (`location_code` dưới `branch_code`) và lô (`lot`) **để ở lớp mềm** (`entity_meta`) cho tới khi app thứ hai cần; khi đó mới có chủ và thành trục (theo §7).
 
 ## 3. Bốn hình thức tham chiếu trên dây
 
@@ -87,7 +87,7 @@ Một app có thể có cả bốn kiểu; manifest khai kiểu nào cho trục 
 
 **R-SPINE-10 · Chủ thắng cột của chủ, app thắng cột của app.** Xung đột trên cột của chủ ⇒ bản của chủ; muốn đổi thì gọi action của chủ (`core.item.upsert`…) để đi qua validation. Cột cục bộ (`entity_meta` namespace `<app>.`) chủ không chạm.
 
-### 4.1 Chủ phải mở cho đồng bộ (`bizcity_sync@1-draft`)
+### 4.1 Chủ phải mở cho đồng bộ (`bizcity_sync@1`)
 
 | Mặt | Hình | Bắt buộc từ mức |
 |---|---|---|
@@ -96,7 +96,7 @@ Một app có thể có cả bốn kiểu; manifest khai kiểu nào cho trục 
 | Tra mã | `GET /api/v1/<trục>/resolve?code=…&as_of=…` (hoặc hàm resolve trong cửa nạp) → `{ id, code_at, status }` | C1 |
 | Nhận gửi sau | mọi route ghi nhận `Idempotency-Key`, trả cùng kết quả cho cùng khoá | C1 |
 
-Hiện trạng open-ketoan: tra mã + Idempotency đã có; changefeed `since` / digest **chưa kiểm** (Q-SPINE-3).
+Hiện trạng open-ketoan: tra mã + Idempotency đã có; changefeed `since` / digest chưa có. **Q-SPINE-3 (chủ duyệt 2026-11-24):** open-ketoan mở changefeed + digest cho `items`, `partners`, `branches`; việc đi theo R-FLOW của open-ketoan (giữ chỗ ở CLAIMS.md, PR tài liệu chốt thiết kế rồi PR mã).
 
 ### 4.2 Ánh xạ vào mô hình POS đã chốt (P-0 ý 4)
 
@@ -111,13 +111,13 @@ Hiện trạng open-ketoan: tra mã + Idempotency đã có; changefeed `since` /
 
 Không có khái niệm mới cho đội POS; chỉ đặt tên chung để bộ kiểm chạy được.
 
-## 5. Manifest `bizcity.app.json` (`bizcity_app@1-draft`)
+## 5. Manifest `bizcity.app.json` (`bizcity_app@1`)
 
-Mỗi repo app đặt ở gốc. Bộ kiểm đọc tệp này trước (lane MANIFEST).
+Mỗi repo app đặt ở gốc — **kể cả plugin WordPress** (Q-SPINE-4, chủ duyệt 2026-11-24). Bộ kiểm đọc tệp này trước (lane MANIFEST). Giá trị `bizcity_app@1-draft` còn được nhận một thời gian, kèm cảnh báo.
 
 ```json
 {
-  "schema": "bizcity_app@1-draft",
+  "schema": "bizcity_app@1",
   "id": "open-pos",
   "name": "Open POS",
   "repo": "hoanganh8389/open-pos",
@@ -131,7 +131,7 @@ Mỗi repo app đặt ở gốc. Bộ kiểm đọc tệp này trước (lane MA
     "local": ["item"]
   },
   "sync": { "pull_via": "open-ketoan-bridge", "outbox": ["retail_txn"], "reconcile": ["RC-SPINE-item", "RC-SPINE-retail_txn"] },
-  "contracts": ["bizcity_spine@1-draft", "bizcity_ledger_intake@1"],
+  "contracts": ["bizcity_spine@1", "bizcity_ledger_intake@1"],
   "docs": { "canon": "docs/canon/README.md", "public": "docs/public/" }
 }
 ```
@@ -163,15 +163,18 @@ Ba lane và bốn mức C0–C3: [open-hub · DE-XUAT-BO-KIEM-TUONG-THICH](https
 - Không thay cửa nạp (`bizcity_ledger_intake@1`), không thay luật sổ; chuẩn này nằm **trước** cửa nạp.
 - Không bàn pháp nhân, thuế, giá — việc của sổ (book) và chính sách hạch toán.
 
-## 9. Câu hỏi chờ chủ
+## 9. Quyết định của chủ (2026-11-24)
 
-| Mã | Câu hỏi | Gợi ý |
+<!-- [2026-11-24 06:05 PM Johnny Chu - Chu Hoàng Anh] SPINE-2 — chủ dự án trả lời "duyệt" cho cả bốn câu; ghi lại để bộ kiểm và repo khác bám theo. -->
+
+| Mã | Câu hỏi | Quyết định |
 |---|---|---|
-| Q-SPINE-1 | Duyệt tám trục và dạng `sub = wp:<id>`? | Duyệt; `biz:` chỉ cho tài khoản máy |
-| Q-SPINE-2 | Vị trí kho (`location_code`) và lô: chủ là open-ketoan (`bizcity_inventory@1`) hay để lớp mềm? | Lớp mềm tới khi app thứ hai cần |
-| Q-SPINE-3 | open-ketoan mở changefeed `since` + digest cho `items`, `partners`, `branches` (việc K1, theo R-FLOW của open-ketoan)? | Có, trước khi bridge C8 chuyển sang kéo theo cursor |
-| Q-SPINE-4 | `bizcity.app.json` đặt ở gốc mọi repo (kể cả plugin WordPress)? | Có |
+| Q-SPINE-1 | Tám trục và dạng `sub = wp:<id>` | **Duyệt.** `biz:` chỉ cho tài khoản máy |
+| Q-SPINE-2 | Vị trí kho, lô | **Lớp mềm** cho tới khi app thứ hai cần (§2) |
+| Q-SPINE-3 | open-ketoan mở changefeed `since` + digest cho `items`, `partners`, `branches` | **Duyệt.** Theo R-FLOW của open-ketoan; bridge C8 và cake chuyển sang kéo theo cursor sau khi có |
+| Q-SPINE-4 | `bizcity.app.json` ở gốc mọi repo, kể cả plugin WordPress | **Duyệt.** Repo chưa có thì thêm bằng PR chỉ tài liệu |
 
 ## 10. Lịch sử
 
+- **1.0.0 (2026-11-24):** chủ duyệt Q-SPINE-1..4; bỏ hậu tố `-draft` ở `bizcity_spine@1`, `bizcity_app@1`, `bizcity_sync@1`. <!-- [2026-11-24 06:05 PM Johnny Chu - Chu Hoàng Anh] SPINE-2 -->
 - **1.0.0-draft (2026-11-24):** bản đầu. Tám trục, bốn hình thức tham chiếu, bốn kiểu bảng, R-SPINE-1..10, SC-SPINE-1..6, manifest `bizcity_app@1-draft`, ánh xạ P-0 ý 4.
