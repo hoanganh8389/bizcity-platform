@@ -14,7 +14,7 @@
   "scripts": {
     "build": "npm run build -w @bizcity/contracts && npm run build -w @bizcity/platform",
     "typecheck": "npm run build -w @bizcity/contracts && npm run typecheck -w @bizcity/platform",
-    "test": "npm run build && node --test \"packages/platform/test/*.test.mjs\""
+    "test": "npm run build && node --test --test-concurrency=1 \"packages/platform/test/*.test.mjs\""
   },
   "devDependencies": {
     "@types/node": "20.17.6",
