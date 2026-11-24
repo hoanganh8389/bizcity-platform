@@ -2,7 +2,7 @@
 
 <!-- [2026-11-24 08:10 PM Johnny Chu - Chu Hoàng Anh] SPINE-4 — hợp đồng thứ hai trong ba hợp đồng còn lại của bộ kiểm tương thích (open-hub DE-XUAT-BO-KIEM-TUONG-THICH §6). Là HỒ SƠ (profile) của chuẩn MCP chung (twin-brain docs/developer/contracts/BIZCITY-MCP-TOOL-CONTRACT-v1.md), không phải chuẩn riêng. -->
 
-> **Phiên bản:** 1.0.0-draft · 2026-11-24 · **Trạng thái:** Đề xuất, chờ chủ duyệt · **Thuộc:** `@bizcity/contracts` (gói nền chung)
+> **Phiên bản:** 1.0.0 · 2026-11-24 · **Trạng thái:** **Chấp nhận** — chủ dự án duyệt 2026-11-24 (Q-KNOW-1, 2) <!-- [2026-11-24 09:50 PM Johnny Chu - Chu Hoàng Anh] SPINE-5 --> · **Thuộc:** `@bizcity/contracts` (gói nền chung)
 > **Đứng dưới:** canon §5 (Twin Brain là lớp kiểm chứng và điều phối; R-CANON-2 não không là chủ dữ liệu; R-CANON-12 mọi hành động agent có bằng chứng), chuẩn MCP chung `bizcity-mcp-tool@1`, chuẩn xương sống [`bizcity_spine@1`](BIZCITY-SPINE-v1.md) §3 (ma trận: "Tri thức cho Twin Brain").
 > **Máy đọc:** `packages/contracts/schema/spine/knowledge.schema.json`.
 
@@ -45,10 +45,10 @@ Công cụ **sinh từ action đọc** của app (chuẩn tái sử dụng R-CAN
 |---|---|
 | **R-KNOW-1** | Chỉ đọc. Hàm xử lý không được gọi action ghi, không mở giao dịch ghi; bộ kiểm HOUSE dò `effect: 'write'` trong đường gọi. |
 | **R-KNOW-2** | Luôn có `as_of`; số liệu là **ảnh chụp tại thời điểm đó**, không phải "hiện tại mơ hồ". |
-| **R-KNOW-3** | **Che thông tin nhạy cảm trước khi ra khỏi app**: điện thoại, email, mã số thuế cá nhân, số tài khoản → `sha256:` hoặc bỏ; tên người chỉ khi scope cho phép; `pii_masked` phải `true`. Khoá `pii: true` của registry lớp mềm (R-DATA-6) áp cho cả đây. |
+| **R-KNOW-3** | **Che thông tin nhạy cảm trước khi ra khỏi app**: điện thoại, email, mã số thuế cá nhân, số tài khoản → `sha256:` hoặc bỏ; **tên người mặc định che**, chỉ trả nguyên khi khoá có scope `knowledge.read.names` (Q-KNOW-1); `pii_masked` phải `true`. Khoá `pii: true` của registry lớp mềm (R-DATA-6) áp cho cả đây. |
 | **R-KNOW-4** | Mỗi dòng dẫn nguồn bằng **ID trục** (`item_id`, `contact_id`, `partner.code`, `doc_ref`, `branch_code`) trong `sources[]`; não trích dẫn được, người kiểm lại được. Không trả tên / mã hiển thị làm khoá. |
 | **R-KNOW-5** | Không trả số tài khoản kế toán, thuế suất suy luận, giá vốn tự tính — những thứ đó là của sổ và chính sách hạch toán (canon P4). Báo cáo tài chính đã khoá kỳ thì trả **đúng số đã khoá**. |
-| **R-KNOW-6** | Phân trang bằng `cursor` ổn định; `limit` ≤ 200; giới hạn tần suất theo scope (`meta.rate`). |
+| **R-KNOW-6** | Phân trang bằng `cursor` ổn định; `limit` ≤ 200; giới hạn tần suất mặc định **60 lời gọi / phút / khoá** (Q-KNOW-2), báo ở `meta.rate`; vượt ⇒ `RATE_LIMITED` (429) kèm `Retry-After`. |
 | **R-KNOW-7** | Mọi lời gọi ghi bằng chứng: actor `{ kind: 'ai', via: 'mcp:<client>', onBehalfOf, turnId }` vào `audit_logs` của app chủ (R-CANON-12) — kể cả đọc, vì đọc dữ liệu doanh nghiệp là hành động có trách nhiệm. |
 | **R-KNOW-8** | Twin Brain **không cache** kết quả quá `as_of` + 24 giờ cho số liệu tiền / tồn; cache dài hơn chỉ cho danh mục. |
 
@@ -69,13 +69,16 @@ Công cụ **sinh từ action đọc** của app (chuẩn tái sử dụng R-CAN
 | SC-KNOW-3 | CONTRACT | mỗi `rows[i]` có ít nhất một khoá trục hoặc `sources[]` không rỗng |
 | SC-KNOW-4 | HOUSE | hàm xử lý công cụ `_knowledge_` không gọi action `effect: 'write'` |
 
-## 6. Câu hỏi chờ chủ
+## 6. Quyết định của chủ (2026-11-24)
 
-| Mã | Câu hỏi | Gợi ý |
+<!-- [2026-11-24 09:50 PM Johnny Chu - Chu Hoàng Anh] SPINE-5 — chủ duyệt bốn gợi ý. -->
+
+| Mã | Câu hỏi | Quyết định |
 |---|---|---|
-| Q-KNOW-1 | Tên người (khách, nhân viên) có được trả nguyên khi scope `knowledge.read`? | Có với scope `knowledge.read.names`, mặc định che |
-| Q-KNOW-2 | Giới hạn tần suất mặc định | 60 lời gọi / phút / khoá |
+| Q-KNOW-1 | Tên người (khách, nhân viên) có được trả nguyên? | **Mặc định che**; trả nguyên khi khoá có scope `knowledge.read.names` |
+| Q-KNOW-2 | Giới hạn tần suất mặc định | **60 lời gọi / phút / khoá** |
 
 ## 7. Lịch sử
 
+- **1.0.0 (2026-11-24):** chủ duyệt Q-KNOW-1, 2; bỏ hậu tố -draft. <!-- [2026-11-24 09:50 PM Johnny Chu - Chu Hoàng Anh] SPINE-5 -->
 - **1.0.0-draft (2026-11-24):** bản đầu, SPINE-4.
