@@ -1,0 +1,78 @@
+# [2026-11-24 11:55 PM Johnny Chu - Chu Hoàng Anh] SPINE-7 — hub-local: WordPress đóng vai Hub + máy chủ SSO (bizcity_identity@1) CHỈ trên máy dev,
+# để các repo khác (open-ketoan, open-cake, open-crm, notebook…) thử đăng nhập một lần và gọi Hub mà không đụng site thật.
+#
+#   bash tools/hub-local/up.sh      dựng / cập nhật (đọc README.md cùng thư mục)
+#   bash tools/hub-local/down.sh    dừng; --xoa xoá sạch dữ liệu
+#
+# Không chạy file này trực tiếp: up.sh đặt biến (HUB_DIR, cổng, khoá) và tạo mạng bizcity-hub.
+name: hub-local
+services:
+  # Tên dịch vụ KHÔNG đặt là "db": WP còn nối mạng bizcity-hub, nơi app khác cũng có dịch vụ "db" → WP nối nhầm CSDL (đã gặp ở okt-wp).
+  hubdb:
+    image: mariadb:10.11
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: wp
+      MARIADB_USER: wp
+      MARIADB_PASSWORD: ${HUB_DB_PASS:?up.sh sinh HUB_DB_PASS}
+      MARIADB_ROOT_PASSWORD: ${HUB_DB_ROOT:?up.sh sinh HUB_DB_ROOT}
+    volumes: [hubdb:/var/lib/mysql]
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      retries: 30
+
+  wp:
+    image: wordpress:php8.1-apache
+    restart: unless-stopped
+    depends_on: { hubdb: { condition: service_healthy } }
+    # Apache nghe đúng cổng ngoài (HUB_PORT) để địa chỉ http://hub.localhost:<cổng> dùng được cả trong container
+    # (WordPress tự gọi chính nó: cron, REST loopback) lẫn trên trình duyệt.
+    command:
+      - bash
+      - -c
+      - >-
+        sed -i "s/^Listen 80$$/Listen ${HUB_PORT}/" /etc/apache2/ports.conf &&
+        sed -i "s/<VirtualHost \*:80>/<VirtualHost *:${HUB_PORT}>/" /etc/apache2/sites-enabled/000-default.conf &&
+        a2enmod rewrite >/dev/null && exec docker-entrypoint.sh apache2-foreground
+    environment:
+      WORDPRESS_DB_HOST: hubdb
+      WORDPRESS_DB_NAME: wp
+      WORDPRESS_DB_USER: wp
+      WORDPRESS_DB_PASSWORD: ${HUB_DB_PASS}
+      WORDPRESS_DEBUG: "1"
+      HUB_SSO_SECRET: ${HUB_SSO_SECRET}
+      HUB_SSO_TENANT: ${HUB_SSO_TENANT:-}
+      HUB_SSO_APPS: ${HUB_SSO_APPS:-}
+      HUB_KETOAN_API_URL: ${HUB_KETOAN_API_URL:-}
+      HUB_KETOAN_WEB_URL: ${HUB_KETOAN_WEB_URL:-}
+      HUB_KETOAN_API_KEY: ${HUB_KETOAN_API_KEY:-}
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_HOME', 'http://hub.localhost:${HUB_PORT}');
+        define('WP_SITEURL', 'http://hub.localhost:${HUB_PORT}');
+        define('WP_ENVIRONMENT_TYPE', 'local');
+        define('BIZCITY_HUB_LOCAL', true);
+        // Bridge (open-ketoan-bridge) đọc hằng trước tuỳ chọn: phát vé + gọi API kế toán.
+        define('TGS_KETOAN_SSO_SECRET', getenv('HUB_SSO_SECRET') ?: '');
+        if (getenv('HUB_KETOAN_API_URL')) { define('TGS_KETOAN_API_URL', getenv('HUB_KETOAN_API_URL')); }
+        if (getenv('HUB_KETOAN_WEB_URL')) { define('TGS_KETOAN_WEB_URL', getenv('HUB_KETOAN_WEB_URL')); }
+        if (getenv('HUB_KETOAN_API_KEY')) { define('TGS_KETOAN_API_KEY', getenv('HUB_KETOAN_API_KEY')); }
+    ports: ["127.0.0.1:${HUB_PORT}:${HUB_PORT}"]
+    volumes:
+      - html:/var/www/html
+      - ./mu-plugins:/var/www/html/wp-content/mu-plugins:ro
+      - ${HUB_LLM_ROUTER_DIR:?đặt HUB_LLM_ROUTER_DIR}:/var/www/html/wp-content/plugins/bizcity-llm-router:ro
+      - ${HUB_DIR}/src/open-ketoan-bridge:/var/www/html/wp-content/plugins/open-ketoan-bridge:ro
+    networks:
+      default: {}
+      bizcity-hub:
+        aliases: [hub.localhost]
+
+networks:
+  bizcity-hub:
+    name: bizcity-hub
+    external: true
+
+volumes:
+  hubdb:
+  html:
