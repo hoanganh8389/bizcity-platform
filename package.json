@@ -1,0 +1,15 @@
+{
+  "name": "bizcity-platform",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Gói nền dùng chung của Bizcity Open (@bizcity/platform, @bizcity/contracts, …) — một nguồn, mọi app phụ thuộc. GPL-2.0-or-later.",
+  "license": "GPL-2.0-or-later",
+  "type": "module",
+  "engines": { "node": ">=22.12" },
+  "workspaces": ["packages/*"],
+  "scripts": {
+    "build": "npm run build -w @bizcity/contracts && npm run build -w @bizcity/platform",
+    "typecheck": "npm run build -w @bizcity/contracts && npm run typecheck -w @bizcity/platform"
+  },
+  "devDependencies": { "@types/node": "20.17.6", "typescript": "5.6.3" }
+}
