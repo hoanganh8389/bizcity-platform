@@ -2,7 +2,7 @@
 
 <!-- [2026-11-24 08:10 PM Johnny Chu - Chu Hoàng Anh] SPINE-4 — hợp đồng thứ nhất trong ba hợp đồng còn lại của bộ kiểm tương thích. Viết từ cái ĐANG CHẠY: open-ketoan apps/api/src/modules/auth/wp-sso.ts (vé HMAC-SHA256 ≤ 5 phút, đổi vé lấy phiên), canon §4 "người dùng chung", R-TEN-9; thêm sub = wp:<id> theo chuẩn spine §2 (chủ duyệt Q-SPINE-1). -->
 
-> **Phiên bản:** 1.0.0-draft · 2026-11-24 · **Trạng thái:** Đề xuất, chờ chủ duyệt (Q-IDENT §7) · **Thuộc:** `@bizcity/contracts`
+> **Phiên bản:** 1.0.0 · 2026-11-24 · **Trạng thái:** **Chấp nhận** — chủ dự án duyệt 2026-11-24 (Q-IDENT-1, 2) <!-- [2026-11-24 09:50 PM Johnny Chu - Chu Hoàng Anh] SPINE-5 --> · **Thuộc:** `@bizcity/contracts`
 > **Máy đọc:** `packages/contracts/schema/spine/identity.schema.json` (vé và phiên).
 
 ## 0. Một câu
@@ -38,7 +38,7 @@ Hình giữ nguyên bản đang chạy: `base64url(JSON) + "." + base64url(HMAC-
 |---|---|
 | **R-IDENT-1** | `sub` là khoá danh tính xuyên app (`wp:<id>`, hoặc `biz:<id>` cho tài khoản máy); email / tên có thể đổi, `sub` không đổi. App lưu `sub` trên người dùng cục bộ. |
 | **R-IDENT-2** | Vé sống ≤ 300 giây, `iat` không ở tương lai quá 60 giây, chữ ký so bằng `timingSafeEqual`; vé sai ⇒ `UNAUTHORIZED`, có giới hạn tần suất theo IP (hiện 30 / 15 phút). |
-| **R-IDENT-3** | `aud` phải bằng `id` của app trong `bizcity.app.json`; thiếu `aud` được chấp nhận tới hết giai đoạn chuyển (Q-IDENT-2). |
+| **R-IDENT-3** | `aud` phải bằng `id` của app trong `bizcity.app.json`; vé **thiếu** `aud` hoặc `sub` được chấp nhận trong giai đoạn chuyển (Q-IDENT-2: 90 ngày kể từ khi plugin phát vé của WordPress cập nhật). Hết hạn đó quản trị app bật `WP_SSO_REQUIRE_SUB=1` (open-ketoan) ⇒ vé thiếu `sub` bị từ chối; vé có `aud` sai luôn bị từ chối, không có giai đoạn chuyển. |
 | **R-IDENT-4** | App **chỉ nhận quyền đã khai** (`isKnownPermission`, manifest `permissions[]` của module); quyền lạ bị bỏ, không lỗi (R-TEN-9). Người lạ (chưa có cục bộ) được tạo với vai thấp nhất và quyền trong vé. |
 | **R-IDENT-5** | App vẫn là người gác cuối: `is_active = false` cục bộ chặn dù vé hợp lệ; kỳ khoá, quyền ghi sổ, phê duyệt vẫn theo luật của app (`bizcity_authorization@1`). |
 | **R-IDENT-6** | Phiên app ghi `actor = user:<sub>`; bằng chứng (`audit_logs`) mang `sub`, không mang email thô (che `sha256:` khi xuất). |
@@ -57,7 +57,7 @@ App khác (cake, POS WordPress) làm cùng khuôn: cùng tên route, cùng hình
 
 | App | Đang | Cần |
 |---|---|---|
-| open-ketoan | khớp người dùng theo **email**, chưa lưu `sub`, chưa kiểm `aud` | cột `users.sub`, ưu tiên `sub` rồi mới email; kiểm `aud`; việc K1 theo R-FLOW |
+| open-ketoan | khớp người dùng theo **email**, chưa lưu `sub`, chưa kiểm `aud` | **đang làm (SPINE-5)**: cột `users.external_sub`, ưu tiên `sub` rồi mới email (gặp email đã gắn `sub` khác ⇒ từ chối, không chiếm tài khoản); kiểm `aud`; `WP_SSO_AUD`, `WP_SSO_REQUIRE_SUB` |
 | open-cake | chưa có SSO (W1) | làm theo hợp đồng này ở PHASE-016 |
 | WordPress (bizcity-web / plugin phát vé) | phát `email, name, login, perms, tenant` | thêm `sub`, `aud` |
 
@@ -74,13 +74,16 @@ App khác (cake, POS WordPress) làm cùng khuôn: cùng tên route, cùng hình
 
 Mật khẩu, 2FA, phiên WordPress — việc của WordPress. Khoá API máy ↔ máy — `bizcity_api@1` (`X-Api-Key`) và chính sách 1API ở open-hub.
 
-## 7. Câu hỏi chờ chủ
+## 7. Quyết định của chủ (2026-11-24)
 
-| Mã | Câu hỏi | Gợi ý |
+<!-- [2026-11-24 09:50 PM Johnny Chu - Chu Hoàng Anh] SPINE-5 — chủ duyệt bốn gợi ý. -->
+
+| Mã | Câu hỏi | Quyết định |
 |---|---|---|
-| Q-IDENT-1 | Quyền do WordPress cấp trong vé (như bản đang chạy) hay app tự giữ vai và WordPress chỉ cho danh tính? | Giữ như đang chạy: WordPress cấp, app lọc về quyền đã khai và vẫn chặn được cục bộ (R-IDENT-4, 5) |
-| Q-IDENT-2 | Hạn chuyển tiếp cho vé thiếu `sub` / `aud` | 90 ngày sau khi plugin phát vé cập nhật |
+| Q-IDENT-1 | Quyền do WordPress cấp trong vé, hay app tự giữ vai? | **Giữ như đang chạy:** WordPress cấp `perms`, app lọc về quyền đã khai (R-IDENT-4) và vẫn chặn được cục bộ (R-IDENT-5) |
+| Q-IDENT-2 | Hạn chuyển tiếp cho vé thiếu `sub` / `aud` | **90 ngày** sau khi plugin phát vé cập nhật; open-ketoan có công tắc `WP_SSO_REQUIRE_SUB` (mặc định tắt) để chuyển sang bắt buộc |
 
 ## 8. Lịch sử
 
+- **1.0.0 (2026-11-24):** chủ duyệt Q-IDENT-1, 2; bỏ hậu tố -draft; R-IDENT-3 ghi công tắc `WP_SSO_REQUIRE_SUB`. <!-- [2026-11-24 09:50 PM Johnny Chu - Chu Hoàng Anh] SPINE-5 -->
 - **1.0.0-draft (2026-11-24):** bản đầu, SPINE-4.
