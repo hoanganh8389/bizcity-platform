@@ -3,6 +3,7 @@
 ## [Chưa phát hành]
 
 ### Thêm
+- 2026-11-24 — P2b-4 (K1): `AppDatabase` — app gắn bảng của mình vào kiểu `Database` bằng gộp khai báo (`declare module '@bizcity/platform/db/types'`), dùng thẳng `db` / `Db` của gói; test kiểu `tsc -p packages/platform/test/types` trong npm test (thử ngược: bỏ khai báo ⇒ 3 lỗi).
 - 2026-11-24 — P2b-3 (K1): cổng vai / quyền — `core/roles.ts` (`registerRoles`, `registerApiScopes`, `ADMIN_ROLES` đọc sống từ sổ); nền chỉ có `owner` + 12 quyền nền; 6 quyền kế toán (`catalog:*`, `ledger:read`, `payments:*`, `periods:lock`) và 6 vai kế toán chuyển sang `ketoanAuthzPreset()` (giữ đúng bảng cũ, không chạy mặc định); `Role` của nền là chuỗi; migration `0002_platform_vai_theo_app.sql` nới 4 ràng buộc tên vai cứng; khoá app nhận quyền module đã đăng ký trừ quyền rủi ro cao. npm test 10 ca.
 - 2026-11-24 — P2b-2 (K1): migration NỀN `packages/platform/db/migrations/0001_platform_nen_tang.sql` (26 bảng nền + 16 hàm, RLS FORCE) gom từ open-ketoan 6ad77b6 bằng pg_dump; bỏ 3 trigger + 1 khoá ngoại kế toán; `PLATFORM_MIGRATIONS_DIR`; gói khai `files` gồm `db`; `tools/gom-migration-nen.cjs` tái tạo được; test nền trên Postgres thật (npm test 6 ca).
 - 2026-11-24 — P2b-1 (K1): trình chạy migration chung mọi app — nhiều nguồn `sources` (nền 00xx + app 01xx, trùng tên ⇒ dừng, D-PLAT-5), cổng `hooks` (R-PLAT-2); phần riêng open-ketoan (gộp file gốc, đổi tên, xuất nhật ký cũ) tách sang `migrate-ketoan-legacy.ts`, không chạy mặc định; `pendingMigrations(client, …)` nhận kết nối. Test `node:test` trên Postgres thật (`npm test`, 5 ca).
