@@ -5,11 +5,19 @@
   "description": "Gói nền dùng chung của Bizcity Open (@bizcity/platform, @bizcity/contracts, …) — một nguồn, mọi app phụ thuộc. GPL-2.0-or-later.",
   "license": "GPL-2.0-or-later",
   "type": "module",
-  "engines": { "node": ">=22.12" },
-  "workspaces": ["packages/*"],
+  "engines": {
+    "node": ">=22.12"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "build": "npm run build -w @bizcity/contracts && npm run build -w @bizcity/platform",
-    "typecheck": "npm run build -w @bizcity/contracts && npm run typecheck -w @bizcity/platform"
+    "typecheck": "npm run build -w @bizcity/contracts && npm run typecheck -w @bizcity/platform",
+    "test": "npm run build && node --test \"packages/platform/test/*.test.mjs\""
   },
-  "devDependencies": { "@types/node": "20.17.6", "typescript": "5.6.3" }
+  "devDependencies": {
+    "@types/node": "20.17.6",
+    "typescript": "5.6.3"
+  }
 }
