@@ -3,9 +3,9 @@
 <!-- [2026-11-25 05:33 PM Johnny Chu - Chu Hoàng Anh] ORDER-1 — phase xuyên repo đầu tiên của bizcity-platform. Chủ chỉ đạo 2026-11-25: "open-cake và open-crm là một module, hoạt động standalone nhưng có thể kết hợp để lấy tồn kho từ open-ketoan là source of truth về tồn kho theo từng tenant id ra để tạo đơn, rồi đẩy đơn về open-pos, open-pos-backend theo luật đơn chờ; open-pos xác nhận đơn ok, tạo đơn, đẩy đơn cho ship thì mới thực sự ghi nhận… chi tiết giao cho repo từng phase cụ thể, mỗi repo đều hiểu mối quan hệ với repo khác". -->
 
 > **Áp dụng cho:** open-ketoan · open-pos · open-pos-backend · open-ketoan-bridge · open-cake · open-crm · bizcity-platform
-> **Trạng thái:** ◐ — thiết kế xong, **chờ chủ chốt Q-ORD-1..8** (§5); chưa repo nào bắt đầu mã
+> **Trạng thái:** ◐ — chủ chốt Q-ORD-1..8 ngày 2026-11-25; chuẩn [`bizcity_order_flow@1`](../../standard/BIZCITY-ORDER-FLOW-v1.md) + schema + bộ kiểm đã có (W1 phần platform); chờ các repo giữ chỗ phase <!-- [2026-11-25 06:00 PM Johnny Chu - Chu Hoàng Anh] ORDER-2 -->
 > **Trạng thái từng việc:** [CHECKLIST.md](CHECKLIST.md) (nguồn của bảng việc) · **Giao việc theo repo:** [30-GIAO-VIEC-THEO-REPO.md](30-GIAO-VIEC-THEO-REPO.md)
-> **Hiện trạng có dẫn chứng:** [10-HIEN-TRANG.md](10-HIEN-TRANG.md) · **Hợp đồng nháp:** [20-HOP-DONG-NHAP.md](20-HOP-DONG-NHAP.md)
+> **Hiện trạng có dẫn chứng:** [10-HIEN-TRANG.md](10-HIEN-TRANG.md) · **Hợp đồng:** chuẩn [BIZCITY-ORDER-FLOW-v1](../../standard/BIZCITY-ORDER-FLOW-v1.md) (bản nháp ở 20-HOP-DONG-NHAP đã chuyển vào chuẩn)
 > **Đứng trên:** [`bizcity_spine@1`](../../standard/BIZCITY-SPINE-v1.md) (định danh, `doc_ref`, gửi sau, đối chiếu) · [ARCHITECTURE §4](../../ARCHITECTURE.md) (chuỗi vàng `cake.order_request` → `pos.order` → `bizcity.ledger.event`)
 
 ## 0. Một câu
@@ -61,7 +61,7 @@ Dựng trên luật **đang có** của open-pos-backend: phiếu bán từ ngu�
 | L-6 | Ghi nhận **chỉ** ở bước bàn giao vận chuyển (hoặc khách lấy tại quầy); một đơn có thể giao nhiều lần (mỗi lần một phiếu bán) |
 | L-7 | Huỷ sau ghi nhận = chứng từ đảo (`sale_return` có `originalDocKey`), không sửa phiếu cũ |
 
-## 4. Hợp đồng (chi tiết: [20-HOP-DONG-NHAP.md](20-HOP-DONG-NHAP.md))
+## 4. Hợp đồng (chi tiết: chuẩn [BIZCITY-ORDER-FLOW-v1](../../standard/BIZCITY-ORDER-FLOW-v1.md))
 
 | Hợp đồng | Chủ | Bên gọi / nghe | Mới hay có |
 |---|---|---|---|
@@ -73,9 +73,9 @@ Dựng trên luật **đang có** của open-pos-backend: phiếu bán từ ngu�
 
 Đường truyền: REST app → app trực tiếp theo hợp đồng + webhook ký HMAC (R-CANON-4). **Không** qua Hub: open-hub-core chỉ là sổ hub / khoá 1API, không định tuyến (xem 10-HIEN-TRANG §6).
 
-## 5. Câu hỏi chờ chủ chốt
+## 5. Quyết định của chủ (chốt 2026-11-25 — "duyệt tiếp", theo đúng cột đề xuất)
 
-| # | Câu hỏi | Đề xuất |
+| # | Câu hỏi | Đã chốt |
 |---|---|---|
 | Q-ORD-1 | Đơn chờ nằm ở đâu? (a) open-pos-backend — hàng đơn chờ của blog; (b) module `phieu-ban` "Đơn đặt hàng BH20" của open-ketoan (đã có giữ hàng, giao nhiều lần, hãng vận chuyển, COD) | **(a)** — đúng chỉ đạo và giữ "POS tự đứng" (ADR-0001 §5); BH20 vẫn là đơn của chính kế toán, không dùng làm cửa nhận của CRM |
 | Q-ORD-2 | Giữ hàng khi đơn đang chờ? (a) không giữ, kiểm lại lúc xác nhận; (b) giữ mềm ở POS, CRM thấy "đang chờ giao"; (c) giữ cứng ở Kế Toán (chuyển sang kho giữ như BH20) | **(a) ở đợt 1**, (b) ở đợt 2 khi có số liệu bán hụt; (c) quá nặng cho đơn chưa chắc chắn |

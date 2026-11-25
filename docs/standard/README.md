@@ -32,6 +32,8 @@
 | 3 | **Khách 360** | `contact_id` ULID + danh tính có bằng chứng | open-cake | [SPINE](BIZCITY-SPINE-v1.md) §2 · `bizcity_contact@1`, `bizcity_touch@1` (open-cake) |
 | 4 | **Người dùng** | `sub` = `wp:<id>` (người dùng tạo tại app chưa có `sub` cho tới khi nối với WordPress) | Hub WordPress cấp `sub`; **từng app làm chủ người dùng cục bộ, vai và quyền** | [IDENTITY](BIZCITY-IDENTITY-v1.md) · [USERS-ROLES](BIZCITY-USERS-ROLES-v1.md) |
 
+**Luồng xuyên app trên bốn trục:** đơn từ CRM → đơn chờ POS → bàn giao vận chuyển → Kế Toán, đọc tồn cho app ngoài — [ORDER-FLOW](BIZCITY-ORDER-FLOW-v1.md) (nháp, `bizcity_order_flow@1`; kiểm `tools/order-flow-check.mjs`). <!-- [2026-11-25 06:00 PM Johnny Chu - Chu Hoàng Anh] ORDER-2 -->
+
 Đi cùng bốn trục: **site / đơn vị** (`site` slug, `tenant` — xem [MULTISITE](BIZCITY-MULTISITE-v1.md) §1 về từ vựng) và **sự kiện** (outbox → webhook ký HMAC, `bizcity_event@1`).
 
 ## 3. Mười ba trụ cột kỹ thuật

@@ -22,8 +22,8 @@
 ## bizcity-platform — chuẩn và bộ kiểm (phase này)
 
 - **Vai:** giữ hình trên dây, schema, vector, công cụ kiểm; **không** chạy nghiệp vụ.
-- **Việc:** LD-PLAT-1 viết `docs/standard/BIZCITY-ORDER-FLOW-v1.md` (`bizcity_stock_read@1`, `bizcity_order_request@1`) từ [20-HOP-DONG-NHAP](20-HOP-DONG-NHAP.md) sau khi chủ chốt, kèm `standards.json`, bản đồ chuẩn, CHANGELOG (R-PLAT-7) · LD-PLAT-2 schema `packages/contracts/schema/order/` + vector tốt / xấu · LD-PLAT-3 `tools/order-flow-contract.mjs` (hộp đen, chạy được với repo PHP: gửi lặp, sửa khi đã khoá, mã lạ, sai chi nhánh, chữ ký sai) · LD-PLAT-4 phiếu nghiệm thu đầu-cuối NT-LD-001 (kịch bản README §7) + `BAN-GIAO.md` khi đóng.
-- **Xong khi:** `standard-check` và `order-flow-contract --self-test` ĐẠT; hai bản CRM và open-pos-backend chạy công cụ trên bản thử ĐẠT.
+- **Việc:** LD-PLAT-1 viết `docs/standard/BIZCITY-ORDER-FLOW-v1.md` (`bizcity_stock_read@1`, `bizcity_order_request@1`) từ [20-HOP-DONG-NHAP](20-HOP-DONG-NHAP.md) sau khi chủ chốt, kèm `standards.json`, bản đồ chuẩn, CHANGELOG (R-PLAT-7) · LD-PLAT-2 schema `packages/contracts/schema/order/` + vector tốt / xấu · LD-PLAT-3 `tools/order-flow-check.mjs` (hộp đen, chạy được với repo PHP: gửi lặp, sửa khi đã khoá, mã lạ, sai chi nhánh, chữ ký sai) · LD-PLAT-4 phiếu nghiệm thu đầu-cuối NT-LD-001 (kịch bản README §7) + `BAN-GIAO.md` khi đóng.
+- **Xong khi:** `standard-check` và `order-flow-check --self-test` ĐẠT; hai bản CRM và open-pos-backend chạy công cụ trên bản thử ĐẠT.
 
 ## open-ketoan — chủ tồn kho và sổ
 
@@ -43,7 +43,7 @@
 - **Không được:** tạo phiếu bán / xuất khi nhận đơn; sửa luồng bán của open-pos (I-0); nhận `contact_id`.
 - **Phase đề xuất:** `PHASE-003-NHAN-DON-CHO-TU-APP-NGOAI`.
 - **Việc:** LD-OPB-1 khoá app theo blog (băm, hiện một lần, tiền tố, thu hồi; scope `order_request:write`) + cấu hình webhook CRM (URL, bí mật) · LD-OPB-2 bảng `{prefix}tgs_order_requests` (+ dòng, + hộp chống lặp theo `Idempotency-Key`) · LD-OPB-3 REST `open-pos/v1/order-requests` theo OR-1..7, nguồn `source_type` mới "CRM" · LD-OPB-4 màn **Đơn chờ** (mockup trước): danh sách, xem `stockSeen` vs tồn hiện tại, xác nhận (kiểm tồn + giá, L-3, L-5) / từ chối có lý do · LD-OPB-5 outbox + webhook (thử lại như bridge: lùi 1→60 phút) · LD-OPB-6 cron hết hạn (L-4, mặc định 72 giờ) · LD-OPB-7 đối chiếu RC-ORDER-2.
-- **Xong khi:** `order-flow-contract` ĐẠT; gửi lặp 10 lần ⇒ 1 đơn; đơn chờ không làm đổi tồn hay sổ; xác nhận khi thiếu hàng bị chặn.
+- **Xong khi:** `order-flow-check --profile receiver` ĐẠT; gửi lặp 10 lần ⇒ 1 đơn; đơn chờ không làm đổi tồn hay sổ; xác nhận khi thiếu hàng bị chặn.
 
 ## open-pos — bàn giao vận chuyển và ghi nhận
 

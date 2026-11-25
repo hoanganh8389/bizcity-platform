@@ -8,9 +8,9 @@
 |---|---|
 | Đang làm / có mã | 0 |
 | Bị chặn | 0 |
-| Chưa làm | 32 |
+| Chưa làm | 28 |
 | Hoãn | 0 |
-| Xong | 1 |
+| Xong | 5 |
 | Huỷ | 0 |
 | Đã chuyển | 0 |
 | Theo dõi ở repo khác | 0 |
@@ -20,16 +20,12 @@
 
 | Phase | Trạng thái phase | Xong | Đang / có mã | Bị chặn | Chưa làm | Tổng |
 |---|---|---|---|---|---|---|
-| [PHASE-001-LUONG-DON-CRM-POS-KE-TOAN](PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/) | Đang làm / có mã | 1 | 0 | 0 | 32 | 33 |
+| [PHASE-001-LUONG-DON-CRM-POS-KE-TOAN](PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/) | Đang làm / có mã | 5 | 0 | 0 | 28 | 33 |
 
-## Chưa làm (32)
+## Chưa làm (28)
 
 | Mã | Phase | Việc |
 |---|---|---|
-| [LD-0](PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/CHECKLIST.md#L9) | PHASE-001-LUONG-DON-CRM-POS-KE-TOAN | chốt Q-ORD-1..8 (README §5) |
-| [LD-PLAT-1](PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/CHECKLIST.md#L11) | PHASE-001-LUONG-DON-CRM-POS-KE-TOAN | bizcity-platform |
-| [LD-PLAT-2](PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/CHECKLIST.md#L12) | PHASE-001-LUONG-DON-CRM-POS-KE-TOAN | bizcity-platform |
-| [LD-PLAT-3](PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/CHECKLIST.md#L13) | PHASE-001-LUONG-DON-CRM-POS-KE-TOAN | bizcity-platform |
 | [LD-PLAT-4](PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/CHECKLIST.md#L14) | PHASE-001-LUONG-DON-CRM-POS-KE-TOAN | bizcity-platform |
 | [LD-KT-1](PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/CHECKLIST.md#L15) | PHASE-001-LUONG-DON-CRM-POS-KE-TOAN | scope stock:read |
 | [LD-KT-2](PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/CHECKLIST.md#L16) | PHASE-001-LUONG-DON-CRM-POS-KE-TOAN | GET /api/v1/inventory/availability (onHand, pendingOut, held, available) |
