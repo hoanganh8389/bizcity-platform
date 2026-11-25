@@ -61,7 +61,7 @@ Ngày, người, ghi chú để **sau** từ khoá (`Đã chốt — 18/11/2026,
 | Luật | Nội dung |
 |---|---|
 | R-STD-DLV-6 | Repo có `docs/phases/` thì có **bảng việc sinh tự động** (`docs/phases/BANG-VIEC.md` + `bang-viec.json`) từ checklist các phase và `CLAIMS.md`, dòng đầu ghi "tệp sinh, không sửa tay". Cột tối thiểu: Đang làm · Bị chặn · Chưa ai nhận · Xong; theo phân hệ |
-| — | Bản mẫu: open-ketoan `scripts/bang-viec.mjs` (693 việc, theo phân hệ). Repo khác chép công cụ hoặc dùng bản chung khi tách sang `@bizcity/conformance` |
+| — | Bản mẫu: open-ketoan `scripts/bang-viec.mjs` (693 việc, theo phân hệ). Bản chung: `tools/bang-viec.mjs --repo . --write` — đọc ô *Trạng thái* ở README phase và dòng bảng `| <mã> | … | <ký hiệu> |` trong `*CHECKLIST*.md` (☐ 🟡 ✅ ⛔ ⏸ ❌ ➡, ☐ ◐ ☑); việc ghi trạng thái ở repo điều phối (`→ open-setup`) chỉ trỏ sang, không đếm lại; không đè bảng do công cụ riêng của repo sinh <!-- [2026-11-25 01:48 PM Johnny Chu - Chu Hoàng Anh] STD-9 --> |
 
 ## 4. Rà soát
 
@@ -78,7 +78,13 @@ Ngày, người, ghi chú để **sau** từ khoá (`Đã chốt — 18/11/2026,
 | R-STD-DLV-9 | Phase **đổi người làm** hoặc **đóng** thì có `BAN-GIAO.md` trong thư mục phase |
 | — | Mục bắt buộc: (1) phase là gì trong một đoạn; (2) đã xong — bảng đợt · việc · PR · mã chính; (3) còn lại — thứ tự khuyên, chặn bởi gì; (4) quy trình bắt buộc / cách chạy, kiểm; (5) bản đồ mã và hợp đồng; (6) quyết định cần nhớ (đừng đảo); (7) cạm bẫy đã gặp. Bản mẫu: open-ketoan `PHASE-031-…/BAN-GIAO.md` |
 
-## 6. "Đã kiểm lại chưa, đạt chưa" — một lệnh
+## 6. Dựng khung và "đã kiểm lại chưa, đạt chưa"
+
+<!-- [2026-11-25 01:48 PM Johnny Chu - Chu Hoàng Anh] STD-9 -->
+
+Repo chưa có gì: `node ../bizcity-platform/tools/scaffold-delivery.mjs --repo . --write` tạo khung từ `templates/delivery/` — README + mẫu phiếu nghiệm thu, README rà soát, mẫu bàn giao `docs/phases/_MAU-BAN-GIAO.md`, bảng việc (nếu có phase). **Chỉ tạo tệp còn thiếu**, không ghi đè, không viết phiếu hay biên bản thay bộ phận sử dụng. Repo để git bỏ qua `docs/` thì đặt ở gốc: `NGHIEM-THU/`, `RA-SOAT/`. Danh sách phiếu trong README nghiệm thu: `delivery-check.mjs --repo . --write-index`.
+
+### Một lệnh trả lời
 
 ```bash
 node ../bizcity-platform/tools/delivery-check.mjs --repo . --report
