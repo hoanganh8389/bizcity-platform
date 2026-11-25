@@ -285,7 +285,7 @@
     {
       "id": "bizcity_failure_map@1",
       "file": "BIZCITY-FAILURE-MAP-v1.md",
-      "version": "0.1.0-draft",
+      "version": "0.2.0-draft",
       "status": "draft",
       "pillar": "T2",
       "reference": [
@@ -320,6 +320,22 @@
         "SC-ORD-4"
       ],
       "tool": "tools/order-flow-check.mjs"
+    },
+    {
+      "id": "bizcity_feedback_loop@1",
+      "file": "BIZCITY-FEEDBACK-LOOP-v1.md",
+      "version": "0.1.0-draft",
+      "status": "draft",
+      "pillar": "T5",
+      "reference": [
+        "open-ketoan"
+      ],
+      "checks": [
+        "SC-LOOP-1",
+        "SC-LOOP-2",
+        "SC-LOOP-3"
+      ],
+      "tool": "tools/loi.mjs"
     }
   ],
   "decisions": {

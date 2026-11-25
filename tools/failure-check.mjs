@@ -13,12 +13,22 @@
 //                                                                   # dựng khung bản đồ từ form (mã để trống — người làm gán)
 //   node tools/failure-check.mjs --self-test                       # thử ngược trên tools/fixtures/failure
 //   … --json                                                       # bizcity_conformance_report@1
+// [2026-11-25 06:12 PM Johnny Chu - Chu Hoàng Anh] STD-11 — câu hỏi ngược (bizcity_feedback_loop@1 §2, docs/standard/cau-hoi-nguoc.json):
+//   node tools/failure-check.mjs --questions <luồng,…>             # in câu hỏi ngược của luồng (luôn kèm "chung") để dev / AI trả lời trước khi viết mã lưu
+//   … --scaffold <form> --flow mua,kho                               # khung bản đồ nhúng câu hỏi (answer: null); SC-FAIL-2 nhắc câu chưa trả lời
 
 import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { basename, dirname, join, relative, resolve } from 'node:path';
 import { ROOT, validate } from './lib/json-schema.mjs';
 
 const SCHEMA = JSON.parse(readFileSync(join(ROOT, 'packages/contracts/schema/failure-map/failure-map.schema.json'), 'utf8'));
+const BANK = JSON.parse(readFileSync(join(ROOT, 'docs/standard/cau-hoi-nguoc.json'), 'utf8'));
+/** Câu hỏi ngược của các luồng (luôn kèm "chung"). Luồng lạ → lỗi để người gọi sửa. */
+export function questionsFor(flows) {
+  const want = ['chung', ...flows.filter((f) => f && f !== 'chung')];
+  for (const f of want) if (!BANK.flows[f]) throw new Error(`luồng "${f}" không có trong ngân hàng câu hỏi — có: ${Object.keys(BANK.flows).join(', ')}`);
+  return BANK.questions.filter((q) => want.includes(q.flow));
+}
 const IDS = ['SC-FAIL-1', 'SC-FAIL-2', 'SC-FAIL-3', 'SC-FAIL-4', 'SC-FAIL-5', 'SC-FAIL-6', 'SC-FAIL-7'];
 const SKIP = new Set(['node_modules', '.git', 'dist', 'build', 'vendor', 'coverage', '.next', 'out']);
 const SRC = /\.(ts|tsx|js|jsx|mjs|cjs|vue|php|py|sql|json)$/;
@@ -103,6 +113,9 @@ function analyse(dir, opts = {}) {
       if (r.level === 'block' && ['field', 'selector', 'origin'].includes(t.kind) && !r.catchAt.includes('ui')) add('SC-FAIL-6', 'warn', w, `lỗi ${t.kind} chỉ bắt ở ${r.catchAt.join(', ')} — màn biết trước được thì phải báo trước khi bấm (R-STD-FAIL-1)`);
     }
     for (const a of m.actions) if (!m.rows.some((r) => r.action === a)) add('SC-FAIL-2', 'warn', where, `thao tác "${a}" chưa có tình huống lỗi nào`);
+    // [2026-11-25 06:12 PM Johnny Chu - Chu Hoàng Anh] STD-11 — câu hỏi ngược chưa trả lời (R-STD-LOOP-2)
+    const open = (m.questions ?? []).filter((q) => q.answer === null || !String(q.answer).trim());
+    if (open.length) add('SC-FAIL-2', 'warn', where, `${open.length} câu hỏi ngược chưa trả lời (${open.slice(0, 5).map((q) => q.id).join(', ')}${open.length > 5 ? '…' : ''}) — hỏi người yêu cầu, không đoán (R-STD-LOOP-2)`);
   }
 
   // SC-FAIL-1: form có bản đồ
@@ -146,7 +159,7 @@ function catalogOf(tag) {
   const pairs = [[/Item|Hang|Product/, 'item'], [/Partner|Supplier|Customer|Ncc|Khach/, 'partner'], [/Branch|ChiNhanh/, 'branch'], [/Warehouse|Kho/, 'warehouse'], [/Account|TaiKhoan/, 'account'], [/Unit|Dvt/, 'uom'], [/Tax|Thue/, 'tax']];
   return pairs.find(([re]) => re.test(tag))?.[1] ?? 'list';
 }
-export function scaffold(dir, formRel, code, label) {
+export function scaffold(dir, formRel, code, label, flows = []) {
   const text = read(join(dir, formRel));
   const rows = [];
   const seen = new Set();
@@ -181,7 +194,8 @@ export function scaffold(dir, formRel, code, label) {
   }
   for (const a of actions) push({ action: a, code: null, level: 'block', when: 'Người dùng không có quyền làm thao tác này', target: { kind: 'state' }, catchAt: ['ui', 'module'], hint: TODO });
   for (const a of actions.filter((x) => x !== 'them')) push({ action: a, code: null, level: 'block', when: 'Chứng từ đã ghi sổ / đã khoá kỳ / người khác vừa sửa', target: { kind: 'state' }, catchAt: ['ui', 'kernel'], hint: TODO });
-  return { schema: 'bizcity_failure_map@1', screen: { code, label, file: formRel.replace(/\\/g, '/') }, actions, codeSources: [], rows };
+  const questions = questionsFor(flows).map((q) => ({ id: q.id, ask: q.ask, answer: null }));
+  return { schema: 'bizcity_failure_map@1', screen: { code, label, file: formRel.replace(/\\/g, '/'), entities: [] }, actions, codeSources: [], questions, rows };
 }
 
 /* ── tự kiểm ── */
@@ -200,6 +214,14 @@ function selfTest() {
   if (se.length) errs.push('khung dựng ra sai khuôn: ' + se.join('; '));
   for (const k of ['field', 'selector', 'origin', 'flow', 'state']) if (!sc.rows.some((r) => r.target.kind === k)) errs.push(`khung dựng ra thiếu đích ${k}`);
   if (!sc.rows.some((r) => r.target.path === 'lines.*.itemId')) errs.push('khung không nhận ra dòng hàng lines.*.itemId');
+  // [2026-11-25 06:12 PM Johnny Chu - Chu Hoàng Anh] STD-11 — ngân hàng câu hỏi ngược đúng khuôn, mã câu không trùng; khung nhúng câu hỏi của luồng
+  const QS = JSON.parse(readFileSync(join(ROOT, 'packages/contracts/schema/feedback/reverse-questions.schema.json'), 'utf8'));
+  for (const e of validate(QS, QS, BANK)) errs.push('cau-hoi-nguoc.json: ' + e);
+  if (new Set(BANK.questions.map((q) => q.id)).size !== BANK.questions.length) errs.push('cau-hoi-nguoc.json: trùng mã câu hỏi');
+  for (const q of BANK.questions) if (!BANK.flows[q.flow]) errs.push(`cau-hoi-nguoc.json: ${q.id} trỏ luồng lạ ${q.flow}`);
+  const sq = scaffold(join(fx, 'good'), 'web/PhieuForm.tsx', 'MH05', 'Phiếu mẫu', ['mua', 'kho']);
+  if (!sq.questions.some((q) => q.id === 'Q-MUA-01') || !sq.questions.some((q) => q.id === 'Q-CHUNG-01') || sq.questions.some((q) => q.id.startsWith('Q-BAN'))) errs.push('khung nhúng sai câu hỏi ngược theo luồng');
+  for (const e of validate(SCHEMA, SCHEMA, sq)) errs.push('khung có câu hỏi sai khuôn: ' + e);
   return errs;
 }
 
@@ -211,6 +233,14 @@ if (args.includes('--self-test')) {
   console.log(`KẾT QUẢ TỰ KIỂM: ${errs.length ? 'KHÔNG ĐẠT' : 'ĐẠT'}`);
   process.exit(errs.length ? 1 : 0);
 }
+if (args.includes('--questions')) {
+  const flows = (arg('--questions') ?? '').split(',').filter((x) => x && !x.startsWith('--'));
+  let qs; try { qs = questionsFor(flows); } catch (e) { console.error(e.message); process.exit(2); }
+  if (args.includes('--json')) { console.log(JSON.stringify(qs, null, 2)); process.exit(0); }
+  console.log(`Câu hỏi ngược — ${['chung', ...flows].map((f) => BANK.flows[f]).join(' · ')}\nTrả lời TRƯỚC khi viết mã lưu; chưa rõ thì hỏi người yêu cầu, không đoán (R-STD-LOOP-2). Mỗi câu trả lời thành dòng trong bản đồ lỗi.\n`);
+  for (const q of qs) console.log(`${q.id.padEnd(11)} [${q.kind}] ${q.ask}\n            vì: ${q.why}${q.codes?.length ? `\n            mã hay gặp: ${q.codes.join(', ')}` : ''}`);
+  process.exit(0);
+}
 const i = args.indexOf('--repo');
 const repos = i >= 0 ? args.slice(i + 1).filter((a, j, all) => !a.startsWith('--') && !(j > 0 && all[j - 1].startsWith('--') && all[j - 1] !== '--repo')).map((r) => resolve(r)) : [];
 if (!repos.length) { console.error('Cần --repo <thư mục…> hoặc --self-test'); process.exit(2); }
@@ -218,7 +248,7 @@ if (arg('--scaffold')) {
   const dir = repos[0];
   const form = rel(dir, resolve(arg('--scaffold')));
   const code = arg('--code') ?? 'MAN';
-  const m = scaffold(dir, form, code, arg('--label') ?? basename(form).replace(/\.\w+$/, ''));
+  const m = scaffold(dir, form, code, arg('--label') ?? basename(form).replace(/\.\w+$/, ''), (arg('--flow') ?? '').split(',').filter(Boolean));
   const out = join(dir, dirname(form), basename(form).replace(/\.\w+$/, '') + '.failure-map.json');
   const json = JSON.stringify(m, null, 2) + '\n';
   if (args.includes('--write')) {
