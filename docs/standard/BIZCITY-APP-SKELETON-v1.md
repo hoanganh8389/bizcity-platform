@@ -77,7 +77,7 @@ Một lệnh `bizcity` cho mọi app (bản mẫu: open-ketoan `packages/cli/bin
 | Luật | Nội dung |
 |---|---|
 | R-STD-7 | Lệnh có thể làm mất dữ liệu phải có `--dry-run` và in trước việc sẽ làm; mặc định chạy trên CSDL thử (bài học 5 của open-cake `90-LESSONS`) |
-| R-STD-9 (1.1.0) | **Nợ chuẩn nền ghi ở repo:** mỗi repo có `docs/NO-CHUAN-NEN.md` do `tools/no-chuan.mjs --repo <repo> --write` sinh (nợ do bộ kiểm đo + nợ đã biết trong sổ `docs/standard/no-chuan.json`). bizcity-platform giữ khuôn và sổ; **dev của repo trả nợ**, không ai sửa hộ, không nới chuẩn để trả nợ. Trả xong mục "đã biết" ⇒ PR gỡ mục khỏi sổ rồi sinh lại tệp <!-- [2026-11-25 01:16 PM Johnny Chu - Chu Hoàng Anh] STD-5 --> |
+| R-STD-9 (1.1.0) | **Nợ chuẩn nền ghi ở repo:** mỗi repo có `docs/NO-CHUAN-NEN.md` (repo để git bỏ qua `docs/` thì ở gốc) do `tools/no-chuan.mjs --repo <repo> --write` sinh (nợ do bộ kiểm đo + nợ đã biết trong sổ `docs/standard/no-chuan.json`). bizcity-platform giữ khuôn và sổ; **dev của repo trả nợ**, không ai sửa hộ, không nới chuẩn để trả nợ. Trả xong mục "đã biết" ⇒ PR gỡ mục khỏi sổ rồi sinh lại tệp <!-- [2026-11-25 01:16 PM Johnny Chu - Chu Hoàng Anh] STD-5 --> |
 | R-STD-8 | Lệnh in kết luận máy đọc được (`KẾT LUẬN: PASS / FAIL`, mã thoát); SKIP không phải PASS |
 
 ## 5. Nếp làm việc
