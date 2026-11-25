@@ -1,0 +1,14 @@
+{
+  "schema": "bizcity_failure_map@1",
+  "screen": { "code": "MH05", "label": "Phiếu mua hàng (mẫu sai)", "file": "web/PhieuForm.tsx" },
+  "actions": ["them", "ghi-so", "xoa"],
+  "codeSources": ["contracts/errors.ts"],
+  "rows": [
+    { "id": "MH05-01", "action": "ghi-so", "code": "MA_KHONG_CO", "level": "block", "when": "Mã không có trong danh mục",
+      "target": { "kind": "field", "path": "khongCoO" }, "catchAt": ["kernel"], "hint": "Sai" },
+    { "id": "MH05-02", "action": "ghi-so", "code": null, "level": "block", "when": "Khung chưa gán mã",
+      "target": { "kind": "selector", "path": "itemId", "catalog": "item", "inlineFix": "core.item.khong_co" }, "catchAt": ["intake"], "hint": "Chưa viết lời nhắc" },
+    { "id": "MH05-03", "action": "them", "code": "VALIDATION_ERROR", "level": "block", "when": "Test trỏ tệp không có",
+      "target": { "kind": "origin", "source": "hop-dong-mua" }, "catchAt": ["ui"], "hint": "Vượt hợp đồng", "test": "test/khong-co.test.ts" }
+  ]
+}

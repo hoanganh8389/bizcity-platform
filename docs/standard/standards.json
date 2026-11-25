@@ -281,6 +281,26 @@
         "SC-DLV-8"
       ],
       "tool": "tools/delivery-check.mjs"
+    },
+    {
+      "id": "bizcity_failure_map@1",
+      "file": "BIZCITY-FAILURE-MAP-v1.md",
+      "version": "0.1.0-draft",
+      "status": "draft",
+      "pillar": "T2",
+      "reference": [
+        "open-ketoan"
+      ],
+      "checks": [
+        "SC-FAIL-1",
+        "SC-FAIL-2",
+        "SC-FAIL-3",
+        "SC-FAIL-4",
+        "SC-FAIL-5",
+        "SC-FAIL-6",
+        "SC-FAIL-7"
+      ],
+      "tool": "tools/failure-check.mjs"
     }
   ],
   "decisions": {
