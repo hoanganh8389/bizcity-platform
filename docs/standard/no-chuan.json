@@ -93,6 +93,36 @@
         "std": "BIZCITY-FAILURE-MAP-v1.md",
         "todo": "Xuất nhật ký từ chối HT19 thành {screen, code} để failure-check --observed liệt kê lỗi gặp thật chưa có trong bản đồ",
         "note": "không xuất dữ liệu kế toán, chỉ mã màn + mã lỗi (R-SEC-10)"
+      },
+      {
+        "rule": "R-STD-LOOP-8",
+        "std": "BIZCITY-FEEDBACK-LOOP-v1.md",
+        "todo": "AGENTS.md, CLAUDE.md, .github/copilot-instructions.md: dặn agent chạy failure-check --questions trước khi viết mã lưu, loi.mjs + failure-check --report sau khi thử; cài skill tu-duy-nguoc vào skills/",
+        "note": "SC-LOOP-1 đo 2026-11-25: AGENTS.md chưa nhắc cả hai lệnh; tệp framework — dấu R-SIG"
+      },
+      {
+        "rule": "R-STD-LOOP-1",
+        "std": "BIZCITY-FEEDBACK-LOOP-v1.md",
+        "todo": "Lệnh npx bizcity loi (packages/cli) gọi loi.mjs với DATA_DIR / LOG_DIR của bản cài; đọc được bản cài docker (thư mục gắn ra ngoài)",
+        "note": "dev không cần mở HT19 / DEV04 hay bật Grafana để thấy lỗi của màn mình"
+      },
+      {
+        "rule": "R-STD-LOOP-7",
+        "std": "BIZCITY-FEEDBACK-LOOP-v1.md",
+        "todo": "Khối bằng chứng PR (scripts/cham-pr.mjs): độ phủ bản đồ lỗi trước / sau, dòng chặn chưa có test, mã mới chưa có trong danh mục",
+        "note": "cham-pr.mjs đang thuộc dòng giữ chỗ S040-30 — làm sau khi dòng đó đóng"
+      },
+      {
+        "rule": "R-STD-LOOP-4",
+        "std": "BIZCITY-FEEDBACK-LOOP-v1.md",
+        "todo": "Nút \"Không hiểu / không sửa được\" cạnh lời nhắc (ui-kit), ghi nhật ký kiem-khai-bao với feedback: khong-hieu; ghi thêm screen (mã màn) vào mọi dòng nhật ký",
+        "note": "chỉ mã (R-STD-LOOP-3); hiện tại nhiều dòng chỉ có entity, chưa có screen"
+      },
+      {
+        "rule": "R-STD-LOOP-5",
+        "std": "BIZCITY-FEEDBACK-LOOP-v1.md",
+        "todo": "Job gom nhật ký từ chối hằng ngày thành gói chỉ mã (loi.mjs --export) và đưa ba danh sách (chưa có trong bản đồ · bị bấm không hiểu · màn bị chặn nhiều) vào bảng việc",
+        "note": "không xuất khoá bản ghi, tên người, câu lỗi gốc (R-SEC-10)"
       }
     ],
     "open-cake": [
@@ -167,6 +197,12 @@
         "std": "BIZCITY-FAILURE-MAP-v1.md",
         "todo": "Màn gửi chứng từ sang open-ketoan (thao tác gui): bản đồ lỗi tầng 3 — path theo toạ độ payload của mình, catchAt ngoai, mã có tiền tố chủ; màn chỉ đúng trường khi ketoan từ chối / giữ ở bể chờ",
         "note": "tầng 3 chéo repo (BIZCITY-FAILURE-MAP §4); dùng mã của bizcity_errors@1 + IN-* trả về, không tự đặt lại"
+      },
+      {
+        "rule": "R-STD-LOOP-3",
+        "std": "BIZCITY-FEEDBACK-LOOP-v1.md",
+        "todo": "Ghi nhật ký lần ghi bị từ chối theo khuôn chung (BIZCITY-FEEDBACK-LOOP §3: entity, screen, failed[{code, field}], requestId) để loi.mjs đọc được; dặn agent theo R-STD-LOOP-8",
+        "note": "chỉ mã — không ghi dữ liệu khách, số tiền"
       }
     ],
     "open-crm": [
@@ -201,6 +237,12 @@
         "std": "BIZCITY-FAILURE-MAP-v1.md",
         "todo": "Màn gửi chứng từ sang open-ketoan (thao tác gui): bản đồ lỗi tầng 3 — path theo toạ độ payload của mình, catchAt ngoai, mã có tiền tố chủ; màn chỉ đúng trường khi ketoan từ chối / giữ ở bể chờ",
         "note": "tầng 3 chéo repo (BIZCITY-FAILURE-MAP §4); dùng mã của bizcity_errors@1 + IN-* trả về, không tự đặt lại"
+      },
+      {
+        "rule": "R-STD-LOOP-3",
+        "std": "BIZCITY-FEEDBACK-LOOP-v1.md",
+        "todo": "Ghi nhật ký lần ghi bị từ chối theo khuôn chung (BIZCITY-FEEDBACK-LOOP §3: entity, screen, failed[{code, field}], requestId) để loi.mjs đọc được; dặn agent theo R-STD-LOOP-8",
+        "note": "chỉ mã — không ghi dữ liệu khách, số tiền"
       }
     ],
     "open-pos-backend": [

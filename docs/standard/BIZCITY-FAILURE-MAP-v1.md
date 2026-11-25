@@ -2,7 +2,7 @@
 
 <!-- [2026-11-25 05:18 PM Johnny Chu - Chu Hoàng Anh] STD-10 — chuẩn mới thuộc trụ cột T2 (kiểm đầu vào / đầu ra), nối T5 (truy lỗi), T9 (giao diện), T13 (nghiệm thu). Chủ duyệt hướng 2026-11-25 ("đồng ý"): phần mềm phải vừa chặn đúng vừa chỉ đúng chỗ — mỗi màn liệt kê trước mọi lý do thêm / sửa / xoá / lưu / ghi sổ / duyệt không thành, chỉ đúng ô, đúng danh sách chọn (thêm / sửa tại chỗ), đúng nguồn gốc dữ liệu, đúng bước của luồng kho; có công cụ tự chạy ở máy dev cho biết đã đủ chưa. -->
 
-> **Phiên bản:** 0.1.0-draft · 2026-11-25 · **Trạng thái:** Nháp — chủ duyệt hướng 2026-11-25; chốt 1.0.0 sau màn thử ở open-ketoan (phiếu mua hàng)
+> **Phiên bản:** 0.2.0-draft · 2026-11-25 · **Trạng thái:** Nháp — chủ duyệt hướng 2026-11-25; chốt 1.0.0 sau màn thử ở open-ketoan (phiếu mua hàng)
 > **Bản mẫu:** open-ketoan — mã lỗi `bizcity_errors@1` (`packages/contracts/src/errors.ts`), thư viện phát hiện `bizcity_findings@1` (Gate A / B / L, mã `IN-*`), phương án khắc phục `bizcity_remedy@1`, `error.fields`, nhật ký từ chối HT19, danh mục 93 tình huống lỗi ở tầng sổ (PHASE-022).
 > **Máy đọc:** [`failure-map.schema.json`](../../packages/contracts/schema/failure-map/failure-map.schema.json) · **Kiểm:** `node tools/failure-check.mjs --repo <thư mục>` (SC-FAIL-1..7) · độ phủ: `--report` · dựng khung: `--scaffold`.
 
@@ -35,6 +35,8 @@ Phần mềm kế toán phải **chặn đúng**: sổ cân, kỳ khoá, mặt h
   "test": "apps/api/test/phieu-mua.failure.test.ts#IN-ITEM-009",
   "approvedBy": "ke-toan-truong" }
 ```
+
+Hai trường tuỳ chọn (0.2.0-draft): `screen.entities` là các đối tượng API mà màn ghi vào (vd `mua-hang/phieu-mua`), để nối nhật ký từ chối về đúng màn ([FEEDBACK-LOOP](BIZCITY-FEEDBACK-LOOP-v1.md) §3). `questions[]` là câu hỏi ngược đã hỏi, kèm câu trả lời (`answer: null` = chưa trả lời; SC-FAIL-2 nhắc). <!-- [2026-11-25 06:12 PM Johnny Chu - Chu Hoàng Anh] STD-11 -->
 
 ### 2.1 Thao tác (từ khoá đóng)
 

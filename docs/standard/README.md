@@ -32,6 +32,8 @@
 | 3 | **Khách 360** | `contact_id` ULID + danh tính có bằng chứng | open-cake | [SPINE](BIZCITY-SPINE-v1.md) §2 · `bizcity_contact@1`, `bizcity_touch@1` (open-cake) |
 | 4 | **Người dùng** | `sub` = `wp:<id>` (người dùng tạo tại app chưa có `sub` cho tới khi nối với WordPress) | Hub WordPress cấp `sub`; **từng app làm chủ người dùng cục bộ, vai và quyền** | [IDENTITY](BIZCITY-IDENTITY-v1.md) · [USERS-ROLES](BIZCITY-USERS-ROLES-v1.md) |
 
+**Luồng xuyên app trên bốn trục:** đơn từ CRM → đơn chờ POS → bàn giao vận chuyển → Kế Toán, đọc tồn cho app ngoài — [ORDER-FLOW](BIZCITY-ORDER-FLOW-v1.md) (nháp, `bizcity_order_flow@1`; kiểm `tools/order-flow-check.mjs`). <!-- [2026-11-25 06:00 PM Johnny Chu - Chu Hoàng Anh] ORDER-2 -->
+
 Đi cùng bốn trục: **site / đơn vị** (`site` slug, `tenant` — xem [MULTISITE](BIZCITY-MULTISITE-v1.md) §1 về từ vựng) và **sự kiện** (outbox → webhook ký HMAC, `bizcity_event@1`).
 
 ## 3. Mười ba trụ cột kỹ thuật
@@ -44,7 +46,7 @@ Mỗi trụ cột có một tệp chuẩn, một bản mẫu tham chiếu đang 
 | T2 | API nội bộ + kiểm đầu vào / đầu ra · bản đồ lỗi theo màn (chỉ đúng ô, danh sách chọn, nguồn gốc, luồng) | [API-PROFILE](BIZCITY-API-PROFILE-v1.md) · [FAILURE-MAP](BIZCITY-FAILURE-MAP-v1.md) (nháp) | open-ketoan `packages/platform/src/core/{http,errors,actions}.ts`, `bizcity_findings@1` · kiểm `tools/failure-check.mjs` | đạt (API) · nháp (bản đồ lỗi) <!-- [2026-11-25 05:18 PM Johnny Chu - Chu Hoàng Anh] STD-10 --> |
 | T3 | Người dùng, user meta, vai, ma trận quyền, ma trận cài đặt (SSO nối sau) | [USERS-ROLES](BIZCITY-USERS-ROLES-v1.md) · SSO: [IDENTITY](BIZCITY-IDENTITY-v1.md) | `@bizcity/platform` `core/{auth,roles,authz}` · open-cake `auth/` · kiểm `tools/users-check.mjs` | một phần <!-- [2026-11-25 10:34 AM Johnny Chu - Chu Hoàng Anh] USERS-1 --> |
 | T4 | Bảo mật | [SECURITY](BIZCITY-SECURITY-v1.md) | open-ketoan R-SEC / R-TEN | đạt |
-| T5 | Quan sát và truy lỗi (OpenTelemetry, Tempo, Loki, Grafana, Prometheus) | [OBSERVABILITY](BIZCITY-OBSERVABILITY-v1.md) | open-ketoan `infrastructure/monitoring/` | đạt |
+| T5 | Quan sát và truy lỗi (OpenTelemetry, Tempo, Loki, Grafana, Prometheus) · vòng phản hồi lỗi tới dev và người dùng | [OBSERVABILITY](BIZCITY-OBSERVABILITY-v1.md) · [FEEDBACK-LOOP](BIZCITY-FEEDBACK-LOOP-v1.md) (nháp) | open-ketoan `infrastructure/monitoring/`, nhật ký từ chối HT19 · `tools/loi.mjs`, skill `skills/tu-duy-nguoc` | đạt (quan sát) · nháp (vòng phản hồi) <!-- [2026-11-25 06:12 PM Johnny Chu - Chu Hoàng Anh] STD-11 --> |
 | T6 | Bộ nhớ đệm, hàng đợi (Redis tuỳ chọn) | [CACHE](BIZCITY-CACHE-v1.md) | open-ketoan R-CACHE (chưa có Redis) | tài liệu |
 | T7 | Kiểm thử, selfcheck, bằng chứng | [TESTING](BIZCITY-TESTING-v1.md) | open-ketoan `tests/conformance/` | đạt |
 | T8 | Phiên bản, migration SQL, sao lưu, nâng cấp, phát hành | [RELEASE](BIZCITY-RELEASE-v1.md) | open-ketoan R-REL / R-DB / R-BAK | một phần |

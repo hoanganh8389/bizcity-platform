@@ -1,0 +1,2 @@
+{"level":30,"time":1,"msg":"ok"}
+{"level":50,"time":1795595400000,"reqId":"req-9","traceId":"abc123","errCode":"INTERNAL_ERROR","msg":"lỗi hệ thống","req":{"url":"/api/v1/mua-hang/phieu-mua"}}

@@ -35,3 +35,7 @@ jobs:
       - run: node tools/delivery-check.mjs --self-test
       # [2026-11-25 05:18 PM Johnny Chu - Chu Hoàng Anh] STD-10 — bộ mẫu bản đồ lỗi theo màn
       - run: node tools/failure-check.mjs --self-test
+      # [2026-11-25 06:12 PM Johnny Chu - Chu Hoàng Anh] STD-11 — vòng phản hồi lỗi: đọc nhật ký, gói chỉ mã
+      - run: node tools/loi.mjs --self-test
+      # [2026-11-25 06:00 PM Johnny Chu - Chu Hoàng Anh] ORDER-2 — luồng đơn xuyên app: vector + chuẩn ↔ schema + bên nhận giả đúng / sai
+      - run: node tools/order-flow-check.mjs --self-test

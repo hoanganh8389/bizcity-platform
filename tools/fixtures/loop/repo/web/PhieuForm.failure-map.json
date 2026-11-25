@@ -1,0 +1,108 @@
+{
+  "schema": "bizcity_failure_map@1",
+  "screen": {
+    "code": "MH05",
+    "label": "Phiếu mua hàng (mẫu)",
+    "file": "web/PhieuForm.tsx",
+    "entities": [
+      "mua-hang/phieu-mua"
+    ]
+  },
+  "actions": [
+    "them",
+    "ghi-so"
+  ],
+  "codeSources": [
+    "contracts/errors.ts"
+  ],
+  "rows": [
+    {
+      "id": "MH05-01",
+      "action": "ghi-so",
+      "code": "PERIOD_LOCKED",
+      "level": "block",
+      "when": "Ngày chứng từ thuộc kỳ đã khoá",
+      "target": {
+        "kind": "field",
+        "path": "docDate"
+      },
+      "catchAt": [
+        "ui",
+        "kernel"
+      ],
+      "hint": "Kỳ đã khoá — chọn ngày trong kỳ còn mở hoặc nhờ kế toán trưởng mở kỳ",
+      "test": "test/phieu.failure.test.ts"
+    },
+    {
+      "id": "MH05-02",
+      "action": "ghi-so",
+      "code": "IN-ITEM-009",
+      "level": "block",
+      "when": "Dòng hàng chọn mặt hàng còn nháp",
+      "target": {
+        "kind": "selector",
+        "path": "lines.*.itemId",
+        "catalog": "item",
+        "allow": "active",
+        "inlineFix": "core.item.update"
+      },
+      "catchAt": [
+        "ui",
+        "intake"
+      ],
+      "hint": "Mặt hàng còn nháp — bấm để hoàn thiện đơn vị tính, nhóm hạch toán",
+      "test": "test/phieu.failure.test.ts#IN-ITEM-009",
+      "approvedBy": "ke-toan-truong"
+    },
+    {
+      "id": "MH05-03",
+      "action": "them",
+      "code": "OV-PO-001",
+      "level": "block",
+      "when": "Số lượng vượt số còn lại của hợp đồng mua",
+      "target": {
+        "kind": "origin",
+        "path": "lines.*.qty",
+        "source": "hop-dong-mua"
+      },
+      "catchAt": [
+        "ui",
+        "module"
+      ],
+      "hint": "Vượt hợp đồng mua — mở hợp đồng để xem số còn lại",
+      "test": "test/phieu.failure.test.ts"
+    },
+    {
+      "id": "MH05-04",
+      "action": "ghi-so",
+      "code": "IN-INV-002",
+      "level": "warn",
+      "when": "Kho nhận không thuộc chi nhánh của phiếu",
+      "target": {
+        "kind": "flow",
+        "path": "lines.*.warehouseCode",
+        "step": "kho-thuoc-chi-nhanh"
+      },
+      "catchAt": [
+        "ui",
+        "intake"
+      ],
+      "hint": "Kho không thuộc chi nhánh này — chọn kho của chi nhánh hoặc lập phiếu chuyển kho"
+    },
+    {
+      "id": "MH05-05",
+      "action": "them",
+      "code": "FORBIDDEN",
+      "level": "info",
+      "when": "Người dùng không có quyền lập phiếu mua",
+      "target": {
+        "kind": "state"
+      },
+      "catchAt": [
+        "ui",
+        "module"
+      ],
+      "hint": "Bạn chưa có quyền — nhờ chủ đơn vị cấp quyền"
+    }
+  ]
+}

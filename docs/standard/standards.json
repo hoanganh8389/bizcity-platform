@@ -285,7 +285,7 @@
     {
       "id": "bizcity_failure_map@1",
       "file": "BIZCITY-FAILURE-MAP-v1.md",
-      "version": "0.1.0-draft",
+      "version": "0.2.0-draft",
       "status": "draft",
       "pillar": "T2",
       "reference": [
@@ -301,6 +301,41 @@
         "SC-FAIL-7"
       ],
       "tool": "tools/failure-check.mjs"
+    },
+    {
+      "id": "bizcity_order_flow@1",
+      "file": "BIZCITY-ORDER-FLOW-v1.md",
+      "version": "1.0.0-draft",
+      "status": "draft",
+      "pillar": "axes",
+      "reference": [
+        "open-ketoan",
+        "open-pos-backend",
+        "open-cake"
+      ],
+      "checks": [
+        "SC-ORD-1",
+        "SC-ORD-2",
+        "SC-ORD-3",
+        "SC-ORD-4"
+      ],
+      "tool": "tools/order-flow-check.mjs"
+    },
+    {
+      "id": "bizcity_feedback_loop@1",
+      "file": "BIZCITY-FEEDBACK-LOOP-v1.md",
+      "version": "0.1.0-draft",
+      "status": "draft",
+      "pillar": "T5",
+      "reference": [
+        "open-ketoan"
+      ],
+      "checks": [
+        "SC-LOOP-1",
+        "SC-LOOP-2",
+        "SC-LOOP-3"
+      ],
+      "tool": "tools/loi.mjs"
     }
   ],
   "decisions": {
@@ -311,7 +346,15 @@
     "Q-USER-2": "người dùng tạo tại app không mang sub cho tới lần SSO đầu khớp email",
     "Q-API-1": "con trỏ = base64url(<ISO>|<id>), meta.nextCursor",
     "Q-CACHE-1": "Redis không vào bản cài mặc định; chỉ khi ≥ 2 bản API",
-    "Q-REL-1": "giữ GitHub Release (.tgz) cho tới khi có tổ chức npm @bizcity"
+    "Q-REL-1": "giữ GitHub Release (.tgz) cho tới khi có tổ chức npm @bizcity",
+    "Q-ORD-1": "đơn chờ ở open-pos-backend (không dùng Đơn đặt hàng BH20 làm cửa nhận)",
+    "Q-ORD-2": "đợt 1 không giữ hàng, kiểm lại lúc xác nhận",
+    "Q-ORD-3": "ghi nhận khi bàn giao vận chuyển",
+    "Q-ORD-4": "vận chuyển nhập tay hãng + mã vận đơn ở đợt 1",
+    "Q-ORD-5": "open-pos-backend nhận + duyệt; open-pos đóng gói, bàn giao",
+    "Q-ORD-6": "gửi đơn chỉ khi đơn vị đã nối Kế Toán",
+    "Q-ORD-7": "khoá riêng opb_… theo blog; sự kiện ký HMAC",
+    "Q-ORD-8": "shop React: đơn chờ ở WordPress, bàn giao tạo pos.order.create"
   },
   "open_questions": [],
   "debt_register": "docs/standard/no-chuan.json"
