@@ -1,6 +1,6 @@
 # Bản đồ chuẩn nền Bizcity Open (`bizcity_standard_map@1`)
 
-<!-- [2026-11-24 11:48 PM Johnny Chu - Chu Hoàng Anh] STD-1 — bản đồ chuẩn nền: bốn trục dữ liệu + mười hai trụ cột kỹ thuật, gom từ cái ĐANG CÓ ở open-ketoan (luật + mã + bộ kiểm) và open-cake (bản áp dụng gọn), để repo mới (MRP, HRM, …) đi cùng một hướng. Chủ chỉ đạo 2026-11-24: "bizcity-platform hình thành, định hình chuẩn hoá… như một hệ sinh thái liền mạch". -->
+<!-- [2026-11-24 11:48 PM Johnny Chu - Chu Hoàng Anh] STD-1 — bản đồ chuẩn nền: bốn trục dữ liệu + mười ba trụ cột kỹ thuật, gom từ cái ĐANG CÓ ở open-ketoan (luật + mã + bộ kiểm) và open-cake (bản áp dụng gọn), để repo mới (MRP, HRM, …) đi cùng một hướng. Chủ chỉ đạo 2026-11-24: "bizcity-platform hình thành, định hình chuẩn hoá… như một hệ sinh thái liền mạch". -->
 
 > **Phiên bản:** 1.0.0 · 2026-11-25 · **Trạng thái:** **Chấp nhận** — chủ dự án duyệt 2026-11-25 <!-- [2026-11-25 10:30 AM Johnny Chu - Chu Hoàng Anh] STD-4 — chủ duyệt 2026-11-25 -->
 > **Đứng dưới:** [BIZCITY OPEN CANON](https://github.com/hoanganh8389/open-hub/blob/main/docs/canon/BIZCITY-OPEN-CANON-v1.md) (open-hub). Canon đặt luật; ở đây giữ **chuẩn kỹ thuật chi tiết, schema máy đọc và bộ kiểm**.
@@ -34,7 +34,7 @@
 
 Đi cùng bốn trục: **site / đơn vị** (`site` slug, `tenant` — xem [MULTISITE](BIZCITY-MULTISITE-v1.md) §1 về từ vựng) và **sự kiện** (outbox → webhook ký HMAC, `bizcity_event@1`).
 
-## 3. Mười hai trụ cột kỹ thuật
+## 3. Mười ba trụ cột kỹ thuật
 
 Mỗi trụ cột có một tệp chuẩn, một bản mẫu tham chiếu đang chạy, và phép kiểm. Cột "Mức" là mức của **bản mẫu**, theo thang: **đạt** (có mã + phép kiểm chạy được) · **một phần** · **tài liệu** (mới có luật) · **chưa**. Không ghi "đạt" khi không có phép kiểm (R-ECP-SCORE).
 
@@ -52,6 +52,7 @@ Mỗi trụ cột có một tệp chuẩn, một bản mẫu tham chiếu đang 
 | T10 | Một bản mã, nhiều CSDL: registry site, định tuyến, cấp site | [MULTISITE](BIZCITY-MULTISITE-v1.md) | open-ketoan `packages/platform/src/db/site-*.ts` | một phần |
 | T11 | Hub, 1API, khoá, open-setup, bizcity-web | [HUB](BIZCITY-HUB-v1.md) | bizcity-llm-router · bizcity-open-setup · bizcity-web | một phần |
 | T12 | Tri thức và agent (MCP, Twin Brain) | [KNOWLEDGE](BIZCITY-KNOWLEDGE-v1.md) · `bizcity_mcp@1` (open-ketoan) | open-ketoan `/mcp` | một phần |
+| T13 | Nghiệm thu, bảng việc, rà soát, bàn giao — "đã kiểm lại chưa, đạt chưa" | [DELIVERY](BIZCITY-DELIVERY-v1.md) | open-ketoan `docs/nghiem-thu/`, `BANG-VIEC.md`, `docs/reviews/`, `BAN-GIAO.md` · kiểm `tools/delivery-check.mjs` | một phần <!-- [2026-11-25 01:39 PM Johnny Chu - Chu Hoàng Anh] STD-8 --> |
 
 Báo cáo kiểm theo [`bizcity_conformance_report@1`](BIZCITY-CONFORMANCE-REPORT-v1.md).
 
@@ -85,7 +86,7 @@ Cả tám đề xuất được duyệt nguyên văn.
 |---|---|---|
 | Q-STD-1 | "tenant" đang mang bốn nghĩa (site, đơn vị trong site, blog, pháp nhân) | tách hai từ: **site** = doanh nghiệp thuê (slug, mỗi app một CSDL) · **tenant** = đơn vị / pháp nhân / sổ bên trong site. Áp vào [MULTISITE](BIZCITY-MULTISITE-v1.md) §1; chuẩn spine đổi theo bằng ADR riêng |
 | Q-STD-2 | Ba khuôn slug khác nhau (registry, spine, bizcity-web) | một khuôn `^[a-z][a-z0-9-]{2,29}$` (khuôn của registry đang chạy); schema spine đổi cùng ADR ở Q-STD-1 |
-| Q-STD-3 | Hai cách đếm trụ cột ở open-ketoan (11 và 17) | hệ dùng cách chia ở tệp này (4 trục + 12 trụ cột); hai bảng của open-ketoan là chi tiết của riêng Core kế toán |
+| Q-STD-3 | Hai cách đếm trụ cột ở open-ketoan (11 và 17) | hệ dùng cách chia ở tệp này (4 trục + 12 trụ cột; thêm T13 nghiệm thu · bàn giao ngày 2026-11-25 theo chỉ đạo của chủ <!-- [2026-11-25 01:39 PM Johnny Chu - Chu Hoàng Anh] STD-8 -->); hai bảng của open-ketoan là chi tiết của riêng Core kế toán |
 | Q-USER-1 | Quyền trong vé SSO thay ma trận cục bộ hay chỉ là trần? | **trần**: quyền hiệu lực = ma trận cục bộ ∩ quyền trong vé; từ chối cục bộ luôn thắng. Áp vào [USERS-ROLES](BIZCITY-USERS-ROLES-v1.md) §4 (R-USER-12) và [IDENTITY](BIZCITY-IDENTITY-v1.md) 1.1.0 (R-IDENT-4) |
 | Q-USER-2 | Người dùng tạo tại app (không qua WordPress) mang `sub` dạng gì? | **không mang `sub`** (`external_sub` trống) cho tới lần đăng nhập SSO đầu tiên có email khớp — đúng cách open-ketoan đang chạy; không thêm dạng mới |
 | Q-API-1 | Phân trang con trỏ chưa có chuẩn | con trỏ `<thời điểm ISO>\|<id>` như `bizcity_sync@1`, mã hoá base64url |

@@ -5,6 +5,24 @@
   "repos": {
     "open-ketoan": [
       {
+        "rule": "R-DLV-3",
+        "std": "BIZCITY-DELIVERY-v1.md",
+        "todo": "Khép vòng nghiệm thu: tổ chức buổi nghiệm thu với bộ phận sử dụng cho 13 phiếu `Chờ nghiệm thu`, ghi §8 Biên bản (ngày · bộ phận · Đạt / Chưa đạt) — đo 2026-11-25 chưa phiếu nào Đạt có biên bản",
+        "note": "phiếu Chưa đạt quay về Đang làm, ghi chỗ sai; không tự chuyển Đạt khi chưa có bộ phận sử dụng chạy lại"
+      },
+      {
+        "rule": "R-DLV-5",
+        "std": "BIZCITY-DELIVERY-v1.md",
+        "todo": "Sinh danh sách phiếu ở `docs/nghiem-thu/README.md` tự động từ các phiếu (đang thiếu 38 / 71 phiếu) và ghi ngày sau từ khoá trạng thái",
+        "note": "chuẩn hoá 4 phiếu ghi trạng thái ngoài từ khoá (\"Đã đóng\", \"Đã làm\"…)"
+      },
+      {
+        "rule": "R-DLV-9",
+        "std": "BIZCITY-DELIVERY-v1.md",
+        "todo": "Viết `BAN-GIAO.md` cho phase đổi người làm hoặc đóng (đang 1 / 39 phase), theo khuôn PHASE-031",
+        "note": ""
+      },
+      {
         "rule": "R-USER-7",
         "std": "BIZCITY-USERS-ROLES-v1.md",
         "todo": "Đổi 5 quyền tiếng Anh `pos:sell`, `pos:cancel`, `pos:return`, `pos:report`, `voucher:use` sang khuôn `<module>:<chức-năng>-<động-từ>` tiếng Việt không dấu",
@@ -66,6 +84,12 @@
       }
     ],
     "open-cake": [
+      {
+        "rule": "R-DLV-1",
+        "std": "BIZCITY-DELIVERY-v1.md",
+        "todo": "Lập `docs/nghiem-thu/` theo khuôn open-ketoan (README, `_MAU.md`, phiếu theo phân hệ); viết phiếu cho các màn PHASE-004 đã làm và khép bằng biên bản",
+        "note": "test `describe` mở đầu bằng mã phiếu"
+      },
       {
         "rule": "R-USER-1",
         "std": "BIZCITY-USERS-ROLES-v1.md",

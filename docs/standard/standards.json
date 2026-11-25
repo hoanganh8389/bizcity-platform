@@ -260,12 +260,33 @@
       ],
       "checks": [],
       "tool": "tools/hub-local/check.sh"
+    },
+    {
+      "id": "bizcity_delivery@1",
+      "file": "BIZCITY-DELIVERY-v1.md",
+      "version": "1.0.0",
+      "status": "accepted",
+      "pillar": "T13",
+      "reference": [
+        "open-ketoan"
+      ],
+      "checks": [
+        "SC-DLV-1",
+        "SC-DLV-2",
+        "SC-DLV-3",
+        "SC-DLV-4",
+        "SC-DLV-5",
+        "SC-DLV-6",
+        "SC-DLV-7",
+        "SC-DLV-8"
+      ],
+      "tool": "tools/delivery-check.mjs"
     }
   ],
   "decisions": {
     "Q-STD-1": "site = doanh nghiệp thuê (slug, mỗi app một CSDL); tenant = đơn vị / pháp nhân / sổ trong site",
     "Q-STD-2": "^[a-z][a-z0-9-]{2,29}$",
-    "Q-STD-3": "cả hệ dùng 4 trục + 12 trụ cột",
+    "Q-STD-3": "cả hệ dùng 4 trục + 12 trụ cột; thêm T13 (nghiệm thu, bảng việc, rà soát, bàn giao) 2026-11-25 theo chỉ đạo",
     "Q-USER-1": "quyền phiên SSO = ma trận cục bộ ∩ perms trong vé; deny cục bộ luôn thắng",
     "Q-USER-2": "người dùng tạo tại app không mang sub cho tới lần SSO đầu khớp email",
     "Q-API-1": "con trỏ = base64url(<ISO>|<id>), meta.nextCursor",

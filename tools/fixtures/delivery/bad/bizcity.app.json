@@ -1,0 +1,1 @@
+{ "schema": "bizcity_app@1", "id": "mau-bad", "name": "Mẫu", "repo": "x/mau", "runtime": "node-ts", "license": "MIT", "paid": false, "axes": { "owns": [], "uses": [] }, "contracts": ["bizcity_spine@1"] }

@@ -48,6 +48,8 @@ function render(dir) {
     ...(existsSync(join(dir, 'bizcity.app.json')) ? run('spine-check.mjs', ['--manifest', join(dir, 'bizcity.app.json')]) : []),
     ...run('standard-check.mjs', ['--repo', dir]),
     ...run('users-check.mjs', ['--repo', dir]),
+    // [2026-11-25 01:39 PM Johnny Chu - Chu Hoàng Anh] STD-8 — nghiệm thu · bảng việc · rà soát · bàn giao
+    ...run('delivery-check.mjs', ['--repo', dir]),
   ].filter((f) => f.id !== 'SC-STD-2' || !f.where.endsWith('NO-CHUAN-NEN.md'));
   const known = REG.repos[id] ?? [];
   const today = new Date().toISOString().slice(0, 10);
