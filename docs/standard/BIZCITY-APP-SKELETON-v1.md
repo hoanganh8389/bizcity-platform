@@ -2,7 +2,7 @@
 
 <!-- [2026-11-24 11:48 PM Johnny Chu - Chu Hoàng Anh] STD-1 — trụ cột T1: khuôn chung của một Open App, rút từ open-ketoan (bản đầy đủ) và open-cake (bản gọn dùng @bizcity/platform). -->
 
-> **Phiên bản:** 1.0.0-draft · 2026-11-24 · **Trạng thái:** chờ duyệt · **Bản mẫu:** open-ketoan, open-cake
+> **Phiên bản:** 1.0.0 · 2026-11-25 · **Trạng thái:** **Chấp nhận** — chủ dự án duyệt 2026-11-25 <!-- [2026-11-25 10:30 AM Johnny Chu - Chu Hoàng Anh] STD-4 — chủ duyệt 2026-11-25 --> · **Bản mẫu:** open-ketoan, open-cake
 > **Đứng dưới:** canon §7 (R-CANON-5), §12.
 
 ## 0. Một câu

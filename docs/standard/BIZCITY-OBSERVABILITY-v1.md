@@ -2,7 +2,7 @@
 
 <!-- [2026-11-24 11:48 PM Johnny Chu - Chu Hoàng Anh] STD-1 — trụ cột T5: một chuẩn log · số đo · trace cho mọi app (OpenTelemetry → Tempo, pino → Loki, Prometheus + Alertmanager, Grafana), rút từ open-ketoan ADR-0010, RULE-LOG, infrastructure/monitoring và phần mở rộng của open-cake. -->
 
-> **Phiên bản:** 1.0.0-draft · 2026-11-24 · **Trạng thái:** chờ duyệt
+> **Phiên bản:** 1.0.0 · 2026-11-25 · **Trạng thái:** **Chấp nhận** — chủ dự án duyệt 2026-11-25 <!-- [2026-11-25 10:30 AM Johnny Chu - Chu Hoàng Anh] STD-4 — chủ duyệt 2026-11-25 -->
 > **Luật gốc:** open-ketoan `docs/rules/RULE-LOG.md` (R-LOG-1..11), R-OBS-1..9 (`docs/ops/OBSERVABILITY.md`), `RULE-SELF-DIAGNOSTICS.md` (R-DIAG-1..9), ADR-0010, `docs/ops/OBSERVABILITY.md`; canon §8.
 > **Bản mẫu:** open-ketoan `infrastructure/monitoring/` + `packages/platform/src/core/{tracing,metrics,logger,request-context}.ts`.
 

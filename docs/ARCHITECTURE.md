@@ -3,7 +3,7 @@
 <!-- [2026-11-24 11:48 PM Johnny Chu - Chu Hoàng Anh] STD-1 — bản rà lại của tài liệu "Chiến lược sản phẩm & kiến trúc hệ thống BIZCITY" (chủ gửi 2026-11-24), sửa cho khớp canon open-hub, bizcity_spine@1 và các quyết định đã duyệt. Danh sách chỗ đã sửa ở §8. -->
 
 > **"Làm chủ mã. Làm chủ dữ liệu. Để agent vận hành, con người duyệt."**
-> **Phiên bản:** 1.0.0-draft · 2026-11-24 · **Đứng dưới:** [canon chung](https://github.com/hoanganh8389/open-hub/blob/main/docs/canon/BIZCITY-OPEN-CANON-v1.md) · **Chi tiết kỹ thuật:** [bản đồ chuẩn](standard/README.md).
+> **Phiên bản:** 1.0.0 · 2026-11-25 · **Trạng thái:** chấp nhận cùng bản đồ chuẩn <!-- [2026-11-25 10:30 AM Johnny Chu - Chu Hoàng Anh] STD-4 — chủ duyệt 2026-11-25 --> · **Đứng dưới:** [canon chung](https://github.com/hoanganh8389/open-hub/blob/main/docs/canon/BIZCITY-OPEN-CANON-v1.md) · **Chi tiết kỹ thuật:** [bản đồ chuẩn](standard/README.md).
 
 ## 1. Vì sao làm thế này
 

@@ -2,7 +2,7 @@
 
 <!-- [2026-11-24 11:48 PM Johnny Chu - Chu Hoàng Anh] STD-1 — trụ cột T3. Chủ chỉ đạo 2026-11-24: "tuân thủ SSO, nhưng open-cake, open-ketoan… tương lai vẫn chủ động tạo user, có chuẩn user-role, matrix setting". Rút từ open-ketoan PHASE-028 (bizcity_authorization@1, core/authz) và open-cake PHASE-004 S004-7 (ba lớp phân quyền). -->
 
-> **Phiên bản:** 1.0.0-draft · 2026-11-24 · **Trạng thái:** chờ duyệt (Q-USER-1, 2)
+> **Phiên bản:** 1.0.0 · 2026-11-25 · **Trạng thái:** **Chấp nhận** — chủ dự án duyệt 2026-11-25 <!-- [2026-11-25 10:30 AM Johnny Chu - Chu Hoàng Anh] STD-4 — chủ duyệt 2026-11-25 -->
 > **Đi cùng:** [`bizcity_identity@1`](BIZCITY-IDENTITY-v1.md) (vé SSO) · `bizcity_authorization@1` (open-ketoan `docs/contracts/BIZCITY-AUTHORIZATION-v1.md`, bộ tính quyền) · canon §9.
 
 ## 0. Một câu
@@ -54,11 +54,11 @@ Quyền hiệu lực = vai chính ∪ vai phụ ∪ (vai riêng: gốc + allow �
 | Cài đặt › Vai & quyền | **ma trận** vai × quyền (nhóm theo module), vai riêng, giải thích "vì sao được / không được" | open-cake PHASE-004 mockup "Vai & quyền"; open-ketoan PHASE-028 role editor |
 | Cài đặt › Khoá API | tạo (hiện một lần), phạm vi, thu hồi | open-ketoan |
 
-## 4. SSO và ma trận cục bộ (đề xuất Q-USER-1)
+## 4. SSO và ma trận cục bộ (Q-USER-1, chủ duyệt 2026-11-25)
 
 Hiện có hai cách chạy khác nhau: open-ketoan lọc `perms` trong vé về quyền đã khai (Q-IDENT-1, đã duyệt); open-cake để `perms` trong vé **thay** ma trận vai, nên vượt được luật từ chối của đơn vị (ghi nhận ở PHASE-028 F8).
 
-**Đề xuất R-USER-12:** quyền hiệu lực của phiên SSO = **ma trận cục bộ ∩ `perms` trong vé** (vé không có `perms` ⇒ dùng ma trận cục bộ). Vé chỉ là **trần**, không bao giờ nới quyền cục bộ và không vượt `deny`. Người lạ vào lần đầu nhận vai thấp nhất; muốn nhiều quyền hơn thì quản trị app gán vai. Luật này thay cách hiểu "WordPress cấp quyền" ở Q-IDENT-1 nên **chỉ có hiệu lực khi chủ duyệt**; tới lúc đó mỗi app giữ cách đang chạy.
+**R-USER-12:** quyền hiệu lực của phiên SSO = **ma trận cục bộ ∩ `perms` trong vé** (vé không có `perms` ⇒ dùng ma trận cục bộ). Vé chỉ là **trần**, không bao giờ nới quyền cục bộ và không vượt `deny`. Người lạ vào lần đầu nhận vai thấp nhất; muốn nhiều quyền hơn thì quản trị app gán vai. Luật này thay cách hiểu "WordPress cấp quyền" ở Q-IDENT-1 (xem [IDENTITY](BIZCITY-IDENTITY-v1.md) 1.1.0, R-IDENT-4). open-ketoan và open-cake đang chạy cách cũ (quyền trong vé thay ma trận), nên mỗi app sửa trong một đợt việc riêng có giữ chỗ; tới lúc đó cách cũ được dung thứ, nhưng app **mới** làm theo R-USER-12 ngay. <!-- [2026-11-25 10:30 AM Johnny Chu - Chu Hoàng Anh] STD-4 — chủ duyệt 2026-11-25 -->
 
 ## 5. Ma trận cài đặt
 
@@ -79,12 +79,12 @@ Kiểm: SC-CON-7 (open-ketoan).
 | SC-IDENT-1..4 | CONTRACT / HOUSE | xem [IDENTITY](BIZCITY-IDENTITY-v1.md) §5 |
 | SC-USER-1 | CONTRACT | vé có `aud` = `id` trong `bizcity.app.json` ⇒ 200; `aud` lạ ⇒ 401 (chạy bằng [`tools/hub-local`](../../tools/hub-local/README.md): `wp hub-sso ticket`) — **đề xuất, chưa có mã** |
 | SC-USER-2 | CONTRACT | sau SSO, người dùng cục bộ mang `external_sub` đúng — đề xuất |
-| SC-USER-3 | HOUSE | người dùng bị từ chối bởi luật `deny` của đơn vị vẫn bị từ chối khi vào bằng vé có `perms` — đề xuất (phụ thuộc Q-USER-1) |
+| SC-USER-3 | HOUSE | người dùng bị từ chối bởi luật `deny` của đơn vị vẫn bị từ chối khi vào bằng vé có `perms` (R-USER-12) — đề xuất, chưa có mã |
 
 ## 7. Khoảng cách hiện tại
 
 | App | Đang | Cần |
 |---|---|---|
-| open-ketoan | đủ hai cửa; `external_sub` + `aud` (#626); role editor PHASE-028 còn phần W6 | áp R-USER-12 nếu được duyệt |
-| open-cake | chỉ SSO + `dev-login`; `aud` chấp nhận là `cake` trong khi `id` là `open-cake`; khớp theo email, chưa có `external_sub`; `perms` trong vé thay ma trận | đăng nhập cục bộ (R-USER-1), sửa `aud`, thêm `external_sub`, áp R-USER-12 |
+| open-ketoan | đủ hai cửa; `external_sub` + `aud` (#626); role editor PHASE-028 còn phần W6; phiên SSO lấy `perms` trong vé làm toàn bộ quyền (`wp-sso.ts`) | áp R-USER-12: quyền phiên = ma trận cục bộ ∩ `perms` |
+| open-cake | chỉ SSO + `dev-login`; `aud` chấp nhận là `cake` trong khi `id` là `open-cake`; khớp theo email, chưa có `external_sub`; `perms` trong vé thay ma trận | đăng nhập cục bộ (R-USER-1), sửa `aud`, thêm `external_sub`, áp R-USER-12 (biến giới hạn đã ghi ở PHASE-028 F8 thành luật) |
 | plugin WordPress (POS, CRM bản WP) | người dùng là người dùng WordPress, `sub` lấy từ `get_current_user_id()` | khai quyền theo khuôn R-USER-7 khi nối sang app web |

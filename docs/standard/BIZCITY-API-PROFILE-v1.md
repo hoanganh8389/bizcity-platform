@@ -2,7 +2,7 @@
 
 <!-- [2026-11-24 11:48 PM Johnny Chu - Chu Hoàng Anh] STD-1 — trụ cột T2: phần của bizcity_api@1 / bizcity_errors@1 / bizcity_action@1 (open-ketoan) mà MỌI app phải giống nhau, cộng hai chỗ chưa repo nào có chuẩn (phân trang con trỏ, giới hạn tần suất). -->
 
-> **Phiên bản:** 1.0.0-draft · 2026-11-24 · **Trạng thái:** chờ duyệt (Q-API-1)
+> **Phiên bản:** 1.0.0 · 2026-11-25 · **Trạng thái:** **Chấp nhận** — chủ dự án duyệt 2026-11-25 <!-- [2026-11-25 10:30 AM Johnny Chu - Chu Hoàng Anh] STD-4 — chủ duyệt 2026-11-25 -->
 > **Luật gốc:** open-ketoan `docs/rules/RULE-API.md` (R-API-1..12), `docs/contracts/BIZCITY-API-v1.md`, `BIZCITY-ERRORS-v1.md` (R-ERR-1..11), `BIZCITY-ACTION-v1.md`; canon §8.
 > **Bản mẫu:** `@bizcity/platform` `core/{http,errors,actions}.ts`; open-cake `docs/architecture/70-API-REST.md`.
 
@@ -70,7 +70,7 @@
 | Kiểu | Hình | Trạng thái |
 |---|---|---|
 | Trang | `?page=&pageSize=` (trần 200) → `meta {page, pageSize, total}` | R-API-10, đang chạy |
-| Con trỏ | `?cursor=&limit=` → `meta {nextCursor}`; con trỏ = base64url(`<thời điểm ISO>\|<id>`), ổn định khi có bản ghi mới, hàng đã xoá vẫn hiện trong luồng đồng bộ | **đề xuất Q-API-1**; `bizcity_sync@1` đã dùng dạng thô `<ISO>\|<id>` |
+| Con trỏ | `?cursor=&limit=` → `meta {nextCursor}`; con trỏ = base64url(`<thời điểm ISO>\|<id>`), ổn định khi có bản ghi mới, hàng đã xoá vẫn hiện trong luồng đồng bộ | **chuẩn** (Q-API-1, chủ duyệt 2026-11-25); nơi khác chuyển dần khi sửa tới; `bizcity_sync@1` đã dùng dạng thô `<ISO>\|<id>` |
 | Lô | tối đa 200 mục một lần gửi | R-API-11 |
 
 ## 7. Giới hạn tần suất (chỗ trống)

@@ -2,7 +2,7 @@
 
 <!-- [2026-11-24 11:48 PM Johnny Chu - Chu Hoàng Anh] STD-1 — trụ cột T7: "chuẩn nào cũng phải có phép kiểm chạy được". Rút từ open-ketoan RULE-QUALITY-GATE, tests/conformance (159 phép kiểm, baseline chỉ được bớt) và cách test của open-cake. -->
 
-> **Phiên bản:** 1.0.0-draft · 2026-11-24 · **Trạng thái:** chờ duyệt
+> **Phiên bản:** 1.0.0 · 2026-11-25 · **Trạng thái:** **Chấp nhận** — chủ dự án duyệt 2026-11-25 <!-- [2026-11-25 10:30 AM Johnny Chu - Chu Hoàng Anh] STD-4 — chủ duyệt 2026-11-25 -->
 > **Luật gốc:** open-ketoan `docs/rules/RULE-QUALITY-GATE.md` (R-QG-1..10), `docs/standard/CONFORMANCE.md`, `tests/conformance/README.md`, ADR-0006, `docs/ops/DIAGNOSTICS.md` §4.
 > **Báo cáo:** [`bizcity_conformance_report@1`](BIZCITY-CONFORMANCE-REPORT-v1.md).
 

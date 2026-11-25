@@ -2,7 +2,7 @@
 
 <!-- [2026-11-24 11:48 PM Johnny Chu - Chu Hoàng Anh] STD-1 — trụ cột T4: mức bảo mật tối thiểu của mọi app, rút từ open-ketoan RULE-SECURITY / RULE-TENANT-SECURITY (đã có phép kiểm) và phần ingress, PII của open-cake. -->
 
-> **Phiên bản:** 1.0.0-draft · 2026-11-24 · **Trạng thái:** chờ duyệt
+> **Phiên bản:** 1.0.0 · 2026-11-25 · **Trạng thái:** **Chấp nhận** — chủ dự án duyệt 2026-11-25 <!-- [2026-11-25 10:30 AM Johnny Chu - Chu Hoàng Anh] STD-4 — chủ duyệt 2026-11-25 -->
 > **Luật gốc:** open-ketoan `docs/rules/RULE-SECURITY.md` (R-SEC-1..12), `RULE-TENANT-SECURITY.md` (R-TEN-1..9), `SECURITY.md`; open-cake `docs/architecture/40-SECURITY-USERS.md` §5–6.
 
 ## 0. Một câu
