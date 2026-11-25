@@ -12,7 +12,7 @@ import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from '
 import { basename, join, relative, resolve } from 'node:path';
 
 /** Trạng thái ghi ở repo điều phối (vd chương trình OKT: "→ open-setup") — không đếm lại ở đây, chỉ trỏ sang. */
-const ELSEWHERE = /→\s*\[?\s*(open-setup|bizcity-open-setup|open-ketoan)/u;
+const ELSEWHERE = /→\s*\[?\s*(open-setup|bizcity-open-setup|open-ketoan|bizcity-platform)/u; // [2026-11-25 06:20 PM Johnny Chu - Chu Hoàng Anh] ORDER-3 — thêm bizcity-platform: việc LD-* (phase xuyên repo PHASE-001) ở repo app trỏ về đây
 const GROUPS = [
   ['Bị chặn', /⛔/u], ['Huỷ', /❌/u], ['Đã chuyển', /➡/u], ['Hoãn', /⏸|💤/u],
   ['Đang làm / có mã', /🟡|◐/u], ['Xong', /✅|☑|\[x\]/iu], ['Chưa làm', /☐|\[ \]/u],

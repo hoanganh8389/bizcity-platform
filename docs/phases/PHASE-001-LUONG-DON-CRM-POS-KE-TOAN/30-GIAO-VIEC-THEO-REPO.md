@@ -1,6 +1,6 @@
 # PHASE-001 · 30 — Giao việc theo repo
 
-<!-- [2026-11-25 05:33 PM Johnny Chu - Chu Hoàng Anh] ORDER-1 — mỗi repo đọc mục của mình: vai trong luồng, nhận gì, phát gì, KHÔNG được làm gì, mở phase nào, việc nào (mã trùng CHECKLIST.md). Số phase là số kế tiếp đo ngày 2026-11-25 — giữ chỗ theo luật nhận việc của repo đó trước khi viết mã. -->
+<!-- [2026-11-25 05:33 PM Johnny Chu - Chu Hoàng Anh] ORDER-1 — mỗi repo đọc mục của mình: vai trong luồng, nhận gì, phát gì, KHÔNG được làm gì, mở phase nào, việc nào (mã trùng CHECKLIST.md). Số phase là số kế tiếp đo ngày 2026-11-25 (open-ketoan: 041 đã do #616 / #617 giữ ⇒ 042) — giữ chỗ theo luật nhận việc của repo đó trước khi viết mã. -->
 
 > Thứ tự: **W0** chủ chốt Q-ORD ⇒ mỗi repo giữ chỗ phase ⇒ **W1** platform + Kế Toán ⇒ **W2** open-pos-backend + CRM ⇒ **W3** open-pos + bridge ⇒ **W4** sự kiện, đối chiếu, nghiệm thu đầu-cuối. Repo nào làm trước bên kia thì chạy trên **vector + giả lập** của bizcity-platform, không chờ.
 > Giao diện mới (màn đơn chờ, nút gửi đơn, ô tồn): **mockup trước, chủ duyệt rồi mới làm**.
@@ -31,7 +31,7 @@
 - **Nhận:** lời đọc tồn của CRM (`stock:read`); phiếu `sale` / `sale_return` / `customer_payment` từ bridge (legacy) hoặc `pos.order.create` (shop React).
 - **Phát:** `bizcity.ledger.entry.posted` (đã có); không phát gì mới trong phase này.
 - **Không được:** cho CRM ghi chứng từ; tạo mặt hàng từ đơn; tính giá vốn ra ngoài.
-- **Phase đề xuất:** `PHASE-041-DOC-TON-CHO-APP-NGOAI` (giữ chỗ ở `docs/phases/CLAIMS.md` theo R-FLOW trước khi viết mã).
+- **Phase đề xuất:** `PHASE-042-DOC-TON-CHO-APP-NGOAI` (giữ chỗ ở `docs/phases/CLAIMS.md` theo R-FLOW trước khi viết mã).
 - **Việc:** LD-KT-1 scope `stock:read` (risk `read`, vào `APP_SCOPES`) · LD-KT-2 `GET /api/v1/inventory/availability` theo ST-1..4, dùng lại `bizcity_read.stock_on_hand`, tính `pendingOut` từ phiếu đã nhận chưa ghi sổ, `held` từ kho giữ BH20 · LD-KT-3 MCP `kt_stock` (đã có trong `BIZCITY-MCP-v1.md` §5.1, chưa có mã) · LD-KT-4 cửa nạp nhận và lưu `links` (`pos.order` role `source`) trên phiếu bán — kiểm `bizcity_document@1`, thêm nếu thiếu · LD-KT-5 module `pos`: `pos.order.create` nhận `saleSource=crm` + `sourceRef` = `pos.order_request:<id>` cho shop React (Q-ORD-8), idempotent.
 - **Xong khi:** test trên Postgres thật: tồn đúng sau phiếu ghi sổ / phiếu chờ / kho giữ; khoá không có `stock:read` ⇒ 403; đọc 100 mã ≤ 200 ms trên dữ liệu mẫu.
 
