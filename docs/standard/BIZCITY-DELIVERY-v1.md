@@ -50,32 +50,32 @@ Ngày, người, ghi chú để **sau** từ khoá (`Đã chốt — 18/11/2026,
 
 | Luật | Nội dung |
 |---|---|
-| R-DLV-1 | Repo app có `docs/nghiem-thu/README.md` và `_MAU.md`; plugin WordPress có thể đặt ở `NGHIEM-THU/` nếu `.gitignore` bỏ qua `docs/` |
-| R-DLV-2 | Chưa có phiếu **Đã chốt** thì chưa code tính năng; sửa lỗi nhỏ / đổi giao diện không cần phiếu |
-| R-DLV-3 | Phiếu `Chờ nghiệm thu` / `Đạt` phải có test mang mã phiếu; phiếu `Đạt` phải có biên bản |
-| R-DLV-4 | Phiếu `Chờ nghiệm thu` quá **14 ngày** là việc treo — đưa lên bảng việc / buổi họp; không để trôi |
-| R-DLV-5 | Danh sách phiếu ở README phải đủ mọi phiếu (khuyên sinh tự động); không phiếu nào "mồ côi" |
+| R-STD-DLV-1 | Repo app có `docs/nghiem-thu/README.md` và `_MAU.md`; plugin WordPress có thể đặt ở `NGHIEM-THU/` nếu `.gitignore` bỏ qua `docs/` |
+| R-STD-DLV-2 | Chưa có phiếu **Đã chốt** thì chưa code tính năng; sửa lỗi nhỏ / đổi giao diện không cần phiếu |
+| R-STD-DLV-3 | Phiếu `Chờ nghiệm thu` / `Đạt` phải có test mang mã phiếu; phiếu `Đạt` phải có biên bản |
+| R-STD-DLV-4 | Phiếu `Chờ nghiệm thu` quá **14 ngày** là việc treo — đưa lên bảng việc / buổi họp; không để trôi |
+| R-STD-DLV-5 | Danh sách phiếu ở README phải đủ mọi phiếu (khuyên sinh tự động); không phiếu nào "mồ côi" |
 
 ## 3. Bảng việc
 
 | Luật | Nội dung |
 |---|---|
-| R-DLV-6 | Repo có `docs/phases/` thì có **bảng việc sinh tự động** (`docs/phases/BANG-VIEC.md` + `bang-viec.json`) từ checklist các phase và `CLAIMS.md`, dòng đầu ghi "tệp sinh, không sửa tay". Cột tối thiểu: Đang làm · Bị chặn · Chưa ai nhận · Xong; theo phân hệ |
+| R-STD-DLV-6 | Repo có `docs/phases/` thì có **bảng việc sinh tự động** (`docs/phases/BANG-VIEC.md` + `bang-viec.json`) từ checklist các phase và `CLAIMS.md`, dòng đầu ghi "tệp sinh, không sửa tay". Cột tối thiểu: Đang làm · Bị chặn · Chưa ai nhận · Xong; theo phân hệ |
 | — | Bản mẫu: open-ketoan `scripts/bang-viec.mjs` (693 việc, theo phân hệ). Repo khác chép công cụ hoặc dùng bản chung khi tách sang `@bizcity/conformance` |
 
 ## 4. Rà soát
 
 | Luật | Nội dung |
 |---|---|
-| R-DLV-7 | Mỗi PR có mô tả: việc gì, phiếu / mã việc nào, **khối Bằng chứng chạy máy** (lệnh + kết quả: kiểm chuẩn, test, typecheck), ghi rõ chỗ đỏ có sẵn trên `main` (không do PR) |
-| R-DLV-8 | Rà định kỳ (sau mỗi vài phase / mỗi đợt đóng góp lớn) ghi ở `docs/reviews/` hoặc `docs/audits/REVIEW-<ngày>-<phạm vi>.md`: kết luận **ĐẠT / ĐẠT có điều kiện / KHÔNG ĐẠT**, phát hiện có mã luật + `tệp:dòng`, việc giao cho ai |
+| R-STD-DLV-7 | Mỗi PR có mô tả: việc gì, phiếu / mã việc nào, **khối Bằng chứng chạy máy** (lệnh + kết quả: kiểm chuẩn, test, typecheck), ghi rõ chỗ đỏ có sẵn trên `main` (không do PR) |
+| R-STD-DLV-8 | Rà định kỳ (sau mỗi vài phase / mỗi đợt đóng góp lớn) ghi ở `docs/reviews/` hoặc `docs/audits/REVIEW-<ngày>-<phạm vi>.md`: kết luận **ĐẠT / ĐẠT có điều kiện / KHÔNG ĐẠT**, phát hiện có mã luật + `tệp:dòng`, việc giao cho ai |
 | — | Bản mẫu: open-ketoan RULE-REVIEW (11 trục, T1/T2/T4/T5 là cổng), `scripts/cham-pr.mjs` (chấm PR đã merge), `scripts/ra-soat-dong-gop.mjs` |
 
 ## 5. Bàn giao
 
 | Luật | Nội dung |
 |---|---|
-| R-DLV-9 | Phase **đổi người làm** hoặc **đóng** thì có `BAN-GIAO.md` trong thư mục phase |
+| R-STD-DLV-9 | Phase **đổi người làm** hoặc **đóng** thì có `BAN-GIAO.md` trong thư mục phase |
 | — | Mục bắt buộc: (1) phase là gì trong một đoạn; (2) đã xong — bảng đợt · việc · PR · mã chính; (3) còn lại — thứ tự khuyên, chặn bởi gì; (4) quy trình bắt buộc / cách chạy, kiểm; (5) bản đồ mã và hợp đồng; (6) quyết định cần nhớ (đừng đảo); (7) cạm bẫy đã gặp. Bản mẫu: open-ketoan `PHASE-031-…/BAN-GIAO.md` |
 
 ## 6. "Đã kiểm lại chưa, đạt chưa" — một lệnh
@@ -90,11 +90,11 @@ In bảng: số phiếu theo trạng thái, phiếu `Đạt`, phiếu treo (`Ch�
 
 | Mã | Kiểm | Mức |
 |---|---|---|
-| SC-DLV-1 | có `docs/nghiem-thu/README.md` + `_MAU.md` (R-DLV-1) | app Node: chặn · plugin: cảnh báo |
+| SC-DLV-1 | có `docs/nghiem-thu/README.md` + `_MAU.md` (R-STD-DLV-1) | app Node: chặn · plugin: cảnh báo |
 | SC-DLV-2 | ô *Trạng thái* của mỗi phiếu bắt đầu bằng từ khoá đóng (§2) | cảnh báo |
 | SC-DLV-3 | `Đạt` ⇒ có biên bản; `Chờ nghiệm thu` ⇒ §7 có commit và tệp test | cảnh báo |
 | SC-DLV-4 | phiếu `Chờ nghiệm thu` / `Đạt` có mã xuất hiện trong test | cảnh báo |
-| SC-DLV-5 | có bảng việc sinh tự động khi repo có `docs/phases/` (R-DLV-6); README nghiệm thu liệt kê đủ phiếu (R-DLV-5) | cảnh báo |
+| SC-DLV-5 | có bảng việc sinh tự động khi repo có `docs/phases/` (R-STD-DLV-6); README nghiệm thu liệt kê đủ phiếu (R-STD-DLV-5) | cảnh báo |
 | SC-DLV-6 | có nơi ghi rà soát (`docs/reviews/` hoặc `docs/audits/`) | cảnh báo |
 | SC-DLV-7 | phase đã đóng (checklist không còn việc mở) có `BAN-GIAO.md` | ghi chú |
 | SC-DLV-8 | phiếu `Chờ nghiệm thu` quá 14 ngày (theo lần sửa cuối trong git) | cảnh báo |

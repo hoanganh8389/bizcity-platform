@@ -55,8 +55,8 @@ function analyse(dir, today = new Date()) {
   const ntDir = ['docs/nghiem-thu', 'NGHIEM-THU'].map((d) => join(dir, d)).find(isDir);
 
   // SC-DLV-1
-  if (!ntDir) add('SC-DLV-1', node ? 'fail' : 'warn', 'docs/nghiem-thu/', 'chưa có thư mục phiếu nghiệm thu (README.md + _MAU.md) — R-DLV-1');
-  else for (const f of ['README.md', '_MAU.md']) if (!existsSync(join(ntDir, f))) add('SC-DLV-1', node ? 'fail' : 'warn', relative(dir, join(ntDir, f)).replace(/\\/g, '/'), 'thiếu (R-DLV-1)');
+  if (!ntDir) add('SC-DLV-1', node ? 'fail' : 'warn', 'docs/nghiem-thu/', 'chưa có thư mục phiếu nghiệm thu (README.md + _MAU.md) — R-STD-DLV-1');
+  else for (const f of ['README.md', '_MAU.md']) if (!existsSync(join(ntDir, f))) add('SC-DLV-1', node ? 'fail' : 'warn', relative(dir, join(ntDir, f)).replace(/\\/g, '/'), 'thiếu (R-STD-DLV-1)');
 
   // phiếu
   const sheets = ntDir ? walk(ntDir, (f) => /^NT-[A-Z]+-\d+.*\.md$/.test(f)) : [];
@@ -91,11 +91,11 @@ function analyse(dir, today = new Date()) {
   const board = join(phases, 'BANG-VIEC.md');
   const hasPhases = isDir(phases) && readdirSync(phases).some((f) => /^PHASE-/.test(f));
   const boardOk = existsSync(board) && /tệp sinh|không sửa tay/i.test(read(board).slice(0, 600));
-  if (hasPhases && !boardOk) add('SC-DLV-5', 'warn', 'docs/phases/BANG-VIEC.md', existsSync(board) ? 'bảng việc không ghi là tệp sinh tự động' : 'repo có phase nhưng chưa có bảng việc sinh tự động (R-DLV-6)');
+  if (hasPhases && !boardOk) add('SC-DLV-5', 'warn', 'docs/phases/BANG-VIEC.md', existsSync(board) ? 'bảng việc không ghi là tệp sinh tự động' : 'repo có phase nhưng chưa có bảng việc sinh tự động (R-STD-DLV-6)');
 
   // SC-DLV-6 rà soát
   const reviewDirs = ['docs/reviews', 'docs/audits'].filter((d) => isDir(join(dir, d)) && readdirSync(join(dir, d)).some((f) => f.endsWith('.md')));
-  if (!reviewDirs.length) add('SC-DLV-6', 'warn', 'docs/reviews/', 'chưa có nơi ghi rà soát định kỳ (R-DLV-8)');
+  if (!reviewDirs.length) add('SC-DLV-6', 'warn', 'docs/reviews/', 'chưa có nơi ghi rà soát định kỳ (R-STD-DLV-8)');
 
   // SC-DLV-7 bàn giao
   const phaseDirs = hasPhases ? readdirSync(phases).filter((f) => /^PHASE-/.test(f) && isDir(join(phases, f))) : [];
@@ -108,7 +108,7 @@ function analyse(dir, today = new Date()) {
     const t = read(join(phases, ph, cl));
     const open = (t.match(/☐|🟡|◐|\[ \]/g) ?? []).length;
     const done = (t.match(/✅|☑|\[x\]/gi) ?? []).length;
-    if (done > 0 && open === 0) { closed++; if (!files.includes('BAN-GIAO.md') && !files.some((f) => /70-REFLECT/.test(f))) add('SC-DLV-7', 'info', `docs/phases/${ph}/`, 'phase đã đóng (checklist không còn việc mở) nhưng chưa có BAN-GIAO.md (R-DLV-9)'); }
+    if (done > 0 && open === 0) { closed++; if (!files.includes('BAN-GIAO.md') && !files.some((f) => /70-REFLECT/.test(f))) add('SC-DLV-7', 'info', `docs/phases/${ph}/`, 'phase đã đóng (checklist không còn việc mở) nhưng chưa có BAN-GIAO.md (R-STD-DLV-9)'); }
   }
 
   const count = (k) => rows.filter((r) => r.status === k).length;
