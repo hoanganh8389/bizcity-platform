@@ -42,6 +42,7 @@
 | `tools/spine-check.mjs --json` | MANIFEST | **có** (1.1.0) |
 | `tools/spine-contract.mjs --json` | CONTRACT | bản đầu (profile `ledger`: SC-SPINE-4 phần đọc, SC-SPINE-5) |
 | `standard-check` | HOUSE | **có** — `tools/standard-check.mjs`: khuôn repo theo bản đồ chuẩn (`standard: bizcity_standard_map@1`, mức **S0–S3**, mã `SC-STD-*`, `SC-SEC-P*`) <!-- [2026-11-24 11:48 PM Johnny Chu - Chu Hoàng Anh] STD-1 --> |
+| `users-check` | HOUSE | **có** — `tools/users-check.mjs`: khuôn người dùng · vai · quyền (`bizcity.authz.json`, SC-USER-4..6) <!-- [2026-11-25 10:34 AM Johnny Chu - Chu Hoàng Anh] USERS-1 --> |
 | `spine-house` | HOUSE | chưa — ở open-ketoan là `tests/conformance` (SC-*); gói chung bọc lại ở bước sau |
 
 ## 4. Lịch sử
