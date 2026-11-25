@@ -31,3 +31,5 @@ jobs:
       - run: node tools/users-check.mjs
       # [2026-11-25 01:16 PM Johnny Chu - Chu Hoàng Anh] STD-5 — sổ nợ chuẩn nền
       - run: node tools/no-chuan.mjs --check
+      # [2026-11-25 01:39 PM Johnny Chu - Chu Hoàng Anh] STD-8 — bộ mẫu nghiệm thu / bàn giao
+      - run: node tools/delivery-check.mjs --self-test
