@@ -2,7 +2,7 @@
 
 <!-- [2026-11-24 11:48 PM Johnny Chu - Chu Hoàng Anh] STD-1 — trụ cột T9: phân lớp màn React để chuẩn hoá từ đầu (chủ chỉ đạo 2026-11-24: "các chuẩn về m-v-c để react chuẩn hoá từ đầu"). Luật màn lấy từ open-cake R-WEB-1..15 (docs/architecture/80-REACT.md); phân lớp M·V·C đặt tên cho cách open-cake đang làm ở screens/catalog; ui-kit và trợ giúp theo open-ketoan. -->
 
-> **Phiên bản:** 1.0.0-draft · 2026-11-24 · **Trạng thái:** chờ duyệt
+> **Phiên bản:** 1.0.0 · 2026-11-25 · **Trạng thái:** **Chấp nhận** — chủ dự án duyệt 2026-11-25 <!-- [2026-11-25 10:30 AM Johnny Chu - Chu Hoàng Anh] STD-4 — chủ duyệt 2026-11-25 -->
 > **Luật gốc:** open-cake `docs/architecture/80-REACT.md` (R-WEB-1..15), `60-UI.md`; open-ketoan `docs/phat-trien.md` §5–6, `docs/rules/RULE-BLOCKED.md` (R-BLOCK), `packages/ui-kit`; canon §8, `CHUAN-TAI-SU-DUNG-NANG-LUC.md`.
 > **Ngăn xếp cố định:** React 18 · Vite · @tanstack/react-query · react-router. Không Redux / Zustand, không Electron.
 

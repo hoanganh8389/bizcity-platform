@@ -2,7 +2,7 @@
 
 <!-- [2026-11-24 11:48 PM Johnny Chu - Chu Hoàng Anh] STD-1 — trụ cột T11: vai của các repo điều phối và bốn loại khoá, để app mới biết gọi ai, bằng khoá nào. Rút từ bizcity-llm-router docs/PHASE-0-CANON.md (R-GW-*, R-LLM-KEY-ONLY, R-B2B2C), bizcity-open-setup docs/00-CANON.md, bizcity-web ARCHITECTURE, canon §2.1. -->
 
-> **Phiên bản:** 1.0.0-draft · 2026-11-24 · **Trạng thái:** chờ duyệt
+> **Phiên bản:** 1.0.0 · 2026-11-25 · **Trạng thái:** **Chấp nhận** — chủ dự án duyệt 2026-11-25 <!-- [2026-11-25 10:30 AM Johnny Chu - Chu Hoàng Anh] STD-4 — chủ duyệt 2026-11-25 -->
 > **Luật gốc:** canon §2.1 (R-CANON-13), `MO-HINH-KINH-DOANH-B2B.md`; bizcity-llm-router `docs/PHASE-0-CANON.md`, `docs/api/15-master-plans.md`, `18-commerce-license-hub.md`; bizcity-open-setup `docs/00-CANON.md`, ADR-0001.
 
 ## 0. Một câu

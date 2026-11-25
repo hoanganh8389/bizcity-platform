@@ -2,14 +2,14 @@
 
 <!-- [2026-11-24 11:48 PM Johnny Chu - Chu Hoàng Anh] STD-1 — trụ cột T10: cách một bản mã phục vụ nhiều tên miền / pháp nhân, mỗi site một CSDL. Rút từ open-ketoan ADR-0036, RULE-SITE (R-SITE-1..13), PHASE-039 và mã packages/platform/src/db/site-*.ts (nay nằm trong @bizcity/platform); open-cake PHASE-014 dùng lại. -->
 
-> **Phiên bản:** 1.0.0-draft · 2026-11-24 · **Trạng thái:** chờ duyệt (Q-STD-1, Q-STD-2)
+> **Phiên bản:** 1.0.0 · 2026-11-25 · **Trạng thái:** **Chấp nhận** — chủ dự án duyệt 2026-11-25 <!-- [2026-11-25 10:30 AM Johnny Chu - Chu Hoàng Anh] STD-4 — chủ duyệt 2026-11-25 -->
 > **Luật gốc:** open-ketoan `docs/adr/ADR-0036-…`, `docs/rules/RULE-SITE.md`, `docs/contracts/BIZCITY-SITE-PROVISIONING-v1.md`, `docs/ops/NHIEU-SITE.md`; canon R-CANON-5, R-CANON-13.
 
 ## 0. Một câu
 
 **Một bản mã chạy cho mọi khách; mỗi khách một CSDL riêng cho mỗi app; không yêu cầu nào chạm CSDL khi chưa biết chắc nó thuộc site nào.**
 
-## 1. Từ vựng (đề xuất Q-STD-1 — hiện mỗi repo hiểu một kiểu)
+## 1. Từ vựng (Q-STD-1, chủ duyệt 2026-11-25)
 
 | Từ | Nghĩa đề xuất | Ví dụ | Ai làm chủ |
 |---|---|---|---|
@@ -18,9 +18,9 @@
 | **blog** | một site con trong mạng WordPress; ánh xạ 1–1 sang một **tenant** (bất biến I-1 của chương trình OKT) | blog 2 → tenant `shopa` | WordPress |
 | **chi nhánh / kho** | `branch_code` thuộc một tenant | `CN01` | open-ketoan |
 
-Doanh nghiệp nhỏ: một site, một tenant, cùng mã — khi đó hai từ trùng nhau, và đó là lý do các tài liệu cũ dùng lẫn. **Hệ quả nếu được duyệt:** trục `tenant` của [SPINE](BIZCITY-SPINE-v1.md) §2 đang mô tả là "slug site" cần tách thành `site` (slug) và `tenant` (mã đơn vị) — đổi chuẩn spine nên cần ADR riêng; cho tới lúc đó spine giữ nguyên.
+Doanh nghiệp nhỏ: một site, một tenant, cùng mã — khi đó hai từ trùng nhau, và đó là lý do các tài liệu cũ dùng lẫn. **Hệ quả:** trục `tenant` của [SPINE](BIZCITY-SPINE-v1.md) §2 đang mô tả là "slug site" cần tách thành `site` (slug) và `tenant` (mã đơn vị) — đổi chuẩn spine đi bằng ADR riêng cùng schema, vector, công cụ (R-PLAT-6); cho tới khi ADR đó merge, spine giữ nguyên. Tài liệu và mã **mới** dùng từ theo bảng trên ngay. <!-- [2026-11-25 10:30 AM Johnny Chu - Chu Hoàng Anh] STD-4 — chủ duyệt 2026-11-25 -->
 
-**Khuôn slug (Q-STD-2):** đề xuất một khuôn `^[a-z][a-z0-9-]{2,29}$` (đang chạy ở control DB). Spine đang ghi `{1,30}`, bizcity-web đang dùng `^[a-z][a-z0-9]{2,19}$` (chặt hơn, vẫn hợp lệ theo khuôn chung).
+**Khuôn slug (Q-STD-2, chủ duyệt 2026-11-25):** một khuôn `^[a-z][a-z0-9-]{2,29}$` (đang chạy ở control DB). Spine đang ghi `{1,30}`, bizcity-web đang dùng `^[a-z][a-z0-9]{2,19}$` (chặt hơn, vẫn hợp lệ theo khuôn chung).
 
 ## 2. Hai chế độ, một đường mã
 

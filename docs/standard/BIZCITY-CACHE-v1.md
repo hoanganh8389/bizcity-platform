@@ -2,7 +2,7 @@
 
 <!-- [2026-11-24 11:48 PM Johnny Chu - Chu Hoàng Anh] STD-1 — trụ cột T6: luật đệm đã có ở open-ketoan (R-CACHE, R-OUTBOX) + vị trí của Redis theo canon §8. Trung thực về hiện trạng: CHƯA repo nào có Redis hay lớp đệm dùng chung; các chỗ đệm hiện là Map trong tiến trình. -->
 
-> **Phiên bản:** 1.0.0-draft · 2026-11-24 · **Trạng thái:** chờ duyệt (Q-CACHE-1) · **Mức hiện tại:** tài liệu
+> **Phiên bản:** 1.0.0 · 2026-11-25 · **Trạng thái:** **Chấp nhận** — chủ dự án duyệt 2026-11-25 <!-- [2026-11-25 10:30 AM Johnny Chu - Chu Hoàng Anh] STD-4 — chủ duyệt 2026-11-25 --> · **Mức hiện tại:** tài liệu
 > **Luật gốc:** open-ketoan `docs/rules/RULE-INFRASTRUCTURE.md` (R-CACHE-1..6, R-OUTBOX-1..7), R-SITE-6; canon §8.
 
 ## 0. Một câu
@@ -29,7 +29,7 @@
 
 ## 3. Redis — khi nào và cho việc gì
 
-Redis chỉ vào khi chạy **≥ 2 bản API** cho cùng site, và chỉ cho ba việc:
+**Q-CACHE-1 (chủ duyệt 2026-11-25): Redis không vào bản cài mặc định.** Redis chỉ vào khi chạy **≥ 2 bản API** cho cùng site, và chỉ cho ba việc:
 
 | Việc | Khoá | Mất Redis thì |
 |---|---|---|

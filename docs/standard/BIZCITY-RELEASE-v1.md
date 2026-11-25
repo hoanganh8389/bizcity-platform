@@ -2,7 +2,7 @@
 
 <!-- [2026-11-24 11:48 PM Johnny Chu - Chu Hoàng Anh] STD-1 — trụ cột T8: một cách đánh phiên bản, một cách đổi CSDL, một trình tự nâng cấp cho mọi app. Rút từ open-ketoan VERSIONING, RULE-RELEASE, RULE-DATABASE, R-BAK và cách phát hành gói nền ở repo này. -->
 
-> **Phiên bản:** 1.0.0-draft · 2026-11-24 · **Trạng thái:** chờ duyệt (Q-REL-1)
+> **Phiên bản:** 1.0.0 · 2026-11-25 · **Trạng thái:** **Chấp nhận** — chủ dự án duyệt 2026-11-25 <!-- [2026-11-25 10:30 AM Johnny Chu - Chu Hoàng Anh] STD-4 — chủ duyệt 2026-11-25 -->
 > **Luật gốc:** open-ketoan `docs/standard/VERSIONING.md` (VER-1..5), `docs/rules/RULE-RELEASE.md` (R-REL-1..11), `RULE-DATABASE.md` (R-DB-*), `RULE-INFRASTRUCTURE.md` (R-BAK-1..6), `docs/ops/{RELEASE,DEPLOY,SAO-LUU-KHOI-PHUC}.md`.
 
 ## 0. Một câu
@@ -70,7 +70,7 @@ CI thử nâng cấp **từ bản phát hành trước** lên bản hiện tại
 
 | Thứ | Cách | Trạng thái |
 |---|---|---|
-| Gói nền `@bizcity/*` | tag ⇒ build + test ⇒ `tools/dong-goi.mjs` ⇒ tệp `.tgz` đính kèm GitHub Release; app cài bằng URL có phiên bản | đang chạy (v0.2.0) |
+| Gói nền `@bizcity/*` | tag ⇒ build + test ⇒ `tools/dong-goi.mjs` ⇒ tệp `.tgz` đính kèm GitHub Release; app cài bằng URL có phiên bản. **Q-REL-1 (chủ duyệt 2026-11-25): giữ kênh này** cho tới khi có tổ chức npm `@bizcity` | đang chạy (v0.2.0) |
 | App Node | ảnh Docker (`docker/api.Dockerfile`, `web.Dockerfile`), tài liệu đọc lúc chạy phải nằm trong ảnh (SC-REL-3) | đang chạy ở open-ketoan |
 | Plugin WordPress | tệp zip theo tag; `Version:` trong tiêu đề plugin khớp tag | mỗi repo tự làm |
 | Nhãn OCI, SBOM, checksum, tag có chữ ký (R-REL-8) | — | **mới trên giấy**: open-ketoan chưa có `release.yml`, chưa có tag |

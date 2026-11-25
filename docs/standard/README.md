@@ -2,7 +2,7 @@
 
 <!-- [2026-11-24 11:48 PM Johnny Chu - Chu Hoàng Anh] STD-1 — bản đồ chuẩn nền: bốn trục dữ liệu + mười hai trụ cột kỹ thuật, gom từ cái ĐANG CÓ ở open-ketoan (luật + mã + bộ kiểm) và open-cake (bản áp dụng gọn), để repo mới (MRP, HRM, …) đi cùng một hướng. Chủ chỉ đạo 2026-11-24: "bizcity-platform hình thành, định hình chuẩn hoá… như một hệ sinh thái liền mạch". -->
 
-> **Phiên bản:** 1.0.0-draft · 2026-11-24 · **Trạng thái:** bản nháp chờ chủ dự án duyệt (câu hỏi mở ở §6)
+> **Phiên bản:** 1.0.0 · 2026-11-25 · **Trạng thái:** **Chấp nhận** — chủ dự án duyệt 2026-11-25 <!-- [2026-11-25 10:30 AM Johnny Chu - Chu Hoàng Anh] STD-4 — chủ duyệt 2026-11-25 -->
 > **Đứng dưới:** [BIZCITY OPEN CANON](https://github.com/hoanganh8389/open-hub/blob/main/docs/canon/BIZCITY-OPEN-CANON-v1.md) (open-hub). Canon đặt luật; ở đây giữ **chuẩn kỹ thuật chi tiết, schema máy đọc và bộ kiểm**.
 > **Máy đọc:** [`standards.json`](standards.json) · **Kiểm:** `node tools/standard-check.mjs --repo <thư mục repo>`
 > **Bức tranh toàn hệ:** [docs/ARCHITECTURE.md](../ARCHITECTURE.md).
@@ -75,14 +75,18 @@ Báo cáo kiểm theo [`bizcity_conformance_report@1`](BIZCITY-CONFORMANCE-REPOR
 
 Mức C0–C3 của [SPINE](BIZCITY-SPINE-v1.md) đo **dữ liệu trên dây**; mức S đo **khuôn repo**. Hai thang độc lập.
 
-## 6. Câu hỏi mở cần chủ dự án quyết
+## 6. Quyết định của chủ dự án (2026-11-25)
 
-| Mã | Câu hỏi | Đề xuất |
+<!-- [2026-11-25 10:30 AM Johnny Chu - Chu Hoàng Anh] STD-4 — chủ duyệt 2026-11-25 -->
+
+Cả tám đề xuất được duyệt nguyên văn.
+
+| Mã | Câu hỏi | Quyết định |
 |---|---|---|
-| Q-STD-1 | "tenant" đang mang bốn nghĩa (site, đơn vị trong site, blog, pháp nhân) | tách hai từ: **site** = doanh nghiệp thuê (slug, mỗi app một CSDL) · **tenant** = đơn vị / pháp nhân / sổ bên trong site. Chi tiết [MULTISITE](BIZCITY-MULTISITE-v1.md) §1 |
-| Q-STD-2 | Ba khuôn slug khác nhau (registry, spine, bizcity-web) | một khuôn `^[a-z][a-z0-9-]{2,29}$` (khuôn của registry đang chạy) |
+| Q-STD-1 | "tenant" đang mang bốn nghĩa (site, đơn vị trong site, blog, pháp nhân) | tách hai từ: **site** = doanh nghiệp thuê (slug, mỗi app một CSDL) · **tenant** = đơn vị / pháp nhân / sổ bên trong site. Áp vào [MULTISITE](BIZCITY-MULTISITE-v1.md) §1; chuẩn spine đổi theo bằng ADR riêng |
+| Q-STD-2 | Ba khuôn slug khác nhau (registry, spine, bizcity-web) | một khuôn `^[a-z][a-z0-9-]{2,29}$` (khuôn của registry đang chạy); schema spine đổi cùng ADR ở Q-STD-1 |
 | Q-STD-3 | Hai cách đếm trụ cột ở open-ketoan (11 và 17) | hệ dùng cách chia ở tệp này (4 trục + 12 trụ cột); hai bảng của open-ketoan là chi tiết của riêng Core kế toán |
-| Q-USER-1 | Quyền trong vé SSO thay ma trận cục bộ hay chỉ là trần? | **trần**: quyền hiệu lực = ma trận cục bộ ∩ quyền trong vé; từ chối cục bộ luôn thắng. [USERS-ROLES](BIZCITY-USERS-ROLES-v1.md) §4 |
+| Q-USER-1 | Quyền trong vé SSO thay ma trận cục bộ hay chỉ là trần? | **trần**: quyền hiệu lực = ma trận cục bộ ∩ quyền trong vé; từ chối cục bộ luôn thắng. Áp vào [USERS-ROLES](BIZCITY-USERS-ROLES-v1.md) §4 (R-USER-12) và [IDENTITY](BIZCITY-IDENTITY-v1.md) 1.1.0 (R-IDENT-4) |
 | Q-USER-2 | Người dùng tạo tại app (không qua WordPress) mang `sub` dạng gì? | **không mang `sub`** (`external_sub` trống) cho tới lần đăng nhập SSO đầu tiên có email khớp — đúng cách open-ketoan đang chạy; không thêm dạng mới |
 | Q-API-1 | Phân trang con trỏ chưa có chuẩn | con trỏ `<thời điểm ISO>\|<id>` như `bizcity_sync@1`, mã hoá base64url |
 | Q-CACHE-1 | Có đưa Redis vào bản cài mặc định không? | không; giữ tuỳ chọn, chỉ thêm khi chạy ≥ 2 bản API |
@@ -90,4 +94,4 @@ Mức C0–C3 của [SPINE](BIZCITY-SPINE-v1.md) đo **dữ liệu trên dây**;
 
 ## 7. Đổi chuẩn
 
-PR vào repo này: sửa tệp chuẩn + `standards.json` + CHANGELOG, chạy `node tools/standard-check.mjs` (tự kiểm sổ chuẩn) ĐẠT. Thêm trục dữ liệu hoặc trụ cột mới cần ADR và ít nhất hai app cần (R-PLAT-3). Phá tương thích: tệp `-v2`, chạy song song ≥ 2 bản phát hành hoặc 6 tháng (VER-3 của open-ketoan `docs/standard/VERSIONING.md`).
+PR vào repo này: sửa tệp chuẩn + `standards.json` + CHANGELOG, chạy `node tools/standard-check.mjs` (tự kiểm sổ chuẩn) ĐẠT. Câu hỏi mới ghi vào §6 với mã `Q-<chủ đề>-<số>` kèm đề xuất; chỉ thành luật khi chủ duyệt. Thêm trục dữ liệu hoặc trụ cột mới cần ADR và ít nhất hai app cần (R-PLAT-3). Phá tương thích: tệp `-v2`, chạy song song ≥ 2 bản phát hành hoặc 6 tháng (VER-3 của open-ketoan `docs/standard/VERSIONING.md`).
