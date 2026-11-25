@@ -61,7 +61,7 @@ Báo cáo kiểm theo [`bizcity_conformance_report@1`](BIZCITY-CONFORMANCE-REPOR
 2. Viết `bizcity.app.json` ([SPINE](BIZCITY-SPINE-v1.md) §5), chạy `node tools/spine-check.mjs --manifest bizcity.app.json`.
 3. Dựng khuôn repo theo [APP-SKELETON](BIZCITY-APP-SKELETON-v1.md) §2; `docs/canon/README.md` trỏ về tệp này.
 4. Người dùng và quyền theo [USERS-ROLES](BIZCITY-USERS-ROLES-v1.md); API theo [API-PROFILE](BIZCITY-API-PROFILE-v1.md); màn theo [WEB](BIZCITY-WEB-v1.md).
-5. Chạy `node tools/standard-check.mjs --repo .`; chỗ chưa đạt ghi thành nợ ở `docs/NO-CHUAN-NEN.md` (`tools/no-chuan.mjs`, R-STD-9) <!-- [2026-11-25 01:16 PM Johnny Chu - Chu Hoàng Anh] STD-5 --> — — mức tối thiểu để được liệt kê trên bizcity.vn là **S1** (§5).
+5. Chạy `node tools/standard-check.mjs --repo .`; chỗ chưa đạt ghi thành nợ ở `docs/NO-CHUAN-NEN.md` (`tools/no-chuan.mjs`, R-STD-9) <!-- [2026-11-25 01:16 PM Johnny Chu - Chu Hoàng Anh] STD-5 --> — mức tối thiểu để được liệt kê trên bizcity.vn là **S1** (§5).
 6. Thử đăng nhập một lần và gọi Hub trên máy bằng [`tools/hub-local`](../../tools/hub-local/README.md).
 
 ## 5. Mức tuân thủ của một repo
