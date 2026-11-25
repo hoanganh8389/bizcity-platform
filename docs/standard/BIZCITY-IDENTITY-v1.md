@@ -2,12 +2,14 @@
 
 <!-- [2026-11-24 08:10 PM Johnny Chu - Chu Hoàng Anh] SPINE-4 — hợp đồng thứ nhất trong ba hợp đồng còn lại của bộ kiểm tương thích. Viết từ cái ĐANG CHẠY: open-ketoan apps/api/src/modules/auth/wp-sso.ts (vé HMAC-SHA256 ≤ 5 phút, đổi vé lấy phiên), canon §4 "người dùng chung", R-TEN-9; thêm sub = wp:<id> theo chuẩn spine §2 (chủ duyệt Q-SPINE-1). -->
 
-> **Phiên bản:** 1.0.0 · 2026-11-24 · **Trạng thái:** **Chấp nhận** — chủ dự án duyệt 2026-11-24 (Q-IDENT-1, 2) <!-- [2026-11-24 09:50 PM Johnny Chu - Chu Hoàng Anh] SPINE-5 --> · **Thuộc:** `@bizcity/contracts`
+> **Phiên bản:** 1.0.1 · 2026-11-24 · **Trạng thái:** **Chấp nhận** — chủ dự án duyệt 2026-11-24 (Q-IDENT-1, 2) <!-- [2026-11-24 09:50 PM Johnny Chu - Chu Hoàng Anh] SPINE-5 --> · **Thuộc:** `@bizcity/contracts`
 > **Máy đọc:** `packages/contracts/schema/spine/identity.schema.json` (vé và phiên).
 
 ## 0. Một câu
 
 **WordPress của bizcity nói *người này là ai và được làm gì*; mỗi app nhận bằng một vé ký HMAC sống ≤ 5 phút, chỉ nhận quyền mình đã khai, và vẫn có quyền khoá người đó ở phía mình.**
+
+**Làm rõ (1.0.1, chủ chỉ đạo 2026-11-24):** hợp đồng này chỉ nói về **cửa SSO**. App vẫn tự tạo và quản lý người dùng, vai, ma trận quyền của mình và tự đứng được khi không có Hub — khuôn chung ở [`bizcity_users@1`](BIZCITY-USERS-ROLES-v1.md). "WordPress nói được làm gì" nghĩa là vé mang `perms`; cách `perms` kết hợp với ma trận cục bộ là câu hỏi Q-USER-1 ở chuẩn đó. <!-- [2026-11-24 11:48 PM Johnny Chu - Chu Hoàng Anh] STD-1 -->
 
 ## 1. Vai
 
@@ -57,9 +59,9 @@ App khác (cake, POS WordPress) làm cùng khuôn: cùng tên route, cùng hình
 
 | App | Đang | Cần |
 |---|---|---|
-| open-ketoan | khớp người dùng theo **email**, chưa lưu `sub`, chưa kiểm `aud` | **đang làm (SPINE-5)**: cột `users.external_sub`, ưu tiên `sub` rồi mới email (gặp email đã gắn `sub` khác ⇒ từ chối, không chiếm tài khoản); kiểm `aud`; `WP_SSO_AUD`, `WP_SSO_REQUIRE_SUB` |
-| open-cake | chưa có SSO (W1) | làm theo hợp đồng này ở PHASE-016 |
-| WordPress (bizcity-web / plugin phát vé) | phát `email, name, login, perms, tenant` | thêm `sub`, `aud` |
+| open-ketoan | **đã xong (#626, 2026-11-24)** | — (trước đây: cột `users.external_sub`, ưu tiên `sub` rồi mới email (gặp email đã gắn `sub` khác ⇒ từ chối, không chiếm tài khoản); kiểm `aud`; `WP_SSO_AUD`, `WP_SSO_REQUIRE_SUB`) <!-- [2026-11-24 11:48 PM Johnny Chu - Chu Hoàng Anh] STD-1 --> |
+| open-cake | **có SSO** (PHASE-004 S004-7, 2026-11-24) nhưng chỉ nhận `aud = cake` trong khi `id` trong `bizcity.app.json` là `open-cake`; khớp theo email, chưa lưu `sub` | sửa `aud` = `open-cake` (R-IDENT-3); cột `external_sub`, khớp `sub` trước (R-IDENT-1) <!-- [2026-11-24 11:48 PM Johnny Chu - Chu Hoàng Anh] STD-1 --> |
+| WordPress (plugin phát vé: open-ketoan-bridge) | **đã phát `sub`, `aud`** (bridge #35, 2026-11-24) | sau 90 ngày bật `WP_SSO_REQUIRE_SUB=1` bên app <!-- [2026-11-24 11:48 PM Johnny Chu - Chu Hoàng Anh] STD-1 --> |
 
 ## 5. Kiểm (mức C3)
 
@@ -85,5 +87,6 @@ Mật khẩu, 2FA, phiên WordPress — việc của WordPress. Khoá API máy �
 
 ## 8. Lịch sử
 
+- **1.0.1 (2026-11-24):** làm rõ phạm vi (chỉ cửa SSO; app tự làm chủ người dùng cục bộ — `bizcity_users@1`); cập nhật §4 theo thực tế (open-ketoan #626, bridge #35, open-cake S004-7). Không đổi luật. <!-- [2026-11-24 11:48 PM Johnny Chu - Chu Hoàng Anh] STD-1 -->
 - **1.0.0 (2026-11-24):** chủ duyệt Q-IDENT-1, 2; bỏ hậu tố -draft; R-IDENT-3 ghi công tắc `WP_SSO_REQUIRE_SUB`. <!-- [2026-11-24 09:50 PM Johnny Chu - Chu Hoàng Anh] SPINE-5 -->
 - **1.0.0-draft (2026-11-24):** bản đầu, SPINE-4.

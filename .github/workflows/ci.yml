@@ -25,3 +25,5 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: node tools/spine-check.mjs
+      # [2026-11-24 11:48 PM Johnny Chu - Chu Hoàng Anh] STD-1 — tự kiểm sổ chuẩn nền
+      - run: node tools/standard-check.mjs
