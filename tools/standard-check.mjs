@@ -140,7 +140,8 @@ const result = {
   schema: 'bizcity_conformance_report@1', tool: 'standard-check', tool_version: '1.0.0', standard: 'bizcity_standard_map@1',
   ran_at: new Date().toISOString(), lane: 'HOUSE',
   ...(appId ? { app_id: appId } : {}),
-  scope: repos.length ? repos : 'registry',
+  // [2026-11-25 10:20 AM Johnny Chu - Chu Hoàng Anh] STD-3 — scope chỉ ghi tên thư mục repo, không ghi đường dẫn máy (R-REP-3: báo cáo công bố được).
+  scope: repos.length ? repos.map((r) => basename(resolve(r))) : 'registry',
   ...(level && !fails ? { level } : {}),
   checks, findings, verdict: fails ? 'KHÔNG ĐẠT' : 'ĐẠT',
 };
