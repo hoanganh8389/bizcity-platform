@@ -2,7 +2,7 @@
 
 <!-- [2026-11-24 08:10 PM Johnny Chu - Chu Hoàng Anh] SPINE-4 — hợp đồng thứ ba của bộ kiểm tương thích (open-hub DE-XUAT-BO-KIEM-TUONG-THICH §5–§6): tệp máy đọc mà bizcity.vn dùng để hiện nhãn mức C0–C3 và trạng thái, thay vì gõ tay (R-CANON-10: nhãn phải khớp nghiệm thu). -->
 
-> **Phiên bản:** 1.0.0 · 2026-11-24 · **Trạng thái:** Đang dùng (`tools/spine-check.mjs --json` in theo hợp đồng này) · **Thuộc:** `@bizcity/contracts`
+> **Phiên bản:** 1.1.0 · 2026-11-24 · **Trạng thái:** Đang dùng (`tools/spine-check.mjs --json` in theo hợp đồng này) · **Thuộc:** `@bizcity/contracts`
 > **Máy đọc:** `packages/contracts/schema/spine/conformance-report.schema.json` · vector trong `schema/spine/vectors/`.
 
 ## 1. Hình
@@ -41,8 +41,10 @@
 |---|---|---|
 | `tools/spine-check.mjs --json` | MANIFEST | **có** (1.1.0) |
 | `tools/spine-contract.mjs --json` | CONTRACT | bản đầu (profile `ledger`: SC-SPINE-4 phần đọc, SC-SPINE-5) |
+| `standard-check` | HOUSE | **có** — `tools/standard-check.mjs`: khuôn repo theo bản đồ chuẩn (`standard: bizcity_standard_map@1`, mức **S0–S3**, mã `SC-STD-*`, `SC-SEC-P*`) <!-- [2026-11-24 11:48 PM Johnny Chu - Chu Hoàng Anh] STD-1 --> |
 | `spine-house` | HOUSE | chưa — ở open-ketoan là `tests/conformance` (SC-*); gói chung bọc lại ở bước sau |
 
 ## 4. Lịch sử
 
+- **1.1.0 (2026-11-24):** thêm công cụ `standard-check`, chuẩn `bizcity_standard_map@1`, mức S0–S3 (khuôn repo, độc lập với C0–C3), mã kiểm ngoài họ `SC-SPINE` (khuôn `SC-<HỌ>-<số>`). Chỉ thêm, báo cáo cũ vẫn hợp lệ. <!-- [2026-11-24 11:48 PM Johnny Chu - Chu Hoàng Anh] STD-1 -->
 - **1.0.0 (2026-11-24):** bản đầu, SPINE-4.

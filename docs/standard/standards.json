@@ -1,0 +1,33 @@
+{
+  "$comment": "[2026-11-24 11:48 PM Johnny Chu - Chu Hoàng Anh] STD-1 — sổ chuẩn nền máy đọc: mỗi chuẩn một dòng (tệp, phiên bản, trạng thái, trụ cột, bản mẫu, phép kiểm). tools/standard-check.mjs tự kiểm sổ này với thư mục docs/standard/. bizcity.vn và repo app đọc tệp này để biết chuẩn nào đang hiệu lực.",
+  "schema": "bizcity_standard_map@1",
+  "version": "1.0.0-draft",
+  "updated": "2026-11-24",
+  "map": "docs/standard/README.md",
+  "architecture": "docs/ARCHITECTURE.md",
+  "canon": "https://github.com/hoanganh8389/open-hub/blob/main/docs/canon/BIZCITY-OPEN-CANON-v1.md",
+  "axes": [
+    { "id": "master_data", "keys": ["item_id", "uom", "branch_code", "partner.code"], "owner": "open-ketoan", "standard": "bizcity_spine@1" },
+    { "id": "document", "keys": ["doc_ref"], "owner": "*", "standard": "bizcity_spine@1" },
+    { "id": "contact", "keys": ["contact_id"], "owner": "open-cake", "standard": "bizcity_spine@1" },
+    { "id": "user", "keys": ["sub"], "owner": "hub + app", "standard": "bizcity_users@1" }
+  ],
+  "standards": [
+    { "id": "bizcity_spine@1", "file": "BIZCITY-SPINE-v1.md", "version": "1.1.0", "status": "accepted", "pillar": "axes", "reference": ["open-ketoan", "open-cake"], "checks": ["SC-SPINE-1", "SC-SPINE-2", "SC-SPINE-4", "SC-SPINE-5"], "tool": "tools/spine-check.mjs" },
+    { "id": "bizcity_identity@1", "file": "BIZCITY-IDENTITY-v1.md", "version": "1.0.1", "status": "accepted", "pillar": "T3", "reference": ["open-ketoan", "open-ketoan-bridge"], "checks": ["SC-IDENT-1", "SC-IDENT-2", "SC-IDENT-3", "SC-IDENT-4"], "tool": "tools/hub-local/check.sh" },
+    { "id": "bizcity_knowledge@1", "file": "BIZCITY-KNOWLEDGE-v1.md", "version": "1.0.0", "status": "accepted", "pillar": "T12", "reference": ["open-ketoan"], "checks": [], "tool": null },
+    { "id": "bizcity_conformance_report@1", "file": "BIZCITY-CONFORMANCE-REPORT-v1.md", "version": "1.1.0", "status": "accepted", "pillar": "T7", "reference": ["bizcity-platform"], "checks": ["SC-SPINE-2"], "tool": "tools/spine-check.mjs" },
+    { "id": "bizcity_app_skeleton@1", "file": "BIZCITY-APP-SKELETON-v1.md", "version": "1.0.0-draft", "status": "draft", "pillar": "T1", "reference": ["open-ketoan", "open-cake"], "checks": ["SC-STD-1", "SC-STD-2", "SC-STD-3"], "tool": "tools/standard-check.mjs" },
+    { "id": "bizcity_api_profile@1", "file": "BIZCITY-API-PROFILE-v1.md", "version": "1.0.0-draft", "status": "draft", "pillar": "T2", "reference": ["open-ketoan"], "checks": ["SC-SPINE-4", "SC-SPINE-5"], "tool": "tools/spine-contract.mjs" },
+    { "id": "bizcity_users@1", "file": "BIZCITY-USERS-ROLES-v1.md", "version": "1.0.0-draft", "status": "draft", "pillar": "T3", "reference": ["open-ketoan", "open-cake"], "checks": [], "tool": "tools/hub-local/check.sh" },
+    { "id": "bizcity_security@1", "file": "BIZCITY-SECURITY-v1.md", "version": "1.0.0-draft", "status": "draft", "pillar": "T4", "reference": ["open-ketoan"], "checks": ["SC-SEC-P1"], "tool": "tools/standard-check.mjs" },
+    { "id": "bizcity_observability@1", "file": "BIZCITY-OBSERVABILITY-v1.md", "version": "1.0.0-draft", "status": "draft", "pillar": "T5", "reference": ["open-ketoan"], "checks": [], "tool": null },
+    { "id": "bizcity_cache@1", "file": "BIZCITY-CACHE-v1.md", "version": "1.0.0-draft", "status": "draft", "pillar": "T6", "reference": [], "checks": [], "tool": null },
+    { "id": "bizcity_testing@1", "file": "BIZCITY-TESTING-v1.md", "version": "1.0.0-draft", "status": "draft", "pillar": "T7", "reference": ["open-ketoan"], "checks": ["SC-STD-3"], "tool": "tools/standard-check.mjs" },
+    { "id": "bizcity_release@1", "file": "BIZCITY-RELEASE-v1.md", "version": "1.0.0-draft", "status": "draft", "pillar": "T8", "reference": ["open-ketoan", "bizcity-platform"], "checks": ["SC-STD-REL-1"], "tool": "tools/standard-check.mjs" },
+    { "id": "bizcity_web@1", "file": "BIZCITY-WEB-v1.md", "version": "1.0.0-draft", "status": "draft", "pillar": "T9", "reference": ["open-cake", "open-ketoan"], "checks": [], "tool": null },
+    { "id": "bizcity_multisite@1", "file": "BIZCITY-MULTISITE-v1.md", "version": "1.0.0-draft", "status": "draft", "pillar": "T10", "reference": ["open-ketoan"], "checks": [], "tool": null },
+    { "id": "bizcity_hub@1", "file": "BIZCITY-HUB-v1.md", "version": "1.0.0-draft", "status": "draft", "pillar": "T11", "reference": ["bizcity-llm-router", "bizcity-open-setup", "bizcity-web"], "checks": [], "tool": "tools/hub-local/check.sh" }
+  ],
+  "open_questions": ["Q-STD-1", "Q-STD-2", "Q-STD-3", "Q-USER-1", "Q-USER-2", "Q-API-1", "Q-CACHE-1", "Q-REL-1"]
+}
