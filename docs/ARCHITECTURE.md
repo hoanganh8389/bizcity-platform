@@ -74,6 +74,8 @@ Chi tiết: [`bizcity_spine@1`](standard/BIZCITY-SPINE-v1.md).
 
 **4. Người dùng — Hub cấp danh tính, app giữ quyền.** Đăng nhập một lần từ Hub bằng vé ký HMAC (`sub = wp:<id>`, `aud` = app). Mỗi app **vẫn tự tạo được người dùng**, có vai và ma trận quyền riêng theo một khuôn chung, và tự đứng được khi không có Hub ([`bizcity_users@1`](standard/BIZCITY-USERS-ROLES-v1.md)).
 
+Luồng đơn xuyên app (CRM đọc tồn Kế Toán → đơn chờ ở POS → bàn giao vận chuyển mới ghi nhận): [PHASE-001](phases/PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/README.md). <!-- [2026-11-25 05:33 PM Johnny Chu - Chu Hoàng Anh] ORDER-1 -->
+
 Sự kiện giữa các app: ghi vào outbox cùng giao dịch → webhook ký HMAC → bên nhận idempotent. Lệch thì **đối chiếu có mã** (`RC-SPINE-*`), không ghi đè.
 
 ## 5. Năm nguyên tắc sổ

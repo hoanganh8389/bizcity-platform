@@ -1,0 +1,244 @@
+{
+  "schema": "bizcity_task_board@1",
+  "generated": "2026-11-25T10:38:02.226Z",
+  "phases": [
+    {
+      "name": "PHASE-001-LUONG-DON-CRM-POS-KE-TOAN",
+      "path": "docs/phases/PHASE-001-LUONG-DON-CRM-POS-KE-TOAN",
+      "status": "Đang làm / có mã",
+      "items": [
+        {
+          "id": "LD-0",
+          "group": "Chưa làm",
+          "text": "chốt Q-ORD-1..8 (README §5)",
+          "file": "docs/phases/PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/CHECKLIST.md",
+          "line": 9
+        },
+        {
+          "id": "LD-PLAT-0",
+          "group": "Xong",
+          "text": "bizcity-platform",
+          "file": "docs/phases/PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/CHECKLIST.md",
+          "line": 10
+        },
+        {
+          "id": "LD-PLAT-1",
+          "group": "Chưa làm",
+          "text": "bizcity-platform",
+          "file": "docs/phases/PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/CHECKLIST.md",
+          "line": 11
+        },
+        {
+          "id": "LD-PLAT-2",
+          "group": "Chưa làm",
+          "text": "bizcity-platform",
+          "file": "docs/phases/PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/CHECKLIST.md",
+          "line": 12
+        },
+        {
+          "id": "LD-PLAT-3",
+          "group": "Chưa làm",
+          "text": "bizcity-platform",
+          "file": "docs/phases/PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/CHECKLIST.md",
+          "line": 13
+        },
+        {
+          "id": "LD-PLAT-4",
+          "group": "Chưa làm",
+          "text": "bizcity-platform",
+          "file": "docs/phases/PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/CHECKLIST.md",
+          "line": 14
+        },
+        {
+          "id": "LD-KT-1",
+          "group": "Chưa làm",
+          "text": "scope stock:read",
+          "file": "docs/phases/PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/CHECKLIST.md",
+          "line": 15
+        },
+        {
+          "id": "LD-KT-2",
+          "group": "Chưa làm",
+          "text": "GET /api/v1/inventory/availability (onHand, pendingOut, held, available)",
+          "file": "docs/phases/PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/CHECKLIST.md",
+          "line": 16
+        },
+        {
+          "id": "LD-KT-3",
+          "group": "Chưa làm",
+          "text": "MCP kt_stock",
+          "file": "docs/phases/PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/CHECKLIST.md",
+          "line": 17
+        },
+        {
+          "id": "LD-KT-4",
+          "group": "Chưa làm",
+          "text": "phiếu bán lưu links về pos.order",
+          "file": "docs/phases/PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/CHECKLIST.md",
+          "line": 18
+        },
+        {
+          "id": "LD-KT-5",
+          "group": "Chưa làm",
+          "text": "pos.order.create nhận nguồn đơn chờ (shop React)",
+          "file": "docs/phases/PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/CHECKLIST.md",
+          "line": 19
+        },
+        {
+          "id": "LD-OPB-1",
+          "group": "Chưa làm",
+          "text": "open-pos-backend",
+          "file": "docs/phases/PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/CHECKLIST.md",
+          "line": 20
+        },
+        {
+          "id": "LD-OPB-2",
+          "group": "Chưa làm",
+          "text": "open-pos-backend",
+          "file": "docs/phases/PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/CHECKLIST.md",
+          "line": 21
+        },
+        {
+          "id": "LD-OPB-3",
+          "group": "Chưa làm",
+          "text": "open-pos-backend",
+          "file": "docs/phases/PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/CHECKLIST.md",
+          "line": 22
+        },
+        {
+          "id": "LD-OPB-4",
+          "group": "Chưa làm",
+          "text": "open-pos-backend",
+          "file": "docs/phases/PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/CHECKLIST.md",
+          "line": 23
+        },
+        {
+          "id": "LD-OPB-5",
+          "group": "Chưa làm",
+          "text": "open-pos-backend",
+          "file": "docs/phases/PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/CHECKLIST.md",
+          "line": 24
+        },
+        {
+          "id": "LD-OPB-6",
+          "group": "Chưa làm",
+          "text": "open-pos-backend",
+          "file": "docs/phases/PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/CHECKLIST.md",
+          "line": 25
+        },
+        {
+          "id": "LD-OPB-7",
+          "group": "Chưa làm",
+          "text": "open-pos-backend",
+          "file": "docs/phases/PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/CHECKLIST.md",
+          "line": 26
+        },
+        {
+          "id": "LD-OP-1",
+          "group": "Chưa làm",
+          "text": "danh sách đơn đã xác nhận ở quầy (mockup trước)",
+          "file": "docs/phases/PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/CHECKLIST.md",
+          "line": 27
+        },
+        {
+          "id": "LD-OP-2",
+          "group": "Chưa làm",
+          "text": "bàn giao vận chuyển ⇒ ghi nhận bằng đường bán có sẵn (legacy + React)",
+          "file": "docs/phases/PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/CHECKLIST.md",
+          "line": 28
+        },
+        {
+          "id": "LD-OP-3",
+          "group": "Chưa làm",
+          "text": "giao xong / hoàn hàng",
+          "file": "docs/phases/PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/CHECKLIST.md",
+          "line": 29
+        },
+        {
+          "id": "LD-OP-4",
+          "group": "Chưa làm",
+          "text": "trạng thái giao + sự kiện shipped / delivered / returned",
+          "file": "docs/phases/PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/CHECKLIST.md",
+          "line": 30
+        },
+        {
+          "id": "LD-BR-1",
+          "group": "Chưa làm",
+          "text": "open-ketoan-bridge",
+          "file": "docs/phases/PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/CHECKLIST.md",
+          "line": 31
+        },
+        {
+          "id": "LD-BR-2",
+          "group": "Chưa làm",
+          "text": "open-ketoan-bridge",
+          "file": "docs/phases/PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/CHECKLIST.md",
+          "line": 32
+        },
+        {
+          "id": "LD-BR-3",
+          "group": "Chưa làm",
+          "text": "open-ketoan-bridge",
+          "file": "docs/phases/PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/CHECKLIST.md",
+          "line": 33
+        },
+        {
+          "id": "LD-CAKE-1",
+          "group": "Chưa làm",
+          "text": "cake.order_request (= S010-1)",
+          "file": "docs/phases/PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/CHECKLIST.md",
+          "line": 34
+        },
+        {
+          "id": "LD-CAKE-2",
+          "group": "Chưa làm",
+          "text": "đọc tồn Kế Toán ở màn chọn hàng (mockup trước)",
+          "file": "docs/phases/PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/CHECKLIST.md",
+          "line": 35
+        },
+        {
+          "id": "LD-CAKE-3",
+          "group": "Chưa làm",
+          "text": "gửi đơn sang POS (outbox, cấu hình kết nối)",
+          "file": "docs/phases/PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/CHECKLIST.md",
+          "line": 36
+        },
+        {
+          "id": "LD-CAKE-4",
+          "group": "Chưa làm",
+          "text": "nhận sự kiện POS ⇒ Contact 360 (= S010-5)",
+          "file": "docs/phases/PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/CHECKLIST.md",
+          "line": 37
+        },
+        {
+          "id": "LD-CAKE-5",
+          "group": "Chưa làm",
+          "text": "RC-ORDER-1 + RC-ORDER-3 (= S010-6)",
+          "file": "docs/phases/PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/CHECKLIST.md",
+          "line": 38
+        },
+        {
+          "id": "LD-CRM-1",
+          "group": "Chưa làm",
+          "text": "adapter open_pos",
+          "file": "docs/phases/PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/CHECKLIST.md",
+          "line": 39
+        },
+        {
+          "id": "LD-CRM-2",
+          "group": "Chưa làm",
+          "text": "webhook sự kiện POS ⇒ bizcity_ocrm_events",
+          "file": "docs/phases/PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/CHECKLIST.md",
+          "line": 40
+        },
+        {
+          "id": "LD-CRM-3",
+          "group": "Chưa làm",
+          "text": "bỏ tồn nhập tay khi đã nối Kế Toán",
+          "file": "docs/phases/PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/CHECKLIST.md",
+          "line": 41
+        }
+      ]
+    }
+  ]
+}
