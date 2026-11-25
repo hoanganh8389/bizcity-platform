@@ -29,3 +29,5 @@ jobs:
       - run: node tools/standard-check.mjs
       # [2026-11-25 10:34 AM Johnny Chu - Chu Hoàng Anh] USERS-1 — vector khuôn người dùng · vai · quyền
       - run: node tools/users-check.mjs
+      # [2026-11-25 01:16 PM Johnny Chu - Chu Hoàng Anh] STD-5 — sổ nợ chuẩn nền
+      - run: node tools/no-chuan.mjs --check

@@ -109,7 +109,7 @@
     {
       "id": "bizcity_app_skeleton@1",
       "file": "BIZCITY-APP-SKELETON-v1.md",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "status": "accepted",
       "pillar": "T1",
       "reference": [
@@ -119,7 +119,8 @@
       "checks": [
         "SC-STD-1",
         "SC-STD-2",
-        "SC-STD-3"
+        "SC-STD-3",
+        "SC-STD-DEBT-1"
       ],
       "tool": "tools/standard-check.mjs"
     },
@@ -271,5 +272,6 @@
     "Q-CACHE-1": "Redis không vào bản cài mặc định; chỉ khi ≥ 2 bản API",
     "Q-REL-1": "giữ GitHub Release (.tgz) cho tới khi có tổ chức npm @bizcity"
   },
-  "open_questions": []
+  "open_questions": [],
+  "debt_register": "docs/standard/no-chuan.json"
 }

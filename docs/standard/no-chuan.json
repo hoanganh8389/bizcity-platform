@@ -1,0 +1,237 @@
+{
+  "$comment": "[2026-11-25 01:16 PM Johnny Chu - Chu Hoàng Anh] STD-5 — sổ NỢ CHUẨN NỀN đã biết của từng repo (từ rà soát 2026-11-24 / 25), làm nguồn cho tools/no-chuan.mjs sinh docs/NO-CHUAN-NEN.md ở mỗi repo. Chủ chỉ đạo 2026-11-25: bizcity-platform giữ khuôn; việc từng repo ghi thành nợ cho dev repo đó cải thiện, tuân định hướng. Mỗi mục: rule = mã luật của chuẩn, std = tệp chuẩn, todo = việc phải làm (một câu, làm được), note = ràng buộc khi làm. Trả xong ⇒ xoá mục ở đây và chạy lại công cụ.",
+  "schema": "bizcity_debt_register@1",
+  "updated": "2026-11-25",
+  "repos": {
+    "open-ketoan": [
+      {
+        "rule": "R-USER-7",
+        "std": "BIZCITY-USERS-ROLES-v1.md",
+        "todo": "Đổi 5 quyền tiếng Anh `pos:sell`, `pos:cancel`, `pos:return`, `pos:report`, `voucher:use` sang khuôn `<module>:<chức-năng>-<động-từ>` tiếng Việt không dấu",
+        "note": "giữ tên cũ trong `aliases` — vai và luật cho / cấm trong CSDL đang trỏ tên cũ; chạy lại `UPDATE_AUTHZ=1` cho `bizcity.authz.json`"
+      },
+      {
+        "rule": "R-QG-1",
+        "std": "BIZCITY-TESTING-v1.md",
+        "todo": "Đưa selfcheck `--strict` trên `main` về ĐẠT: 14 phép kiểm đỏ đo 2026-11-25 (SC-ACT-1, SC-ACT-2, SC-API-2, SC-CON-5, SC-DOC-4, SC-DOC-7, SC-FLOW-1, SC-LAYER-2, SC-LOG-2, SC-MOD-2, SC-SEC-2, SC-SEC-5, SC-STD-5, SC-UI-1)",
+        "note": "nhóm bảo mật (SC-SEC-2 ghép chuỗi SQL, SC-SEC-5 bí mật mặc định) và SC-MOD-2 (phân hệ ghi bảng nhân) trước; rà theo R-REV, không thêm vào baseline"
+      },
+      {
+        "rule": "R-QG-1",
+        "std": "BIZCITY-TESTING-v1.md",
+        "todo": "Đưa `npm run typecheck` trên `main` về 0 lỗi (12 lỗi đo 2026-11-25: phân hệ mua hàng `maxPayDays` / `payDays`, `TraChinhSachPage.tsx`)",
+        "note": ""
+      },
+      {
+        "rule": "Q-API-1",
+        "std": "BIZCITY-API-PROFILE-v1.md",
+        "todo": "Thống nhất phân trang con trỏ về `base64url(<ISO>|<id>)` + `meta.nextCursor` (sync, connections, provisioning đang mỗi nơi một kiểu)",
+        "note": "chuyển dần khi sửa tới; route công khai đổi hình ⇒ theo R-API-7"
+      },
+      {
+        "rule": "R-STD-API-6",
+        "std": "BIZCITY-API-PROFILE-v1.md",
+        "todo": "Giới hạn tần suất chung ba hạng (công khai theo IP, có phiên theo người dùng, khoá máy theo khoá), trả `RATE_LIMITED` + `Retry-After`",
+        "note": "đếm trong tiến trình; Redis chỉ khi ≥ 2 bản API (Q-CACHE-1)"
+      },
+      {
+        "rule": "R-STD-CACHE-1",
+        "std": "BIZCITY-CACHE-v1.md",
+        "todo": "Gom các chỗ đệm `Map` rải rác (`module-registry`, `role-assignments`, `session-state`, `workflow`, `branch-sites`, `tra-mst`…) về một giao diện đệm; khoá có site + tenant + config_version",
+        "note": "chờ `cache` của @bizcity/platform; trước đó sửa 2 chỗ đệm thiếu khoá site (S039-8)"
+      },
+      {
+        "rule": "R-REL-8",
+        "std": "BIZCITY-RELEASE-v1.md",
+        "todo": "Quy trình phát hành: tag `vX.Y.Z`, `package.json` đúng phiên bản (đang 0.1.0), workflow phát hành có SBOM + nhãn OCI",
+        "note": ""
+      },
+      {
+        "rule": "R-WEBARCH-1",
+        "std": "BIZCITY-WEB-v1.md",
+        "todo": "Màn mới và màn cũ khi sửa tách ba phần model · controller (`use-<màn>.ts`) · view; view không gọi mạng",
+        "note": "không viết lại cả loạt cho có; theo bậc thang tái sử dụng"
+      },
+      {
+        "rule": "R-STD-SITE-1",
+        "std": "BIZCITY-MULTISITE-v1.md",
+        "todo": "Thêm họ phép kiểm SC-SITE (chỉ bộ định tuyến đọc `SITE_MODE`; `Host` lạ ⇒ 404); xong nghiệm thu S039-20 cùng Site Manager",
+        "note": ""
+      },
+      {
+        "rule": "R-STD-1",
+        "std": "BIZCITY-APP-SKELETON-v1.md",
+        "todo": "Chuyển sang dùng `@bizcity/platform` / `@bizcity/contracts` từ bizcity-platform thay bản trong repo (bước P6 của kế hoạch gói chung)",
+        "note": "đợt riêng có ADR; giữ hành vi, chạy toàn bộ test"
+      }
+    ],
+    "open-cake": [
+      {
+        "rule": "R-USER-1",
+        "std": "BIZCITY-USERS-ROLES-v1.md",
+        "todo": "Thêm đăng nhập email + mật khẩu cục bộ (đang chỉ có SSO và `dev-login`) và luồng đặt mật khẩu cho người được mời",
+        "note": "app phải tự đứng được khi không có Hub"
+      },
+      {
+        "rule": "R-USER-13",
+        "std": "BIZCITY-USERS-ROLES-v1.md",
+        "todo": "Sinh `bizcity.authz.json` từ sổ đăng ký (`authzManifest()` hoặc test ảnh chụp như open-ketoan `apps/api/test/authz-manifest.test.ts`) và chặn lệch trong test",
+        "note": "đo 2026-11-25: 28 quyền, 6 vai, 2 khoá user meta — ĐẠT khuôn"
+      },
+      {
+        "rule": "R-STD-2",
+        "std": "BIZCITY-APP-SKELETON-v1.md",
+        "todo": "Import hợp đồng nền từ `@bizcity/contracts` thay bản chép `packages/contracts/src/base/` (ADR-0003 tạm)",
+        "note": ""
+      },
+      {
+        "rule": "R-STD-TEST-1",
+        "std": "BIZCITY-TESTING-v1.md",
+        "todo": "Có selfcheck chạy được (`tests/conformance/selfcheck.mjs`), các script `AGENTS.md` đang dẫn (`nhan-viec`, `so-tiep-theo`, `kiem-chuan.sh`) và CI",
+        "note": "AGENTS.md hiện trỏ tới công cụ chưa có"
+      },
+      {
+        "rule": "R-STD-SEC-5",
+        "std": "BIZCITY-SECURITY-v1.md",
+        "todo": "Test dừng khi tên CSDL không có chữ `test` (đang chỉ bỏ qua khi thiếu `TEST_DATABASE_URL`)",
+        "note": ""
+      },
+      {
+        "rule": "R-STD-OBS-1",
+        "std": "BIZCITY-OBSERVABILITY-v1.md",
+        "todo": "OpenTelemetry + `traceparent`, `/metrics` (`bizcity_cake_*`), `infrastructure/monitoring` theo bộ chung (PHASE-016)",
+        "note": ""
+      },
+      {
+        "rule": "R-STD-WEB-1",
+        "std": "BIZCITY-WEB-v1.md",
+        "todo": "Dùng facade `@bizcity/ui-kit` (đang `@open-cake/ui-kit`); thêm ErrorBoundary, tệp ngôn ngữ, ảo hoá danh sách dài (R-WEB 6/15 đạt theo tự đánh giá)",
+        "note": "thành phần riêng sản phẩm dựng trên facade"
+      },
+      {
+        "rule": "SC-DOC-1",
+        "std": "BIZCITY-APP-SKELETON-v1.md",
+        "todo": "Sửa tài liệu lệch mã: 60-UI ghi `cake:contacts:merge` (mã dùng `cake:contacts-gop`); 40 ghi đăng nhập mật khẩu + JWT `sid` (mã chưa có); 80-REACT ghi `@bizcity/ui-kit`, `useUrlState` (mã dùng `@open-cake/ui-kit`, `useRoute`); trạng thái PHASE-004",
+        "note": ""
+      },
+      {
+        "rule": "R-IDENT-3",
+        "std": "BIZCITY-IDENTITY-v1.md",
+        "todo": "(khi bật lại SSO) `aud` = `open-cake` theo `bizcity.app.json`, cột `external_sub`, quyền trong vé là trần (R-USER-12)",
+        "note": "SSO để sau theo chủ dự án 2026-11-25"
+      }
+    ],
+    "open-crm": [
+      {
+        "rule": "R-USER-13",
+        "std": "BIZCITY-USERS-ROLES-v1.md",
+        "todo": "Viết tay `bizcity.authz.json`: capability WordPress của plugin → quyền theo khuôn `<module>:<chức-năng>-<động-từ>`",
+        "note": ""
+      },
+      {
+        "rule": "C-9-11",
+        "std": "BIZCITY-HUB-v1.md",
+        "todo": "Sửa README còn chữ \"Premium add-on\": mọi ứng dụng 0 đồng; chỉ 1API của Zalo Hub và dịch vụ theo liên hệ tính phí",
+        "note": ""
+      }
+    ],
+    "open-pos": [
+      {
+        "rule": "R-USER-13",
+        "std": "BIZCITY-USERS-ROLES-v1.md",
+        "todo": "Viết tay `bizcity.authz.json` từ capability / quyền màn POS",
+        "note": "không đổi đường bán (I-0)"
+      },
+      {
+        "rule": "C-9-11",
+        "std": "BIZCITY-APP-SKELETON-v1.md",
+        "todo": "Tên plugin, tiêu đề còn tên TGS cũ → tên Open POS (C-9-11)",
+        "note": "không đổi slug / tên thư mục plugin đang cài"
+      }
+    ],
+    "open-pos-backend": [
+      {
+        "rule": "R-USER-13",
+        "std": "BIZCITY-USERS-ROLES-v1.md",
+        "todo": "Viết tay `bizcity.authz.json` từ capability của tsm",
+        "note": ""
+      }
+    ],
+    "open-ketoan-bridge": [
+      {
+        "rule": "R-USER-13",
+        "std": "BIZCITY-USERS-ROLES-v1.md",
+        "todo": "Viết tay `bizcity.authz.json` (quyền \"Kế toán - Mở phần mềm kế toán\" và các tab Cổng kế toán)",
+        "note": ""
+      },
+      {
+        "rule": "SC-DOC-1",
+        "std": "BIZCITY-MULTISITE-v1.md",
+        "todo": "Cập nhật `docs/CAU-HINH-KET-NOI.md` theo ba kiểu cài (bizcity · chain · single) và khoá cài đặt `inst_…`",
+        "note": "tài liệu viết trước kiểu chain"
+      },
+      {
+        "rule": "R-SPINE-5",
+        "std": "BIZCITY-SPINE-v1.md",
+        "todo": "Kéo danh mục theo con trỏ changefeed của open-ketoan (C8)",
+        "note": ""
+      }
+    ],
+    "twin-brain": [
+      {
+        "rule": "R-USER-13",
+        "std": "BIZCITY-USERS-ROLES-v1.md",
+        "todo": "Viết tay `bizcity.authz.json` (quyền dùng công cụ, kịch bản)",
+        "note": ""
+      },
+      {
+        "rule": "R-STD-OBS-1",
+        "std": "BIZCITY-OBSERVABILITY-v1.md",
+        "todo": "Truyền `traceparent` khi gọi Hub / app / MCP",
+        "note": ""
+      }
+    ],
+    "bizcity-twin-notebook": [
+      {
+        "rule": "R-USER-13",
+        "std": "BIZCITY-USERS-ROLES-v1.md",
+        "todo": "Viết tay `bizcity.authz.json`",
+        "note": ""
+      }
+    ],
+    "bizcity-automation": [
+      {
+        "rule": "R-USER-13",
+        "std": "BIZCITY-USERS-ROLES-v1.md",
+        "todo": "Viết tay `bizcity.authz.json`",
+        "note": ""
+      },
+      {
+        "rule": "C-9-11",
+        "std": "BIZCITY-HUB-v1.md",
+        "todo": "Sửa câu \"bán riêng theo gói\": mọi ứng dụng 0 đồng",
+        "note": ""
+      }
+    ],
+    "bizcity-open-setup": [
+      {
+        "rule": "R-STD-SITE-1",
+        "std": "BIZCITY-MULTISITE-v1.md",
+        "todo": "Thêm trường `product` cho site (open-cake PHASE-014 cần) và sổ ánh xạ blog ↔ site ↔ bản app (đang chỉ user meta + `external_ref`)",
+        "note": ""
+      },
+      {
+        "rule": "SC-DOC-1",
+        "std": "BIZCITY-MULTISITE-v1.md",
+        "todo": "Tiêu đề ADR-OKT-1 còn ghi \"tám bất biến\" (nội dung đã là chín, I-0…I-8)",
+        "note": ""
+      },
+      {
+        "rule": "R-STD-TEST-1",
+        "std": "BIZCITY-TESTING-v1.md",
+        "todo": "Có test cho Site Manager (`api.py`, `provisioning.py`)",
+        "note": ""
+      }
+    ]
+  }
+}
