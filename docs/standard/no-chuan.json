@@ -81,6 +81,18 @@
         "std": "BIZCITY-APP-SKELETON-v1.md",
         "todo": "Chuyển sang dùng `@bizcity/platform` / `@bizcity/contracts` từ bizcity-platform thay bản trong repo (bước P6 của kế hoạch gói chung)",
         "note": "đợt riêng có ADR; giữ hành vi, chạy toàn bộ test"
+      },
+      {
+        "rule": "R-STD-FAIL-6",
+        "std": "BIZCITY-FAILURE-MAP-v1.md",
+        "todo": "Màn thử bản đồ lỗi: phiếu mua hàng (MH05) — dựng khung bằng failure-check --scaffold (72 tình huống), gán mã từ ERROR_CATALOG / IN-*, lời nhắc, test; màn tô đúng ô / danh sách chọn / nguồn gốc (hợp đồng mua, phân tích mua, tồn tối đa) / luồng kho; sau đó 15 form còn lại",
+        "note": "theo R-FLOW: giữ chỗ + chữ chốt trước (thêm code vào error.fields, target vào details.findings là đổi thứ dùng chung); dòng kế toán do kế toán trưởng duyệt (R-STD-FAIL-8)"
+      },
+      {
+        "rule": "R-STD-FAIL-7",
+        "std": "BIZCITY-FAILURE-MAP-v1.md",
+        "todo": "Xuất nhật ký từ chối HT19 thành {screen, code} để failure-check --observed liệt kê lỗi gặp thật chưa có trong bản đồ",
+        "note": "không xuất dữ liệu kế toán, chỉ mã màn + mã lỗi (R-SEC-10)"
       }
     ],
     "open-cake": [
@@ -149,6 +161,12 @@
         "std": "BIZCITY-IDENTITY-v1.md",
         "todo": "(khi bật lại SSO) `aud` = `open-cake` theo `bizcity.app.json`, cột `external_sub`, quyền trong vé là trần (R-USER-12)",
         "note": "SSO để sau theo chủ dự án 2026-11-25"
+      },
+      {
+        "rule": "R-STD-FAIL-6",
+        "std": "BIZCITY-FAILURE-MAP-v1.md",
+        "todo": "Màn gửi chứng từ sang open-ketoan (thao tác gui): bản đồ lỗi tầng 3 — path theo toạ độ payload của mình, catchAt ngoai, mã có tiền tố chủ; màn chỉ đúng trường khi ketoan từ chối / giữ ở bể chờ",
+        "note": "tầng 3 chéo repo (BIZCITY-FAILURE-MAP §4); dùng mã của bizcity_errors@1 + IN-* trả về, không tự đặt lại"
       }
     ],
     "open-crm": [
@@ -177,6 +195,12 @@
         "std": "BIZCITY-APP-SKELETON-v1.md",
         "todo": "Tên plugin, tiêu đề còn tên TGS cũ → tên Open POS (C-9-11)",
         "note": "không đổi slug / tên thư mục plugin đang cài"
+      },
+      {
+        "rule": "R-STD-FAIL-6",
+        "std": "BIZCITY-FAILURE-MAP-v1.md",
+        "todo": "Màn gửi chứng từ sang open-ketoan (thao tác gui): bản đồ lỗi tầng 3 — path theo toạ độ payload của mình, catchAt ngoai, mã có tiền tố chủ; màn chỉ đúng trường khi ketoan từ chối / giữ ở bể chờ",
+        "note": "tầng 3 chéo repo (BIZCITY-FAILURE-MAP §4); dùng mã của bizcity_errors@1 + IN-* trả về, không tự đặt lại"
       }
     ],
     "open-pos-backend": [
