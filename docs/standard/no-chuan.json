@@ -203,6 +203,12 @@
         "std": "BIZCITY-FEEDBACK-LOOP-v1.md",
         "todo": "Ghi nhật ký lần ghi bị từ chối theo khuôn chung (BIZCITY-FEEDBACK-LOOP §3: entity, screen, failed[{code, field}], requestId) để loi.mjs đọc được; dặn agent theo R-STD-LOOP-8",
         "note": "chỉ mã — không ghi dữ liệu khách, số tiền"
+      },
+      {
+        "rule": "R-STD-LOOP-9",
+        "std": "BIZCITY-FEEDBACK-LOOP-v1.md",
+        "todo": "Một lệnh kiểm + tự sửa môi trường dev (runtime, cài gói, ../bizcity-platform, env cục bộ, CSDL test, hook pre-push chỉ chặn đỏ mới); AGENTS.md / CLAUDE.md dặn agent chạy đầu phiên",
+        "note": "mẫu: open-ketoan scripts/moi-truong-dev.mjs (#662); không tạo lại container / CSDL đã có, không ghi đè env"
       }
     ],
     "open-crm": [
@@ -243,6 +249,12 @@
         "std": "BIZCITY-FEEDBACK-LOOP-v1.md",
         "todo": "Ghi nhật ký lần ghi bị từ chối theo khuôn chung (BIZCITY-FEEDBACK-LOOP §3: entity, screen, failed[{code, field}], requestId) để loi.mjs đọc được; dặn agent theo R-STD-LOOP-8",
         "note": "chỉ mã — không ghi dữ liệu khách, số tiền"
+      },
+      {
+        "rule": "R-STD-LOOP-9",
+        "std": "BIZCITY-FEEDBACK-LOOP-v1.md",
+        "todo": "Một lệnh kiểm + tự sửa môi trường dev (runtime, cài gói, ../bizcity-platform, env cục bộ, CSDL test, hook pre-push chỉ chặn đỏ mới); AGENTS.md / CLAUDE.md dặn agent chạy đầu phiên",
+        "note": "mẫu: open-ketoan scripts/moi-truong-dev.mjs (#662); không tạo lại container / CSDL đã có, không ghi đè env"
       }
     ],
     "open-pos-backend": [

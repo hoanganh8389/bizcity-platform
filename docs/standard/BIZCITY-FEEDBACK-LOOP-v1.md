@@ -70,6 +70,7 @@ Mỗi app có ghi dữ liệu ghi **một dòng JSONL cho mỗi lần ghi bị t
 | **R-STD-LOOP-6** | **Tới tay dev.** Ba danh sách trên thành mục trong bảng việc / nợ của repo. Không để nằm trên màn quản trị chờ ai đó mở | review |
 | **R-STD-LOOP-7** | **PR nói độ phủ.** Khối bằng chứng của PR chạm màn có ghi dữ liệu có: độ phủ bản đồ trước / sau, dòng chặn chưa có test, mã mới chưa có trong danh mục | review; công cụ PR của repo |
 | **R-STD-LOOP-8** | **Agent được dặn.** Hướng dẫn agent của repo (AGENTS.md / CLAUDE.md / copilot-instructions) nói ba lệnh: `failure-check --questions` trước khi viết mã lưu, `loi.mjs` và `failure-check --report` sau khi thử. Repo cài skill `tu-duy-nguoc` | SC-LOOP-1 |
+| **R-STD-LOOP-9** | **Môi trường dev một lệnh, agent tự dựng.** Repo có một lệnh kiểm + tự sửa môi trường dev: phiên bản runtime, cài gói, build gói dùng chung, lấy `../bizcity-platform`, tệp env cục bộ có bí mật ngẫu nhiên, CSDL test, bật hook. Lệnh này **không tạo lại** container / CSDL đã có, không ghi đè env, không xoá gì. Agent chạy lệnh ở đầu mỗi phiên (AGENTS.md; Claude Code: hook SessionStart). Hook `pre-push` chạy bộ kiểm của repo và **chỉ chặn phát hiện mới so với nhánh chính**, đỏ có sẵn không chặn. Mẫu: open-ketoan `scripts/moi-truong-dev.mjs` (#662) <!-- [2026-11-25 08:41 PM Johnny Chu - Chu Hoàng Anh] STD-12 --> | review; SC-LOOP-1 |
 
 ## 5. Dev vibe cùng AI sẽ thấy gì
 
