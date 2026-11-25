@@ -89,7 +89,8 @@ function checkRepo(dir) {
   if (!['AGENTS.md', 'CLAUDE.md'].some((f) => has(p(f)))) add('SC-STD-2', hard, 'AGENTS.md', 'thiếu hướng dẫn cho người và agent (AGENTS.md hoặc CLAUDE.md)');
   for (const f of ['CHANGELOG.md', 'LICENSE']) if (!has(p(f))) add('SC-STD-2', 'warn', f, 'thiếu');
   // [2026-11-25 01:16 PM Johnny Chu - Chu Hoàng Anh] STD-5 — R-STD-9: nợ chuẩn nền ghi ở repo
-  if (!has(p('docs/NO-CHUAN-NEN.md'))) add('SC-STD-2', 'warn', 'docs/NO-CHUAN-NEN.md', 'chưa có tệp nợ chuẩn nền — sinh bằng node ../bizcity-platform/tools/no-chuan.mjs --repo . --write (R-STD-9)');
+  // [2026-11-25 02:00 PM Johnny Chu - Chu Hoàng Anh] STD-7 — nhận cả tệp nợ ở gốc (repo để git bỏ qua docs/)
+  if (!has(p('docs/NO-CHUAN-NEN.md')) && !has(p('NO-CHUAN-NEN.md'))) add('SC-STD-2', 'warn', 'docs/NO-CHUAN-NEN.md', 'chưa có tệp nợ chuẩn nền — sinh bằng node ../bizcity-platform/tools/no-chuan.mjs --repo . --write (R-STD-9)');
   if (runtime === 'node-ts' && !has(p('docs/phases/CLAIMS.md'))) add('SC-STD-2', 'warn', 'docs/phases/CLAIMS.md', 'app Node chưa có bảng giữ chỗ (R-FLOW)');
 
   // SC-STD-3 — repo khai được lệnh kiểm của mình

@@ -48,7 +48,7 @@ function render(dir) {
     ...(existsSync(join(dir, 'bizcity.app.json')) ? run('spine-check.mjs', ['--manifest', join(dir, 'bizcity.app.json')]) : []),
     ...run('standard-check.mjs', ['--repo', dir]),
     ...run('users-check.mjs', ['--repo', dir]),
-  ].filter((f) => f.id !== 'SC-STD-2' || !f.where.endsWith('docs/NO-CHUAN-NEN.md'));
+  ].filter((f) => f.id !== 'SC-STD-2' || !f.where.endsWith('NO-CHUAN-NEN.md'));
   const known = REG.repos[id] ?? [];
   const today = new Date().toISOString().slice(0, 10);
   const strip = (w) => w.replace(new RegExp(`^${basename(dir)}/`), '');
@@ -111,7 +111,10 @@ if (i < 0 || !args[i + 1]) { console.error('Cần --repo <thư mục>'); process
 const dir = resolve(args[i + 1]);
 const md = render(dir);
 if (args.includes('--write')) {
-  mkdirSync(join(dir, 'docs'), { recursive: true });
-  writeFileSync(join(dir, 'docs/NO-CHUAN-NEN.md'), md);
-  console.log('đã ghi docs/NO-CHUAN-NEN.md');
+  // [2026-11-25 02:00 PM Johnny Chu - Chu Hoàng Anh] STD-7 — repo để git bỏ qua docs/ (vài plugin WordPress) ⇒ ghi ra gốc, cạnh CANON-SPINE.md.
+  const ignored = spawnSync('git', ['-C', dir, 'check-ignore', '-q', 'docs/NO-CHUAN-NEN.md']).status === 0;
+  const rel = ignored ? 'NO-CHUAN-NEN.md' : 'docs/NO-CHUAN-NEN.md';
+  if (!ignored) mkdirSync(join(dir, 'docs'), { recursive: true });
+  writeFileSync(join(dir, rel), md);
+  console.log('đã ghi ' + rel);
 } else process.stdout.write(md);
