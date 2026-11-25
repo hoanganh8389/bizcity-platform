@@ -1,4 +1,4 @@
-# Script chạy trong Git Bash / container: giữ LF kể cả khi core.autocrlf=true (CRLF làm bash hỏng: ký tự  cuối dòng)
+# Script chạy trong Git Bash / container: giữ LF kể cả khi core.autocrlf=true (CRLF làm bash hỏng vì ký tự xuống dòng kiểu Windows ở cuối mỗi lệnh)
 *.sh text eol=lf
 *.php text eol=lf
 *.yml text eol=lf
