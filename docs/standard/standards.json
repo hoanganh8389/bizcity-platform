@@ -141,15 +141,20 @@
     {
       "id": "bizcity_users@1",
       "file": "BIZCITY-USERS-ROLES-v1.md",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "status": "accepted",
       "pillar": "T3",
       "reference": [
         "open-ketoan",
         "open-cake"
       ],
-      "checks": [],
-      "tool": "tools/hub-local/check.sh"
+      "checks": [
+        "SC-USER-4",
+        "SC-USER-5",
+        "SC-USER-6"
+      ],
+      "tool": "tools/users-check.mjs",
+      "schema": "packages/contracts/schema/users/authz-manifest.schema.json"
     },
     {
       "id": "bizcity_security@1",

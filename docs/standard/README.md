@@ -42,7 +42,7 @@ Mỗi trụ cột có một tệp chuẩn, một bản mẫu tham chiếu đang 
 |---|---|---|---|---|
 | T1 | Khuôn repo, lớp, manifest, CLI, nếp làm việc | [APP-SKELETON](BIZCITY-APP-SKELETON-v1.md) | open-ketoan · open-cake | đạt (ketoan) |
 | T2 | API nội bộ + kiểm đầu vào / đầu ra | [API-PROFILE](BIZCITY-API-PROFILE-v1.md) | open-ketoan `packages/platform/src/core/{http,errors,actions}.ts` | đạt |
-| T3 | Người dùng, vai, ma trận quyền, ma trận cài đặt | [USERS-ROLES](BIZCITY-USERS-ROLES-v1.md) + [IDENTITY](BIZCITY-IDENTITY-v1.md) | open-ketoan `core/authz/` · open-cake `auth/` | một phần |
+| T3 | Người dùng, user meta, vai, ma trận quyền, ma trận cài đặt (SSO nối sau) | [USERS-ROLES](BIZCITY-USERS-ROLES-v1.md) · SSO: [IDENTITY](BIZCITY-IDENTITY-v1.md) | `@bizcity/platform` `core/{auth,roles,authz}` · open-cake `auth/` · kiểm `tools/users-check.mjs` | một phần <!-- [2026-11-25 10:34 AM Johnny Chu - Chu Hoàng Anh] USERS-1 --> |
 | T4 | Bảo mật | [SECURITY](BIZCITY-SECURITY-v1.md) | open-ketoan R-SEC / R-TEN | đạt |
 | T5 | Quan sát và truy lỗi (OpenTelemetry, Tempo, Loki, Grafana, Prometheus) | [OBSERVABILITY](BIZCITY-OBSERVABILITY-v1.md) | open-ketoan `infrastructure/monitoring/` | đạt |
 | T6 | Bộ nhớ đệm, hàng đợi (Redis tuỳ chọn) | [CACHE](BIZCITY-CACHE-v1.md) | open-ketoan R-CACHE (chưa có Redis) | tài liệu |
