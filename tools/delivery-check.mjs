@@ -8,8 +8,10 @@
 //   node tools/delivery-check.mjs --repo <thư mục> --report    # bảng trạng thái nghiệm thu / bảng việc / rà soát / bàn giao
 //   node tools/delivery-check.mjs --self-test                  # chạy trên bộ mẫu tools/fixtures/delivery (thử ngược)
 //   node tools/delivery-check.mjs ... --json                   # bizcity_conformance_report@1
+//   node tools/delivery-check.mjs --repo <thư mục> --write-index   # sinh danh sách phiếu giữa hai mốc trong README nghiệm thu (R-STD-DLV-5)
+// [2026-11-25 01:48 PM Johnny Chu - Chu Hoàng Anh] STD-9 — nhận RA-SOAT/ ở gốc (repo để git bỏ qua docs/); --write-index sinh danh sách phiếu.
 
-import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { basename, join, relative, resolve } from 'node:path';
 import { ROOT } from './lib/json-schema.mjs';
@@ -94,7 +96,7 @@ function analyse(dir, today = new Date()) {
   if (hasPhases && !boardOk) add('SC-DLV-5', 'warn', 'docs/phases/BANG-VIEC.md', existsSync(board) ? 'bảng việc không ghi là tệp sinh tự động' : 'repo có phase nhưng chưa có bảng việc sinh tự động (R-STD-DLV-6)');
 
   // SC-DLV-6 rà soát
-  const reviewDirs = ['docs/reviews', 'docs/audits'].filter((d) => isDir(join(dir, d)) && readdirSync(join(dir, d)).some((f) => f.endsWith('.md')));
+  const reviewDirs = ['docs/reviews', 'docs/audits', 'RA-SOAT'].filter((d) => isDir(join(dir, d)) && readdirSync(join(dir, d)).some((f) => f.endsWith('.md')));
   if (!reviewDirs.length) add('SC-DLV-6', 'warn', 'docs/reviews/', 'chưa có nơi ghi rà soát định kỳ (R-STD-DLV-8)');
 
   // SC-DLV-7 bàn giao
@@ -163,6 +165,26 @@ const i = args.indexOf('--repo');
 const repos = i >= 0 ? args.slice(i + 1).filter((a) => !a.startsWith('--')).map((r) => resolve(r)) : [];
 if (!repos.length) { console.error('Cần --repo <thư mục…> hoặc --self-test'); process.exit(2); }
 if (args.includes('--report')) { console.log(repos.map(report).join('\n\n')); process.exit(0); }
+if (args.includes('--write-index')) {
+  for (const r of repos) {
+    const ntDir = ['docs/nghiem-thu', 'NGHIEM-THU'].map((d) => join(r, d)).find(isDir);
+    const f = ntDir && join(ntDir, 'README.md');
+    if (!f || !existsSync(f)) { console.log(`${basename(r)}: không có README nghiệm thu`); continue; }
+    const START = '<!-- nghiem-thu:danh-sach:bat-dau', END = '<!-- nghiem-thu:danh-sach:ket-thuc -->';
+    const src = read(f);
+    const a = src.indexOf(START), b = src.indexOf(END);
+    if (a < 0 || b < a) { console.log(`${basename(r)}: README chưa có hai mốc danh sách (${START} … ${END}) — thêm mốc rồi chạy lại`); continue; }
+    const { rows } = analyse(r);
+    const title = (p) => (read(join(r, p)).split(/\r?\n/)[0] ?? '').replace(/^#\s*NT-[A-Z]+-\d+\s*[·:—-]?\s*/, '').trim();
+    const body = rows.length
+      ? ['| Mã | Tính năng | Trạng thái |', '|---|---|---|', ...rows.sort((x, y) => x.code.localeCompare(y.code)).map((x) => `| [${x.code}](${relative(ntDir, join(r, x.rel)).replace(/\\/g, '/')}) | ${title(x.rel).replace(/\|/g, '\\|')} | ${x.status ?? '⚠ ' + (x.raw ?? 'không rõ')} |`)].join('\n')
+      : 'Chưa có phiếu.';
+    const headEnd = src.indexOf('\n', a) + 1;
+    writeFileSync(f, src.slice(0, headEnd) + body + '\n' + src.slice(b));
+    console.log(`${basename(r)}: đã sinh danh sách ${rows.length} phiếu`);
+  }
+  process.exit(0);
+}
 const findings = repos.flatMap((r) => analyse(r).findings);
 const fails = findings.filter((f) => f.level === 'fail').length;
 const ids = ['SC-DLV-1', 'SC-DLV-2', 'SC-DLV-3', 'SC-DLV-4', 'SC-DLV-5', 'SC-DLV-6', 'SC-DLV-7', 'SC-DLV-8'];

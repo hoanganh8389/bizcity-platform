@@ -85,6 +85,12 @@
     ],
     "open-cake": [
       {
+        "rule": "R-STD-DLV-6",
+        "std": "BIZCITY-DELIVERY-v1.md",
+        "todo": "Thêm cột trạng thái (☐ 🟡 ✅ ⛔) cho từng việc `S<nnn>-n` trong bảng việc của phase (đang chỉ có trạng thái cả phase ở README) để bảng việc đếm được từng việc",
+        "note": "bảng việc sinh bằng bizcity-platform `tools/bang-viec.mjs`"
+      },
+      {
         "rule": "R-STD-DLV-1",
         "std": "BIZCITY-DELIVERY-v1.md",
         "todo": "Lập `docs/nghiem-thu/` theo khuôn open-ketoan (README, `_MAU.md`, phiếu theo phân hệ); viết phiếu cho các màn PHASE-004 đã làm và khép bằng biên bản",
