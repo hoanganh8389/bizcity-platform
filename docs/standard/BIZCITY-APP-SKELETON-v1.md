@@ -2,7 +2,7 @@
 
 <!-- [2026-11-24 11:48 PM Johnny Chu - Chu Hoàng Anh] STD-1 — trụ cột T1: khuôn chung của một Open App, rút từ open-ketoan (bản đầy đủ) và open-cake (bản gọn dùng @bizcity/platform). -->
 
-> **Phiên bản:** 1.0.0 · 2026-11-25 · **Trạng thái:** **Chấp nhận** — chủ dự án duyệt 2026-11-25 <!-- [2026-11-25 10:30 AM Johnny Chu - Chu Hoàng Anh] STD-4 — chủ duyệt 2026-11-25 --> · **Bản mẫu:** open-ketoan, open-cake
+> **Phiên bản:** 1.1.0 · 2026-11-25 · **Trạng thái:** **Chấp nhận** — chủ dự án duyệt 2026-11-25 <!-- [2026-11-25 10:30 AM Johnny Chu - Chu Hoàng Anh] STD-4 — chủ duyệt 2026-11-25 --> · **Bản mẫu:** open-ketoan, open-cake
 > **Đứng dưới:** canon §7 (R-CANON-5), §12.
 
 ## 0. Một câu
@@ -77,6 +77,7 @@ Một lệnh `bizcity` cho mọi app (bản mẫu: open-ketoan `packages/cli/bin
 | Luật | Nội dung |
 |---|---|
 | R-STD-7 | Lệnh có thể làm mất dữ liệu phải có `--dry-run` và in trước việc sẽ làm; mặc định chạy trên CSDL thử (bài học 5 của open-cake `90-LESSONS`) |
+| R-STD-9 (1.1.0) | **Nợ chuẩn nền ghi ở repo:** mỗi repo có `docs/NO-CHUAN-NEN.md` do `tools/no-chuan.mjs --repo <repo> --write` sinh (nợ do bộ kiểm đo + nợ đã biết trong sổ `docs/standard/no-chuan.json`). bizcity-platform giữ khuôn và sổ; **dev của repo trả nợ**, không ai sửa hộ, không nới chuẩn để trả nợ. Trả xong mục "đã biết" ⇒ PR gỡ mục khỏi sổ rồi sinh lại tệp <!-- [2026-11-25 01:16 PM Johnny Chu - Chu Hoàng Anh] STD-5 --> |
 | R-STD-8 | Lệnh in kết luận máy đọc được (`KẾT LUẬN: PASS / FAIL`, mã thoát); SKIP không phải PASS |
 
 ## 5. Nếp làm việc
@@ -99,6 +100,8 @@ Giữ nguyên ba luật đang chạy ở open-ketoan; repo khác dùng cùng khu
 | SC-SPINE-1 | MANIFEST | `bizcity.app.json` hợp lệ, luật chéo | `tools/spine-check.mjs --manifest` |
 | SC-STD-1 | HOUSE | tệp trỏ canon (`docs/canon/README.md`, `docs/00-CANON.md`, hoặc `CANON-SPINE.md` ở plugin WordPress) trỏ canon open-hub **và** bản đồ chuẩn này | `tools/standard-check.mjs --repo` |
 | SC-STD-2 | HOUSE | có `README`, `AGENTS.md` (hoặc `CLAUDE.md`) — thiếu là chặn với app Node, cảnh báo với plugin; `CHANGELOG.md`, `LICENSE`, và `docs/phases/CLAIMS.md` (app Node) — thiếu là cảnh báo | như trên |
+| SC-STD-2 (1.1.0) | HOUSE | có `docs/NO-CHUAN-NEN.md` (R-STD-9) — thiếu là cảnh báo | `tools/standard-check.mjs` |
+| SC-STD-DEBT-1 | HOUSE | sổ nợ `no-chuan.json`: mã luật đúng khuôn, tệp chuẩn có thật | `tools/no-chuan.mjs --check` |
 | SC-STD-3 | HOUSE | repo khai được lệnh kiểm của mình (`tests/conformance/selfcheck.mjs` hoặc script `test`) | như trên (mức cảnh báo) |
 
 ## 7. Khoảng cách hiện tại
