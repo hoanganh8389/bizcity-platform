@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Copyright (c) 2026 Johnny Chu (Chu Hoàng Anh) / BizCity. GPL-2.0-or-later. See LICENSE.
 // @bizcity-layer platform
+// [2026-11-25 01:45 PM Johnny Chu - Chu Hoàng Anh] STD-6 — đường dẫn của bizcity-platform viết thành liên kết (không đặt trong dấu huyền), để bộ kiểm đường dẫn của repo nhận (open-ketoan SC-DOC-4) không hiểu là tệp của repo đó.
 // [2026-11-25 01:16 PM Johnny Chu - Chu Hoàng Anh] STD-5 — sinh docs/NO-CHUAN-NEN.md cho một repo app (R-STD-9): nợ do bộ kiểm đo
 //   (spine-check, standard-check, users-check) + nợ đã biết trong sổ docs/standard/no-chuan.json. Chủ chỉ đạo 2026-11-25: bizcity-platform
 //   giữ khuôn; việc từng repo ghi thành nợ để dev repo đó cải thiện, tuân định hướng. Chỉ đọc repo; ghi đúng một tệp khi có --write.
@@ -87,7 +88,7 @@ node ../bizcity-platform/tools/users-check.mjs --repo .
 node ../bizcity-platform/tools/no-chuan.mjs --repo . --write   # sinh lại tệp này
 \`\`\`
 
-4. Mục "đã biết" trả xong: PR nhỏ vào bizcity-platform gỡ mục khỏi \`docs/standard/no-chuan.json\`, rồi sinh lại tệp này.
+4. Mục "đã biết" trả xong: PR nhỏ vào bizcity-platform gỡ mục khỏi [sổ nợ chuẩn nền](${B}/standard/no-chuan.json), rồi sinh lại tệp này.
 `;
 }
 
