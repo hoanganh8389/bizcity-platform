@@ -140,7 +140,7 @@ interface SiteContext {
 
 | Mã | Đề xuất | Tương ứng WP |
 |---|---|---|
-| K-OPT-1 | Thứ tự phạm vi đầy đủ: **hệ thống** (mặc định trong mã) → **mạng** (control plane / open-setup, áp mọi site của một bản cài) → **site** → tenant → đơn vị kế toán → chi nhánh → người dùng. Mạng và site lưu ở control DB, đọc qua `ctx.options` như các phạm vi khác | `wp_sitemeta`, `get_network_option` |
+| K-OPT-1 | Thứ tự phạm vi đầy đủ: **hệ thống** (mặc định trong mã) → **mạng** (control plane / open-setup, áp mọi site của một bản cài) → **site** → tenant → đơn vị kế toán → chi nhánh → người dùng. Mạng và site lưu ở control DB, đọc qua `ctx.settings` như các phạm vi khác | `wp_sitemeta`, `get_network_option` |
 | K-OPT-2 | Khoá khai `boot: true` trong registry được **nạp một lần** khi dựng `ctx` (một truy vấn), giữ theo `(site, tenant, config_version)`; giới hạn tổng dung lượng boot / app (cảnh báo khi vượt) | `autoload` + `alloptions`, tránh phình |
 | K-OPT-3 | **Đệm phủ định**: khoá đã đăng ký nhưng chưa có giá trị ở mọi phạm vi ⇒ nhớ "mặc định" theo `config_version`, không hỏi lại | `notoptions` |
 | K-OPT-4 | `ctx.settings.get(key)` trả **đúng kiểu** suy từ schema của registry (zod), khoá lạ là lỗi biên dịch / lỗi chạy — không `undefined` âm thầm | `register_setting` + type |
