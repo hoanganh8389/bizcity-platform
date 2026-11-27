@@ -1,4 +1,7 @@
-# bizcity-platform — gói nền dùng chung của Bizcity Open
+# bizcity-platform — open-platform: chuẩn nền và bộ kiểm của Bizcity Open
+
+<!-- [2026-11-27 11:03 PM Johnny Chu - Chu Hoàng Anh] NC-003 — chủ chốt Q-CORE-1…4: ba vai, ba repo; repo này là open-platform -->
+> **Vai (2026-11-27, canon R-CANON-17):** repo này là **open-platform** — luật kỹ thuật (`docs/standard/`), bộ kiểm (`tools/`), nghiên cứu (`docs/research/`). **Mã lõi `@bizcity/*` dời sang repo `open-core`** ở bước C2 của [NC-003](docs/research/NC-003-TACH-OPEN-CORE.md); tới lúc đó các gói dưới đây vẫn phát hành từ đây (0.2.x), không thêm tính năng mới. Cấp instance: [bizcity-open-setup](https://github.com/hoanganh8389/bizcity-open-setup).
 
 <!-- [2026-11-24 03:10 PM Johnny Chu - Chu Hoàng Anh] PLATFORM-SPLIT — chủ chốt 2026-11-24: tách @bizcity/platform thành gói chung một nguồn (Q-PLAT-1 tên repo bizcity-platform, Q-PLAT-2 phát hành GitHub Packages trước). -->
 

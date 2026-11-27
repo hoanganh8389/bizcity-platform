@@ -107,6 +107,8 @@ Mọi thao tác: `Idempotency-Key`, người gọi là `actor = support:<wp id>`
 
 ### 4.2 open-core và bizcity-platform
 
+> <!-- [2026-11-27 11:08 PM Johnny Chu - Chu Hoàng Anh] NC-003 — chủ chốt Q-CORE-1…4 --> **Đã sửa:** đoạn dưới là bản trước khi chốt NC-003. Nay `@bizcity/*` dời sang repo **open-core** (NC-003 C2); repo này chỉ còn chuẩn + bộ kiểm.
+
 `@bizcity/platform` **đã là** phần kernel của open-core (registry site, auth, actions, events, settings, migration…). Không dựng repo thứ hai chép lại (một nguồn, R-PLAT-3). **Chốt (Q-OC-1):** giữ repo `bizcity-platform` và **tên gói `@bizcity/*`**; "open-core" là **tên sản phẩm phát hành** (bản lõi có phiên bản). Gói mới cùng tên miền: `@bizcity/server`, `@bizcity/web-shell`, `@bizcity/module-sdk`… — không app nào phải đổi import.
 
 ### 4.3 Gói (pnpm workspace)
@@ -248,7 +250,7 @@ Thêm vào danh sách hợp đồng: `bizcity_records@1`, `bizcity_hooks@1`, `bi
 
 | Mã | Câu hỏi | Chốt |
 |---|---|---|
-| Q-OC-1 | open-core là repo mới hay `bizcity-platform` | **giữ repo và tên gói `@bizcity/*`; "open-core" là tên sản phẩm phát hành** (§4.2) |
+| Q-OC-1 | open-core là repo mới hay `bizcity-platform` | ~~giữ repo và tên gói `@bizcity/*`; "open-core" là tên sản phẩm phát hành~~ ⇒ **thay bởi [NC-003](NC-003-TACH-OPEN-CORE.md) Q-CORE-1 (2026-11-27): repo mới `open-core` chỉ chứa mã; `bizcity-platform` = open-platform (luật + bộ kiểm); tên gói `@bizcity/*` giữ nguyên** <!-- [2026-11-27 11:08 PM Johnny Chu - Chu Hoàng Anh] NC-003 — chủ chốt Q-CORE-1…4 --> |
 | Q-OC-2 | từ vựng | **Workspace** (doanh nghiệp, `workspace_id` + slug) · **Instance** (app × Workspace; bảng `sites` giữ tên) · **Tenant** (đơn vị trong instance) (§1.1) |
 | Q-OC-3 | NATS JetStream | **outbox giữ nguyên là nguồn sự kiện**; JetStream chỉ là đường chuyển sau outbox, khi có dấu hiệu (§7) |
 | Q-OC-4 | Keycloak | **A ngay, sẵn sàng B** qua `IdentityProvider` (`hub-ticket` · `oidc`) (§7.1) |
@@ -261,6 +263,8 @@ Thêm vào danh sách hợp đồng: `bizcity_records@1`, `bizcity_hooks@1`, `bi
 **Việc kéo theo:** MULTISITE 1.1 (từ vựng, `sites.workspace_id`) · APP-SKELETON thêm pnpm · App Registry có `root_domains[]` · open-core có `IdentityProvider` từ P-K1.
 
 ## 13. Điều kiện chặn: hai bản mã nền
+
+> <!-- [2026-11-27 11:08 PM Johnny Chu - Chu Hoàng Anh] NC-003 — chủ chốt Q-CORE-1…4 --> **Đã giải bằng NC-003 Q-CORE-3:** nền chỉ sửa ở open-core; open-ketoan đóng băng `packages/platform` từ bước C3 và nhận lõi qua bản phát hành ở C6. Lệch thật giữa hai bản: 29 tệp (không phải 61 — phần còn lại là ký tự xuống dòng), kê ở NC-003 §3.1.
 <!-- [2026-11-27 10:43 AM Johnny Chu - Chu Hoàng Anh] NC-002 — gap lớn nhất khi rà lại -->
 
 `packages/platform/src` đang có ở **cả** open-ketoan (nơi phát triển, đổi gần nhất) **và** bizcity-platform (bản gom để phát hành, bước P2b). open-ketoan chuyển sang dùng gói nền ở P6. Q-OC-1 chốt bizcity-platform là nguồn của open-core, nên **trước S019-3** phải chốt một cách sửa nền:
