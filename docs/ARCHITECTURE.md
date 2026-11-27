@@ -37,9 +37,12 @@ Dịch vụ đi kèm (thu phí theo liên hệ): chuẩn hoá dữ liệu và á
 ┌───────────────────────────────────────────────────────────────────────────────────────────┐
 │ HUB (bizcity-llm-router): danh tính + SSO · khoá biz-… · 1API · bản quyền                   │
 │ OPEN-SETUP: sổ site (một site → mỗi app một CSDL) · BIZCITY-WEB: cửa tự bật app             │
-│ BIZCITY-PLATFORM: gói nền @bizcity/* · chuẩn nền · bộ kiểm                                  │
+│ OPEN-PLATFORM (bizcity-platform): chuẩn nền · bộ kiểm  →  OPEN-CORE: mã lõi @bizcity/*       │
 └───────────────────────────────────────────────────────────────────────────────────────────┘
 ```
+
+<!-- [2026-11-27 11:03 PM Johnny Chu - Chu Hoàng Anh] NC-003 — chủ chốt Q-CORE-1…4: ba vai, ba repo; repo này là open-platform -->
+**Ba vai nền (canon R-CANON-17):** open-platform (repo này: chuẩn + bộ kiểm) quy định → **open-core** (repo mã lõi `@bizcity/*`, semver chung) hiện thực → mỗi app = open-core + module nghiệp vụ → **open-setup** dựng instance (Workspace × app = một CSDL) và ghi `core_version`. Chi tiết: [NC-003](research/NC-003-TACH-OPEN-CORE.md).
 
 ## 3. Bản đồ ứng dụng
 

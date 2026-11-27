@@ -17,6 +17,7 @@
 |---|---|---|---|
 | 1. Canon | open-hub `docs/canon/` | vì sao, mô hình kinh doanh, một app một trục, bốn trục dữ liệu, điểm không được lệch | chủ dự án |
 | 2. **Chuẩn nền** (tệp này) | bizcity-platform `docs/standard/` | chuẩn kỹ thuật xuyên app: hình trên dây, khuôn repo, bộ kiểm, bản mẫu tham chiếu | PR vào đây + chủ duyệt |
+| 2b. **Mã lõi** | repo `open-core` (`@bizcity/*`) | hiện thực chuẩn tầng 2 cho mọi app TypeScript; phải qua bộ kiểm ở đây | PR vào open-core; đổi hành vi chuẩn ⇒ đổi tầng 2 trước <!-- [2026-11-27 11:03 PM Johnny Chu - Chu Hoàng Anh] NC-003 — chủ chốt Q-CORE-1…4: ba vai, ba repo; repo này là open-platform --> |
 | 3. Luật của repo | `<repo>/docs/00-CANON.md`, `docs/rules/` | luật riêng của sản phẩm (R-CAKE-*, R-OKT-*…) | chủ repo, **không được nới** tầng 1–2 |
 
 **Không đặt lại mã luật.** Luật kỹ thuật gốc (R-API-*, R-SEC-*, R-LOG-*, R-DB-*, R-SITE-*, R-CACHE-*, R-REL-*…) do [open-ketoan `docs/rules/`](https://github.com/hoanganh8389/open-ketoan/tree/main/docs/rules) định nghĩa và kiểm. Chuẩn nền chỉ nói: luật nào **bắt buộc xuyên app**, bản mẫu ở đâu, kiểm bằng gì, chỗ nào còn trống. Mã mới (R-STD-*, R-USER-*, R-WEBARCH-*) chỉ sinh ở chỗ chưa repo nào có luật. Khi một gói chuyển về đây (kế hoạch P2b–P7), tệp luật của gói đó chuyển theo.
