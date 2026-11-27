@@ -3,6 +3,7 @@
 
 > **Loại:** nghiên cứu (không phải chuẩn) · **Trạng thái:** chờ chủ đọc và chốt §12 · **Đầu ra mong đợi:** các chuẩn / phase của nền ở §11, mỗi cái một PR riêng theo R-PLAT-7.
 > **Đứng trên:** [ARCHITECTURE](../ARCHITECTURE.md) · [MULTISITE](../standard/BIZCITY-MULTISITE-v1.md) · [CACHE](../standard/BIZCITY-CACHE-v1.md) · [USERS-ROLES](../standard/BIZCITY-USERS-ROLES-v1.md) · [IDENTITY](../standard/BIZCITY-IDENTITY-v1.md) · [HUB](../standard/BIZCITY-HUB-v1.md) · [SPINE](../standard/BIZCITY-SPINE-v1.md) · canon lớp mềm (open-hub `CHUAN-DU-LIEU-TRUC-VA-LOP-MEM`) · nơi lưu tệp (open-cake [26-NOI-LUU-TEP](https://github.com/hoanganh8389/open-cake/blob/main/docs/architecture/26-NOI-LUU-TEP.md)).
+> **Tên gọi (chủ chốt 2026-11-27):** phía Bizcity giữ **settings** (`bizcity_settings@1`, `ctx.settings`, như open-ketoan đang dùng); "options" chỉ là tên của WordPress. <!-- [2026-11-27 10:43 AM Johnny Chu - Chu Hoàng Anh] NC-001 — giữ tên settings -->
 > **Cách đọc:** mỗi lớp có bốn phần — **WordPress làm gì** · **bài học (giữ / tránh)** · **nền hiện có** (đọc mã `@bizcity/platform` 0.2.0, 2026-11-26) · **đề xuất**. §1 là kết luận một trang; §13 là bảng đọc ngược 20 tệp lõi WP 6.9 (có số dòng); §14 đối chiếu sơ đồ đích 12 engine.
 
 ## 1. Kết luận một trang
@@ -80,7 +81,7 @@ restore_current_blog();             // lấy lại blog trước
 
 ```ts
 await platform.withSite(siteId, async (ctx) => {
-  const name = await ctx.options.get('bizcity.cake.shop.name');     // có kiểu từ registry
+  const name = await ctx.settings.get('bizcity.cake.shop.name');    // có kiểu từ registry
   const c = await ctx.objects.get(`contact:${contactId}`);          // §5
   const items = await ctx.db.selectFrom('catalog_items').selectAll().execute();
   await ctx.cache.wrap('catalog', `price:${itemId}`, () => loadPrice(ctx, itemId));
@@ -95,7 +96,7 @@ interface SiteContext {
   tenant: { id: string; configVersion: number; authzVersion: number } | null;   // đơn vị trong site (RLS)
   actor: { kind: 'user' | 'apikey' | 'agent' | 'system'; sub: string; localUserId?: string; perms: ReadonlySet<string> };
   db: Db;                 // Kysely gắn pool của site + bizcity.tenant_id cho RLS
-  options: OptionsApi;    // §4
+  settings: SettingsApi;  // §4 — bizcity_settings@1
   objects: ObjectsApi;    // §5
   meta: MetaApi;          // §5
   cache: CacheApi;        // §6 — khoá tự mang site / tenant / phiên bản
@@ -142,7 +143,7 @@ interface SiteContext {
 | K-OPT-1 | Thứ tự phạm vi đầy đủ: **hệ thống** (mặc định trong mã) → **mạng** (control plane / open-setup, áp mọi site của một bản cài) → **site** → tenant → đơn vị kế toán → chi nhánh → người dùng. Mạng và site lưu ở control DB, đọc qua `ctx.options` như các phạm vi khác | `wp_sitemeta`, `get_network_option` |
 | K-OPT-2 | Khoá khai `boot: true` trong registry được **nạp một lần** khi dựng `ctx` (một truy vấn), giữ theo `(site, tenant, config_version)`; giới hạn tổng dung lượng boot / app (cảnh báo khi vượt) | `autoload` + `alloptions`, tránh phình |
 | K-OPT-3 | **Đệm phủ định**: khoá đã đăng ký nhưng chưa có giá trị ở mọi phạm vi ⇒ nhớ "mặc định" theo `config_version`, không hỏi lại | `notoptions` |
-| K-OPT-4 | `ctx.options.get(key)` trả **đúng kiểu** suy từ schema của registry (zod), khoá lạ là lỗi biên dịch / lỗi chạy — không `undefined` âm thầm | `register_setting` + type |
+| K-OPT-4 | `ctx.settings.get(key)` trả **đúng kiểu** suy từ schema của registry (zod), khoá lạ là lỗi biên dịch / lỗi chạy — không `undefined` âm thầm | `register_setting` + type |
 | K-OPT-5 | Không bộ lọc chen đường đọc cấu hình (WP `pre_option_*`) — cấu hình là dữ liệu có bằng chứng; ai muốn đổi thì ghi phiên bản mới | tránh |
 | K-OPT-6 | Transient **không** nằm trong options: TTL cache là việc của `ctx.cache` (§6) | tách |
 
@@ -345,19 +346,20 @@ control DB của từng app ─ sites, site_domains, provision_keys,     ctx = w
 | P-K7 | **storage** (tài liệu 26 của open-cake) | P-K1 |
 | P-K8 | **kết nối cho hàng nghìn site**: trần pool tổng, LRU pool, PgBouncer | — |
 
-## 12. Câu hỏi chờ chủ
+## 12. Trạng thái câu hỏi
+<!-- [2026-11-27 10:43 AM Johnny Chu - Chu Hoàng Anh] NC-001 — gom theo quyết định ở NC-002 §12, tránh hai tài liệu hai trạng thái -->
 
-| Mã | Câu hỏi | Đề xuất |
+| Mã | Câu hỏi | Trạng thái |
 |---|---|---|
-| Q-K-1 | Nguồn danh tính toàn mạng: giữ Hub (WP `wp_users`) hay dựng dịch vụ danh tính riêng trong nền | **giữ Hub** làm nguồn `sub`; nền chỉ giữ bản chiếu + liên kết (K-ID-1) — một chủ, không di cư người dùng |
-| Q-K-2 | Có phạm vi cấu hình **mạng** (≈ `wp_sitemeta`) không, đặt ở đâu | có; control DB của app, ghi từ open-setup (K-OPT-1) |
-| Q-K-3 | Bắt đầu P-K1 (`ctx`) ở nền ngay, open-cake dùng trước | có |
-| Q-K-4 | Tên gọi: "object" cho mặt tiền, "entity" cho bảng trục | có (K-OBJ-7) |
-| Q-K-5 | Ngưỡng số site / máy để bật PgBouncer bắt buộc | đo khi có 100 site thật; mặc định bật từ 300 site (K-DB-2) |
-| Q-K-6 | NATS trong sơ đồ đích: nguồn sự kiện hay đường chuyển | **đường chuyển sau outbox** (giữ R-OUTBOX-1); chỉ thêm khi số bên nhận / site vượt khả năng gửi webhook trực tiếp (§14.4) |
-| Q-K-7 | Keycloak trong sơ đồ đích | **chưa dùng** — giữ Hub làm nguồn `sub` (Q-K-1); xét lại nếu cần OIDC cho bên thứ ba (§14.4) |
-| Q-K-8 | "Open Inventory" là repo riêng hay vẫn trong open-ketoan (`bizcity_inventory@1`) | giữ trong open-ketoan như ARCHITECTURE §3; ô trên sơ đồ đổi thành "Tồn kho (trong Kế Toán)" hoặc sửa ARCHITECTURE nếu chủ muốn tách (§14.1) |
-| Q-K-9 | Thêm ô **Storage Engine** vào sơ đồ | có (§14.3, tài liệu 26) |
+| Q-K-1 | nguồn danh tính | **chốt**: Hub giữ `sub`; A ngay, sẵn sàng B (NC-002 Q-OC-4) |
+| Q-K-2 | phạm vi cấu hình mạng | đề xuất: có, ở control plane, trong `bizcity_settings@1` |
+| Q-K-3 | làm P-K1 (`ctx`) ở nền trước | **chốt** qua NC-002 (S019-3) — nhưng **chặn** tới khi gỡ "hai bản mã nền" (NC-002 §13) |
+| Q-K-4 | "object" cho mặt tiền, "entity" cho bảng trục | đề xuất |
+| Q-K-5 | ngưỡng bật PgBouncer | đề xuất: đo khi có 100 site |
+| Q-K-6 | NATS | **chốt**: outbox là nguồn sự kiện (NC-002 Q-OC-3) |
+| Q-K-7 | Keycloak | **chốt**: A ngay, sẵn sàng B (NC-002 Q-OC-4) |
+| Q-K-8 | Open Inventory | chưa chốt — ARCHITECTURE đang để tồn kho trong open-ketoan |
+| Q-K-9 | Storage Engine | đề xuất; chờ Q-STOR-1…3 (open-cake 26-NOI-LUU-TEP) |
 
 ## 13. Đọc ngược 20 tệp lõi — WordPress 6.9 (`$wp_db_version = 60717`), bản đang chạy của mạng bizcity
 
@@ -417,7 +419,7 @@ Số dòng theo bản cài `huongnguyen.vibeyeu.com.vn` (WP 6.9). "Engine" là �
 | Site Engine | `db/site.ts` (`withSite`, `forEachSite`, pool theo site), `site-registry`, `site-provisioner`, `site-lifecycle`, Site Resolver theo `Host` | ◐ — thiếu `SiteContext` một cửa | P-K1 |
 | Identity Engine | `core/auth.ts`, `core/roles.ts`, `users` / `user_role_assignments` / `tenant_roles`, SSO vé từ Hub | ◐ — thiếu `external_sub`, actor `agent`, thành viên site | P-K5 |
 | Plugin Engine | `core/module-registry.ts`, `tenant_modules`, vai CSDL `mod_<key>_rw`, `core/hooks.ts` | ◐ — hook đóng, chưa có vòng đời đủ | P-K6 |
-| Options Engine | `core/settings.ts` + `setting_values` (phiên bản, phạm vi, quyền gác) | ◐ — thiếu phạm vi mạng / site, boot, phủ định | P-K3 |
+| Settings Engine (≈ Options của WP) | `core/settings.ts` + `setting_values` (phiên bản, phạm vi, quyền gác) | ◐ — thiếu phạm vi mạng / site, boot, phủ định | P-K3 |
 | Meta Engine | `entity_meta` / `user_meta` ở open-cake (chưa ở nền) | ☐ ở nền | P-K4 |
 | Object Engine | document kernel (`business_documents`…), item master ở open-ketoan; `records` ở open-cake | ☐ mặt tiền chung | P-K4 |
 | Cache Engine | chuẩn CACHE, **chưa có mã** | ☐ | P-K2 |
@@ -449,3 +451,4 @@ WordPress Developer Resources: `switch_to_blog()`, `restore_current_blog()`, `wp
 
 - 2026-11-26: bản đầu.
 - 2026-11-26: §13 đọc ngược 20 tệp lõi WP 6.9 + hai drop-in đang chạy; §14 đối chiếu sơ đồ đích (12 engine, hạ tầng); Q-K-6…9.
+- 2026-11-27: giữ tên settings (`ctx.settings`, `bizcity_settings@1`); §12 thành bảng trạng thái theo NC-002.

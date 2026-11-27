@@ -16,7 +16,7 @@ bizcity.vn (WordPress multisite)  ── thành viên wp:<id> ── plugin "Biz
         │ gọi
 BIZCITY OPEN SETUP — Workspace Management & Application Registry (Site Manager, Frappe)
         │ /_sites/v1 của từng app (bizcity_site_provisioning@1)
-Workspace "Doanh nghiệp ABC"  ws_01J…  slug abc
+Workspace "Doanh nghiệp ABC"  workspace_id 01J…  slug abc
   ├─ Open Kế Toán   kt_abc    abc.openketoan.com
   ├─ Open Cake      cake_abc  abc.opencake.net
   ├─ Open Kiot      kiot_abc  ·  Open HRM hrm_abc  ·  Open MRP mrp_abc  ·  Community App custom_abc
@@ -26,11 +26,11 @@ Bizcity Platform & Business Contracts — chuẩn backend và dữ liệu xuyên
 
 ### 1.1 Từ vựng — ghép với chuẩn đã duyệt
 
-Chuẩn MULTISITE (Q-STD-1, duyệt 2026-11-25) gọi "doanh nghiệp thuê hệ thống" là **site**, nhưng trong mã, bảng `sites` ở control DB của mỗi app thực chất là **một app của một doanh nghiệp** — một từ đang mang hai nghĩa. **Chốt (Q-OC-2):** ba từ — **Workspace** (doanh nghiệp, `ws_…` + slug) · **Instance** (một app × một Workspace; trong mã **vẫn là bảng `sites`, không đổi tên bảng**, thêm cột `workspace_id`) · **Tenant** (đơn vị bên trong instance). MULTISITE lên 1.1 sửa §1 từ vựng (PR riêng, R-PLAT-7).
+Chuẩn MULTISITE (Q-STD-1, duyệt 2026-11-25) gọi "doanh nghiệp thuê hệ thống" là **site**, nhưng trong mã, bảng `sites` ở control DB của mỗi app thực chất là **một app của một doanh nghiệp** — một từ đang mang hai nghĩa. **Chốt (Q-OC-2):** ba từ — **Workspace** (doanh nghiệp, `workspace_id` + slug) · **Instance** (một app × một Workspace; trong mã **vẫn là bảng `sites`, không đổi tên bảng**, thêm cột `workspace_id`) · **Tenant** (đơn vị bên trong instance). MULTISITE lên 1.1 sửa §1 từ vựng (PR riêng, R-PLAT-7).
 
 | Từ | Nghĩa | Định danh | Ai làm chủ | Ánh xạ hiện tại |
 |---|---|---|---|---|
-| **Workspace** | một doanh nghiệp khách (pháp nhân / chuỗi) — đơn vị bán, tính tiền, quản trị | `workspace_id` (`ws_<ULID>`), `slug` (khuôn `^[a-z][a-z0-9-]{2,29}$`) | open-setup | `Bizcity Site Customer` + slug; MULTISITE gọi là "site" |
+| **Workspace** | một doanh nghiệp khách (pháp nhân / chuỗi) — đơn vị bán, tính tiền, quản trị | `workspace_id` (ULID trần, như mọi khoá trục — NC-001 K-DB-3), `slug` (khuôn `^[a-z][a-z0-9-]{2,29}$`) | open-setup | `Bizcity Site Customer` + slug; MULTISITE gọi là "site" |
 | **App Instance** | một app chạy cho một Workspace: một CSDL `<tiền tố app>_<slug>` + tên miền | `instance_id` (ULID) | open-setup ghi sổ, app làm chủ dữ liệu | `Bizcity Ketoan Site` (chỉ Kế Toán); dòng `sites` trong control DB của app |
 | **Tenant** (đơn vị) | pháp nhân / sổ / cửa hàng **bên trong** một App Instance | `tenant_id` | app | như MULTISITE |
 | **Member** | một người (thành viên WP) trong một Workspace | `sub = wp:<id>` | Hub (danh tính) + open-setup (thành viên) | user meta + `external_ref` |
@@ -53,7 +53,7 @@ Luật giữ nguyên: một `slug` cho mọi app của một Workspace (R-STD-SI
 
 ```text
 ① Đăng ký thành viên bizcity.vn (WP multisite)          → sub = wp:<id>
-② Tạo Workspace (tên doanh nghiệp, slug)                → plugin gọi open-setup  create_workspace          → ws_…
+② Tạo Workspace (tên doanh nghiệp, slug)                → plugin gọi open-setup  create_workspace          → workspace_id
 ③ Thêm app (Open Cake, gói, tên miền abc.opencake.net)  → plugin gọi open-setup  create_instance(ws, product) → job
       open-setup → POST {app}/_sites/v1/sites (prov_…)  → app: registry → vai → CSDL từ mẫu → chủ đầu → bật
 ④ Theo dõi                                              → plugin hỏi job_status / instance_status; open-setup đồng bộ định kỳ
@@ -113,7 +113,7 @@ Mọi thao tác: `Idempotency-Key`, người gọi là `actor = support:<wp id>`
 
 | Gói | Chứa | Nguồn hiện tại |
 |---|---|---|
-| `@bizcity/platform` (kernel, giữ tên) | Site · Identity · Options · Meta · Object · Cache · Storage · Event · Workflow · Audit · Migration · Database Router (NC-001) | `@bizcity/platform` |
+| `@bizcity/platform` (kernel, giữ tên) | Site · Identity · Settings · Meta · Object · Cache · Storage · Event · Workflow · Audit · Migration · Database Router (NC-001) | `@bizcity/platform` |
 | `@bizcity/contracts` | schema dùng chung, hợp đồng `bizcity_*@1`, sinh OpenAPI | `@bizcity/contracts` (có sẵn) + phần nền của `@open-cake/contracts` |
 | `@bizcity/server` | khởi động Fastify: nhận site theo `Host`, xác thực, dựng `ctx`, nạp module, gắn action → REST + MCP, `/_sites/v1`, sức khoẻ, số đo | `apps/api/src/{server,runtime,auth,observability,stream,migrate}.ts` của open-cake |
 | `@bizcity/web-shell` | React shell: điều hướng theo registry menu, đăng nhập, người dùng & vai, cài đặt, media, bản ghi mềm | `apps/web/src/app`, `screens/{staff,Settings,RecordTypeScreen}` của open-cake |
@@ -143,7 +143,7 @@ Bật / tắt theo instance (và theo tenant) qua `tenant_modules`; quyết đ�
 | # | Universal | Hợp đồng | Học từ WP | Luật cốt lõi | Đang có | open-cake làm |
 |---|---|---|---|---|---|---|
 | 01 | **Cache** | `bizcity_cache@1` (giữ, bổ sung mã) | object cache, nhóm, `alloptions`, `last_changed` | ba tầng; khoá tự mang instance + tenant + phiên bản; không đệm sổ / số dư (R-CACHE-1) | chuẩn, chưa mã | dùng đầu tiên khi có `ctx.cache` |
-| 02 | **Options** | `bizcity_options@1` = **đổi tên + mở rộng** `bizcity_settings@1` (không làm hợp đồng thứ hai) | `wp_options`, `autoload`, `notoptions`, `wp_sitemeta` | phạm vi hệ thống → Workspace → instance → tenant → đơn vị → chi nhánh → người dùng; có phiên bản; nạp trước khoá `boot`; đọc có kiểu | `setting_values` + registry | chuyển khoá `bizcity.cake.*` sang registry chung |
+| 02 | **Settings** | `bizcity_settings@1` (**giữ tên** như open-ketoan, mở rộng — chủ chốt 2026-11-27) | `wp_options`, `autoload`, `notoptions`, `wp_sitemeta` | phạm vi hệ thống → Workspace → instance → tenant → đơn vị → chi nhánh → người dùng; có phiên bản; nạp trước khoá `boot`; đọc có kiểu | `setting_values` + registry | chuyển khoá `bizcity.cake.*` sang registry chung |
 | 03 | **Metadata** | `bizcity_meta@1` | `wp_postmeta`, `register_meta`, `update_meta_cache` | chỉ gắn vào thực thể đã khai; khoá khai kiểu + quyền; không tiền / số lượng / trạng thái / danh tính (R-DATA-2); nạp lô | `entity_meta`, `user_meta` (open-cake) | nâng lên lõi (`@bizcity/flex` → kernel) |
 | 04 | **Records & Hooks** | `bizcity_records@1` · `bizcity_hooks@1` | custom post type, `add_action` / `add_filter` | bản ghi mềm có schema + phiên bản loại, ngưỡng nâng thành bảng (bài học HPOS); hook guard / filter / action có kiểu | `record_types` / `records` (open-cake), hook đóng ở nền | `RecordTypeScreen` thành màn của web shell |
 | 05 | **App Registry** | `bizcity_app_registry@1` | `active_plugins`, plugin header | sổ app (id, tên, tiền tố CSDL, tên miền gốc, phiên bản đang phát hành, `/_sites/v1`, module mặc định) | `bizcity.app.json` từng repo, `registerAppManifests` | khai đủ trường cho open-setup đọc |
@@ -157,11 +157,11 @@ Thêm vào danh sách hợp đồng: `bizcity_records@1`, `bizcity_hooks@1`, `bi
 
 | Hợp đồng | Nội dung | Chủ | Quan hệ với cái đang có |
 |---|---|---|---|
-| `bizcity_workspace@1` | danh tính + vòng đời Workspace (`ws_…`, slug, chủ, thành viên, trạng thái `active · suspended · closing · closed`, giới hạn gói) | open-setup | mới; tách khỏi `Bizcity Site Customer` |
+| `bizcity_workspace@1` | danh tính + vòng đời Workspace (`workspace_id`, slug, chủ, thành viên, trạng thái `active · suspended · closing · closed`, giới hạn gói) | open-setup | mới; tách khỏi `Bizcity Site Customer` |
 | `bizcity_app_registry@1` | sổ app: id, tên, nhóm, tiền tố CSDL, tên miền gốc, URL cấp site, phiên bản phát hành, yêu cầu (`open-core` dải), module mặc định, giá / gói (tham chiếu Hub) | bizcity-platform (khuôn) + open-setup (dữ liệu) | `bizcity.app.json` + `registerAppManifests` |
 | `bizcity_app_instance@1` | một app × một Workspace: `instance_id`, `workspace_id`, `product`, tên miền, trạng thái, `schema_version`, `app_version`, sao lưu cuối, sức khoẻ; thao tác help desk (§3.2) | app (thực hiện) + open-setup (sổ) | **mở rộng** `bizcity_site_provisioning@1` (giữ đường `/_sites/v1`) và tổng quát hoá `Bizcity Ketoan Site` |
 | `bizcity_app_connection@1` | nối hai instance cùng Workspace (Cake ↔ Kế Toán ↔ POS): khoá máy-với-máy, phạm vi, trạng thái, lần kiểm cuối | open-setup cấp, app giữ | thay các cặp nối làm tay hiện nay (`pos_links`, `tenant_links`, khoá `kt_…` dán tay) |
-| `bizcity_options@1` | §5 #02 | bizcity-platform | thay tên `bizcity_settings@1` |
+| `bizcity_settings@1` | §5 #02 | bizcity-platform | giữ tên; thêm phạm vi Workspace / instance, khoá `boot`, đệm phủ định |
 | `bizcity_meta@1` | §5 #03 | bizcity-platform | nâng từ canon lớp mềm |
 | `bizcity_cache@1` | giữ, bổ sung mã | bizcity-platform | có |
 | `bizcity_multisite@1` | giữ cơ chế site kỹ thuật (registry, định tuyến, cấp site); thêm ánh xạ `instance ↔ workspace` (`sites.external_ref = instance_id`, `workspace_id`) | bizcity-platform | có — bản 1.1 |
@@ -221,7 +221,7 @@ Thêm vào danh sách hợp đồng: `bizcity_records@1`, `bizcity_hooks@1`, `bi
 | OC-0 | tài liệu này + NC-001 được duyệt; chốt §12 | bizcity-platform |
 | OC-1 | open-cake: chuyển pnpm, vẽ ranh giới gói (core / module) **trong cùng repo**, thêm kiểm "module không import nội bộ core" | open-cake |
 | OC-2 | `SiteContext` (NC-001 P-K1) ở nền; open-cake dùng | bizcity-platform → open-cake |
-| OC-3 | Universal Cache · Options · Meta · Records ở kernel (P-K2…P-K4), Storage (P-K7) | bizcity-platform → open-cake |
+| OC-3 | Universal Cache · Settings · Meta · Records ở kernel (P-K2…P-K4), Storage (P-K7) | bizcity-platform → open-cake |
 | OC-4 | `@bizcity/module-sdk` + manifest + nạp module; CRM chạy như module | bizcity-platform + open-cake |
 | OC-5 | rút `@bizcity/server` + `@bizcity/web-shell` ra nền; phát hành open-core 1.0 | bizcity-platform |
 | OC-6 | open-setup: `bizcity_workspace@1`, `bizcity_app_registry@1`, `bizcity_app_instance@1` (tổng quát hoá DocType, thêm `product`), API help desk; bizcity-web: plugin "Bizcity Workspace" | open-setup + bizcity-web |
@@ -240,7 +240,7 @@ Thêm vào danh sách hợp đồng: `bizcity_records@1`, `bizcity_hooks@1`, `bi
 |---|---|
 | Tách gói giữa lúc open-cake đang chạy tính năng | tách theo ranh giới trong cùng repo trước (OC-1), test giữ nguyên |
 | Keycloak / NATS thêm hạ tầng phải vận hành | chỉ bật ở mạng bizcity; bản tự cài chạy không cần (giữ R-STD-HUB-1, R-CACHE-6) |
-| Hai tên một thứ (site / workspace, settings / options) gây lẫn | bảng từ vựng §1.1 + đổi tên có bí danh, một nguồn |
+| Hai tên một thứ (site / workspace) gây lẫn | bảng từ vựng §1.1 + một nguồn |
 | Plugin WP thành nơi "tự làm" thay open-setup | luật §3.1: plugin chỉ gọi open-setup, không gọi app |
 
 ## 12. Quyết định của chủ (2026-11-27)
@@ -249,18 +249,29 @@ Thêm vào danh sách hợp đồng: `bizcity_records@1`, `bizcity_hooks@1`, `bi
 | Mã | Câu hỏi | Chốt |
 |---|---|---|
 | Q-OC-1 | open-core là repo mới hay `bizcity-platform` | **giữ repo và tên gói `@bizcity/*`; "open-core" là tên sản phẩm phát hành** (§4.2) |
-| Q-OC-2 | từ vựng | **Workspace** (doanh nghiệp, `ws_…` + slug) · **Instance** (app × Workspace; bảng `sites` giữ tên) · **Tenant** (đơn vị trong instance) (§1.1) |
+| Q-OC-2 | từ vựng | **Workspace** (doanh nghiệp, `workspace_id` + slug) · **Instance** (app × Workspace; bảng `sites` giữ tên) · **Tenant** (đơn vị trong instance) (§1.1) |
 | Q-OC-3 | NATS JetStream | **outbox giữ nguyên là nguồn sự kiện**; JetStream chỉ là đường chuyển sau outbox, khi có dấu hiệu (§7) |
 | Q-OC-4 | Keycloak | **A ngay, sẵn sàng B** qua `IdentityProvider` (`hub-ticket` · `oidc`) (§7.1) |
 | Q-OC-5 | Redis | mã vẫn chạy khi Redis vắng; Redis **riêng** cho open-core (instance / giới hạn bộ nhớ riêng), **không dùng chung Redis của WP** (§7) |
 | Q-OC-6 | pnpm | có — giữ ranh giới "module không chạm nội bộ lõi"; open-cake trước (PR riêng, 170 test xanh) → bizcity-platform → open-ketoan |
 | Q-OC-7 | plugin Workspace | **module trong bizcity-web** `include/workspace/`, ranh giới riêng, REST `bizcity-web/v1/workspaces`; tổng quát hoá trình gọi open-setup đang riêng cho Kế Toán |
 | Q-OC-8 | tên miền gốc | đã sở hữu **`opencake.net`, `openkiot.com`, `openketoan.com`**; DNS + TLS wildcard (`*.opencake.net`…) trên **Cloudflare**. Khai `root_domains[]` trong App Registry; instance **không** nằm dưới `*.bizcity.vn` (đã trỏ blog WP); một slug giữ chung trên mọi tên miền gốc và tên blog WP |
-| Q-OC-9 | `bizcity_settings@1` → `bizcity_options@1` | có, **không gấp** — làm cùng P-K3, giữ bí danh một phiên bản lớn |
+| Q-OC-9 | `bizcity_settings@1` hay đổi sang "options" | **giữ `bizcity_settings@1`**, không đổi tên (chủ chốt lại 2026-11-27: open-ketoan đã là settings) <!-- [2026-11-27 10:43 AM Johnny Chu - Chu Hoàng Anh] NC-002 — giữ tên settings --> |
 
 **Việc kéo theo:** MULTISITE 1.1 (từ vựng, `sites.workspace_id`) · APP-SKELETON thêm pnpm · App Registry có `root_domains[]` · open-core có `IdentityProvider` từ P-K1.
+
+## 13. Điều kiện chặn: hai bản mã nền
+<!-- [2026-11-27 10:43 AM Johnny Chu - Chu Hoàng Anh] NC-002 — gap lớn nhất khi rà lại -->
+
+`packages/platform/src` đang có ở **cả** open-ketoan (nơi phát triển, đổi gần nhất) **và** bizcity-platform (bản gom để phát hành, bước P2b). open-ketoan chuyển sang dùng gói nền ở P6. Q-OC-1 chốt bizcity-platform là nguồn của open-core, nên **trước S019-3** phải chốt một cách sửa nền:
+
+| Cách | Làm |
+|---|---|
+| **Đề xuất** | từ nay sửa nền **chỉ** ở bizcity-platform; open-ketoan nhận lại qua bản phát hành — đẩy sớm P6 (cần chủ open-ketoan đồng ý qua R-FLOW) |
+| Tạm thời | mỗi thay đổi nền làm hai PR cùng mã (bizcity-platform + open-ketoan) — tốn, chỉ dùng tới khi xong P6 |
 
 ## Nhật ký
 
 - 2026-11-27: bản đầu.
 - 2026-11-27: chủ chốt Q-OC-1…9; §4.2–§4.3 đổi sang tên gói `@bizcity/*`; §7, §7.1 ghi quyết định Redis / NATS / Keycloak / pnpm; §12 thành bảng quyết định.
+- 2026-11-27: rà lại theo hướng gọn — giữ tên settings, `workspace_id` là ULID trần, thêm §13 điều kiện chặn "hai bản mã nền".
