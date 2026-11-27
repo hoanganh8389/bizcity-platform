@@ -15,7 +15,7 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { basename, join, resolve } from 'node:path';
 import { ROOT, validate } from './lib/json-schema.mjs';
 
-const USERS_DIR = join(ROOT, 'packages/contracts/schema/users');
+const USERS_DIR = join(ROOT, 'schema/users');
 const SCHEMA = JSON.parse(readFileSync(join(USERS_DIR, 'authz-manifest.schema.json'), 'utf8'));
 
 /** Động từ cuối tên quyền (R-USER-7). Nhóm cũ (read / write…) còn nhận, có cảnh báo khi tạo quyền mới theo kiểu cũ. */

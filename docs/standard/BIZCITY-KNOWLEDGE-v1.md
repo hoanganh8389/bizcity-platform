@@ -4,7 +4,7 @@
 
 > **Phiên bản:** 1.0.0 · 2026-11-24 · **Trạng thái:** **Chấp nhận** — chủ dự án duyệt 2026-11-24 (Q-KNOW-1, 2) <!-- [2026-11-24 09:50 PM Johnny Chu - Chu Hoàng Anh] SPINE-5 --> · **Thuộc:** `@bizcity/contracts` (gói nền chung)
 > **Đứng dưới:** canon §5 (Twin Brain là lớp kiểm chứng và điều phối; R-CANON-2 não không là chủ dữ liệu; R-CANON-12 mọi hành động agent có bằng chứng), chuẩn MCP chung `bizcity-mcp-tool@1`, chuẩn xương sống [`bizcity_spine@1`](BIZCITY-SPINE-v1.md) §3 (ma trận: "Tri thức cho Twin Brain").
-> **Máy đọc:** `packages/contracts/schema/spine/knowledge.schema.json`.
+> **Máy đọc:** `schema/spine/knowledge.schema.json`.
 
 ## 0. Một câu
 

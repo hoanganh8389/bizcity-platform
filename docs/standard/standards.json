@@ -155,7 +155,7 @@
         "SC-USER-6"
       ],
       "tool": "tools/users-check.mjs",
-      "schema": "packages/contracts/schema/users/authz-manifest.schema.json"
+      "schema": "schema/users/authz-manifest.schema.json"
     },
     {
       "id": "bizcity_security@1",

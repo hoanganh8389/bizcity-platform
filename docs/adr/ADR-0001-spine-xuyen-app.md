@@ -12,7 +12,7 @@ Từng mảnh đã có nhưng rải ở nhiều repo và nhiều tên: `item_id`
 
 ## Quyết định
 
-1. Chuẩn `bizcity_spine@1` sống ở **bizcity-platform** (`docs/standard/`, `packages/contracts/schema/spine/`), vì ≥ 2 app cần và là hạ tầng chung (R-PLAT-3). Canon ở open-hub chỉ trỏ tới.
+1. Chuẩn `bizcity_spine@1` sống ở **bizcity-platform** (`docs/standard/`, `schema/spine/`), vì ≥ 2 app cần và là hạ tầng chung (R-PLAT-3). Canon ở open-hub chỉ trỏ tới.
 2. Hình dạng **trên dây** là bắt buộc; **schema CSDL** của từng app là tự do (chỉ quy định cột tối thiểu).
 3. Mỗi repo app khai `bizcity.app.json` (`bizcity_app@1-draft`): trục làm chủ / dùng / bản sao / cục bộ, cách đồng bộ, hợp đồng thực hiện, giấy phép, `paid`.
 4. Công cụ kiểm `tools/spine-check.mjs` **không phụ thuộc gói ngoài** (R-PLAT-5): kiểm vector + manifest, chạy được ở mọi repo bằng một lệnh node.

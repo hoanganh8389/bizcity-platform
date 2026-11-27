@@ -1,4 +1,5 @@
-# [2026-11-24 06:31 PM Johnny Chu - Chu Hoàng Anh] P2b-5 — CI: mọi PR và main chạy npm test (build + test kiểu + node:test trên Postgres 16 thật) và bộ kiểm SPINE.
+# [2026-11-24 06:31 PM Johnny Chu - Chu Hoàng Anh] P2b-5 — CI của repo gói nền.
+# [2026-11-27 11:31 PM Johnny Chu - Chu Hoàng Anh] NC-003 C2 — mã lõi dời sang open-core: CI chỉ còn các bộ kiểm của open-platform (npm test gọi đủ tự kiểm), không còn build / Postgres.
 name: ci
 on:
   pull_request:
@@ -7,35 +8,10 @@ on:
 permissions:
   contents: read
 jobs:
-  test:
+  kiem:
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:16
-        env: { POSTGRES_PASSWORD: x }
-        ports: ['5432:5432']
-        options: >-
-          --health-cmd "pg_isready -U postgres" --health-interval 2s --health-timeout 5s --health-retries 20
-    env:
-      TEST_DATABASE_URL: postgres://postgres:x@localhost:5432/postgres
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: 22, cache: npm }
-      - run: npm ci
+        with: { node-version: 22 }
       - run: npm test
-      - run: node tools/spine-check.mjs
-      # [2026-11-24 11:48 PM Johnny Chu - Chu Hoàng Anh] STD-1 — tự kiểm sổ chuẩn nền
-      - run: node tools/standard-check.mjs
-      # [2026-11-25 10:34 AM Johnny Chu - Chu Hoàng Anh] USERS-1 — vector khuôn người dùng · vai · quyền
-      - run: node tools/users-check.mjs
-      # [2026-11-25 01:16 PM Johnny Chu - Chu Hoàng Anh] STD-5 — sổ nợ chuẩn nền
-      - run: node tools/no-chuan.mjs --check
-      # [2026-11-25 01:39 PM Johnny Chu - Chu Hoàng Anh] STD-8 — bộ mẫu nghiệm thu / bàn giao
-      - run: node tools/delivery-check.mjs --self-test
-      # [2026-11-25 05:18 PM Johnny Chu - Chu Hoàng Anh] STD-10 — bộ mẫu bản đồ lỗi theo màn
-      - run: node tools/failure-check.mjs --self-test
-      # [2026-11-25 06:12 PM Johnny Chu - Chu Hoàng Anh] STD-11 — vòng phản hồi lỗi: đọc nhật ký, gói chỉ mã
-      - run: node tools/loi.mjs --self-test
-      # [2026-11-25 06:00 PM Johnny Chu - Chu Hoàng Anh] ORDER-2 — luồng đơn xuyên app: vector + chuẩn ↔ schema + bên nhận giả đúng / sai
-      - run: node tools/order-flow-check.mjs --self-test

@@ -9,7 +9,7 @@
 | LD-0 | chủ | chốt Q-ORD-1..8 (README §5) | W0 | ☑ |
 | LD-PLAT-0 | bizcity-platform | nghiên cứu hiện trạng 6 repo + thiết kế luồng, hợp đồng nháp, giao việc (tệp 10, 20, 30) | W0 | ☑ |
 | LD-PLAT-1 | bizcity-platform | chuẩn `BIZCITY-ORDER-FLOW-v1.md` + `standards.json` + bản đồ + CHANGELOG | W1 | ☑ |
-| LD-PLAT-2 | bizcity-platform | schema `packages/contracts/schema/order/` + vector tốt / xấu | W1 | ☑ |
+| LD-PLAT-2 | bizcity-platform | schema `schema/order/` + vector tốt / xấu | W1 | ☑ |
 | LD-PLAT-3 | bizcity-platform | `tools/order-flow-check.mjs` (vector, chuẩn ↔ schema, hộp đen bên nhận / đọc tồn, tự thử) | W1 | ☑ |
 | LD-PLAT-4 | bizcity-platform | phiếu nghiệm thu NT-LD-001 đầu-cuối + BAN-GIAO | W4 | ☐ |
 | LD-KT-1 | open-ketoan | scope `stock:read` | W1 | ☐ |

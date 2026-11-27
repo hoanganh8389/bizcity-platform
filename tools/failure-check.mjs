@@ -21,7 +21,7 @@ import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from '
 import { basename, dirname, join, relative, resolve } from 'node:path';
 import { ROOT, validate } from './lib/json-schema.mjs';
 
-const SCHEMA = JSON.parse(readFileSync(join(ROOT, 'packages/contracts/schema/failure-map/failure-map.schema.json'), 'utf8'));
+const SCHEMA = JSON.parse(readFileSync(join(ROOT, 'schema/failure-map/failure-map.schema.json'), 'utf8'));
 const BANK = JSON.parse(readFileSync(join(ROOT, 'docs/standard/cau-hoi-nguoc.json'), 'utf8'));
 /** Câu hỏi ngược của các luồng (luôn kèm "chung"). Luồng lạ → lỗi để người gọi sửa. */
 export function questionsFor(flows) {
@@ -215,7 +215,7 @@ function selfTest() {
   for (const k of ['field', 'selector', 'origin', 'flow', 'state']) if (!sc.rows.some((r) => r.target.kind === k)) errs.push(`khung dựng ra thiếu đích ${k}`);
   if (!sc.rows.some((r) => r.target.path === 'lines.*.itemId')) errs.push('khung không nhận ra dòng hàng lines.*.itemId');
   // [2026-11-25 06:12 PM Johnny Chu - Chu Hoàng Anh] STD-11 — ngân hàng câu hỏi ngược đúng khuôn, mã câu không trùng; khung nhúng câu hỏi của luồng
-  const QS = JSON.parse(readFileSync(join(ROOT, 'packages/contracts/schema/feedback/reverse-questions.schema.json'), 'utf8'));
+  const QS = JSON.parse(readFileSync(join(ROOT, 'schema/feedback/reverse-questions.schema.json'), 'utf8'));
   for (const e of validate(QS, QS, BANK)) errs.push('cau-hoi-nguoc.json: ' + e);
   if (new Set(BANK.questions.map((q) => q.id)).size !== BANK.questions.length) errs.push('cau-hoi-nguoc.json: trùng mã câu hỏi');
   for (const q of BANK.questions) if (!BANK.flows[q.flow]) errs.push(`cau-hoi-nguoc.json: ${q.id} trỏ luồng lạ ${q.flow}`);

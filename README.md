@@ -1,29 +1,16 @@
 # bizcity-platform — open-platform: chuẩn nền và bộ kiểm của Bizcity Open
 
 <!-- [2026-11-27 11:03 PM Johnny Chu - Chu Hoàng Anh] NC-003 — chủ chốt Q-CORE-1…4: ba vai, ba repo; repo này là open-platform -->
-> **Vai (2026-11-27, canon R-CANON-17):** repo này là **open-platform** — luật kỹ thuật (`docs/standard/`), bộ kiểm (`tools/`), nghiên cứu (`docs/research/`). **Mã lõi `@bizcity/*` dời sang repo `open-core`** ở bước C2 của [NC-003](docs/research/NC-003-TACH-OPEN-CORE.md); tới lúc đó các gói dưới đây vẫn phát hành từ đây (0.2.x), không thêm tính năng mới. Cấp instance: [bizcity-open-setup](https://github.com/hoanganh8389/bizcity-open-setup).
+> **Vai (canon R-CANON-17):** repo này là **open-platform** — luật kỹ thuật ([`docs/standard/`](docs/standard/README.md)), schema hợp đồng nền máy đọc ([`schema/`](schema/)), bộ kiểm ([`tools/`](tools/)), nghiên cứu ([`docs/research/`](docs/research/)). Repo **không còn mã chạy**.
 
-<!-- [2026-11-24 03:10 PM Johnny Chu - Chu Hoàng Anh] PLATFORM-SPLIT — chủ chốt 2026-11-24: tách @bizcity/platform thành gói chung một nguồn (Q-PLAT-1 tên repo bizcity-platform, Q-PLAT-2 phát hành GitHub Packages trước). -->
-
-> **Trạng thái:** 🟡 **P2a xong (2026-11-24)** — `packages/platform` (212 commit) và `packages/contracts` (125 commit) nhập từ open-ketoan `6ad77b6` bằng `git subtree`, **giữ lịch sử**; `@ketoan/contracts` đổi tên `@bizcity/contracts`; build + typecheck đứng riêng 0 lỗi. **Giai đoạn 0 — chưa tách sạch:** hai gói vẫn còn phần kế toán (`masterdata/`, mã lỗi / loại chứng từ kế toán, kiểu DB toàn bộ) — P2b gỡ bằng cổng đăng ký theo kiểm kê open-ketoan PHASE-041 `10-KIEM-KE.md`. open-ketoan chưa dùng gói này (P6, hoãn).
-
-Một nguồn duy nhất cho phần nền mà **mọi** app Bizcity Open (open-ketoan, open-cake, …) cùng dựa vào: HTTP và phong bì lỗi, xác thực và phân quyền, action runtime, sự kiện (outbox), bằng chứng, cài đặt, tài liệu / chứng từ chung, nhiều site (registry, router, provisioner, migrate, backup), nhật ký, số đo, trace, chẩn đoán. **Không** chứa nghiệp vụ của app nào.
-
-| Gói | Vai | Nguồn hiện tại |
-|---|---|---|
-| `@bizcity/platform` | nền chạy: http, auth, authz, actions, events, evidence, settings, documents, db + nhiều site, logger, metrics, tracing, diagnostics | `open-ketoan/packages/platform` |
-| `@bizcity/contracts` | hợp đồng nền: phong bì API, mã lỗi chung, khuôn sự kiện, bằng chứng, `DOC_LINK_ROLES`, authz, settings, module, MCP | phần nền của `open-ketoan/packages/contracts` (`@ketoan/contracts` giữ phần kế toán, re-export phần nền) |
-| `@bizcity/module-sdk` | facade duy nhất module được import | `open-ketoan/packages/module-sdk` |
-| `@bizcity/ui-kit` | facade giao diện React | `open-ketoan/packages/ui-kit` |
-| `@bizcity/cli` | lệnh `bizcity` (site, migrate, doctor, module check) | `open-ketoan/packages/cli` |
-| `@bizcity/conformance` | khung selfcheck + kiểm chung (SC-*, H-*) | `open-ketoan/tests/conformance` (phần chung) |
-| `@bizcity/flex` *(về sau)* | lớp dữ liệu mềm (`user_meta`, `entity_meta`, `record_types`, `records`) | bản đầu ở `open-cake/packages/flex`; vào đây ở **P7** |
+<!-- [2026-11-27 11:31 PM Johnny Chu - Chu Hoàng Anh] NC-003 C2 — mã lõi đã dời sang open-core -->
+> **Mã lõi `@bizcity/platform`, `@bizcity/contracts` (và các gói `@bizcity/*` về sau) ở repo [open-core](https://github.com/hoanganh8389/open-core)** — dời ở bước C2 của [NC-003](docs/research/NC-003-TACH-OPEN-CORE.md) bằng `git subtree`, giữ lịch sử; phát hành từ **0.3.0**. Bản 0.2.0 cũ vẫn tải được ở [Release v0.2.0](https://github.com/hoanganh8389/bizcity-platform/releases/tag/v0.2.0). Cấp instance: [bizcity-open-setup](https://github.com/hoanganh8389/bizcity-open-setup).
 
 ## Chuẩn xuyên app
 
 - **[Bản đồ chuẩn nền](docs/standard/README.md)** (`bizcity_standard_map@1` 1.0.0, chủ duyệt 2026-11-25) — bốn trục dữ liệu (master data, chứng từ, khách 360, người dùng) + mười ba trụ cột kỹ thuật (khuôn repo, API, người dùng–vai, bảo mật, quan sát, đệm, kiểm thử, phát hành, giao diện, nhiều CSDL, Hub, tri thức, nghiệm thu · bàn giao); mỗi trụ cột một tệp chuẩn, một bản mẫu đang chạy, một phép kiểm. Bức tranh toàn hệ: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). Sổ máy đọc: `docs/standard/standards.json`. Kiểm: `node tools/standard-check.mjs` (sổ chuẩn) · `--repo <thư mục>` (khuôn một repo, mức S0–S3) · `node tools/users-check.mjs --repo <thư mục>` (khuôn người dùng · vai · quyền, tệp `bizcity.authz.json` <!-- [2026-11-25 10:34 AM Johnny Chu - Chu Hoàng Anh] USERS-1 -->). <!-- [2026-11-24 11:48 PM Johnny Chu - Chu Hoàng Anh] STD-1 -->
 
-- **[`bizcity_spine@1`](docs/standard/BIZCITY-SPINE-v1.md)** — định danh và danh mục chuẩn (item, ĐVT, chi nhánh, đối tượng, khách, chứng từ, tenant, người dùng), tự đứng + đồng bộ. Mã app viết bằng gì cũng được; hình trên dây phải giống nhau. Máy đọc: `packages/contracts/schema/spine/`. Kiểm: `node tools/spine-check.mjs` (vector) · `--manifest <bizcity.app.json>` (repo app). [ADR-0001](docs/adr/ADR-0001-spine-xuyen-app.md).
+- **[`bizcity_spine@1`](docs/standard/BIZCITY-SPINE-v1.md)** — định danh và danh mục chuẩn (item, ĐVT, chi nhánh, đối tượng, khách, chứng từ, tenant, người dùng), tự đứng + đồng bộ. Mã app viết bằng gì cũng được; hình trên dây phải giống nhau. Máy đọc: `schema/spine/`. Kiểm: `node tools/spine-check.mjs` (vector) · `--manifest <bizcity.app.json>` (repo app). [ADR-0001](docs/adr/ADR-0001-spine-xuyen-app.md).
 - **Bộ kiểm tương thích** — lane MANIFEST `node tools/spine-check.mjs` · lane CONTRACT (hộp đen) `node tools/spine-contract.mjs --target <url> --api-key <khoá> --profile ledger [--allow-write]`; kết quả theo [`bizcity_conformance_report@1`](docs/standard/BIZCITY-CONFORMANCE-REPORT-v1.md). Hợp đồng kèm: [`bizcity_identity@1`](docs/standard/BIZCITY-IDENTITY-v1.md) (người dùng + SSO từ WordPress), [`bizcity_knowledge@1`](docs/standard/BIZCITY-KNOWLEDGE-v1.md) (công cụ tri thức chỉ đọc cho Twin Brain). <!-- [2026-11-24 08:40 PM Johnny Chu - Chu Hoàng Anh] SPINE-4 --> <!-- [2026-11-24 05:08 PM Johnny Chu - Chu Hoàng Anh] SPINE-1 -->
 
 ## Kế hoạch và luật
@@ -34,18 +21,12 @@ Một nguồn duy nhất cho phần nền mà **mọi** app Bizcity Open (open-k
 
 **Bốn câu:** (1) không biết nghiệp vụ của app nào — app gắn vào qua cổng đăng ký; (2) chỉ nhận thứ ≥ 2 app cần; (3) mọi PR chạy test của mọi app đang dùng; (4) phá ⇒ major + ADR + hai bản song song.
 
-## Phát hành
+## Kiểm
 
-<!-- [2026-11-24 06:31 PM Johnny Chu - Chu Hoàng Anh] P2b-5 — chủ chốt 2026-11-24: phát hành bằng tệp .tgz đính kèm GitHub Release (GitHub Packages chỉ nhận phạm vi @hoanganh8389; giữ tên @bizcity/*). -->
-
-Gắn tag `vX.Y.Z` (phiên bản trong `packages/*/package.json` phải khớp) ⇒ workflow `release` build + test (Postgres 16) + bộ kiểm SPINE ⇒ `tools/dong-goi.mjs` đóng 2 tệp ⇒ GitHub Release đính kèm. App cài bằng URL, không cần token:
-
-```json
-"@bizcity/contracts": "https://github.com/hoanganh8389/bizcity-platform/releases/download/v0.2.0/bizcity-contracts-0.2.0.tgz",
-"@bizcity/platform":  "https://github.com/hoanganh8389/bizcity-platform/releases/download/v0.2.0/bizcity-platform-0.2.0.tgz"
+```bash
+npm test     # mọi bộ kiểm tự kiểm: spine-check, standard-check, users-check, no-chuan, delivery, failure, loi, order-flow
+node tools/standard-check.mjs --repo ../<repo>      # kiểm một repo khác cạnh bên
 ```
-
-SemVer; đổi sang registry (npm công khai `@bizcity` hoặc GitHub Packages khi có tổ chức) chỉ sửa hai dòng này ở app. CI (`ci.yml`) chạy cùng bộ kiểm trên mọi PR.
 
 ## Giấy phép
 

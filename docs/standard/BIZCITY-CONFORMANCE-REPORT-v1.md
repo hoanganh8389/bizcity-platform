@@ -3,7 +3,7 @@
 <!-- [2026-11-24 08:10 PM Johnny Chu - Chu Hoàng Anh] SPINE-4 — hợp đồng thứ ba của bộ kiểm tương thích (open-hub DE-XUAT-BO-KIEM-TUONG-THICH §5–§6): tệp máy đọc mà bizcity.vn dùng để hiện nhãn mức C0–C3 và trạng thái, thay vì gõ tay (R-CANON-10: nhãn phải khớp nghiệm thu). -->
 
 > **Phiên bản:** 1.1.0 · 2026-11-24 · **Trạng thái:** Đang dùng (`tools/spine-check.mjs --json` in theo hợp đồng này) · **Thuộc:** `@bizcity/contracts`
-> **Máy đọc:** `packages/contracts/schema/spine/conformance-report.schema.json` · vector trong `schema/spine/vectors/`.
+> **Máy đọc:** `schema/spine/conformance-report.schema.json` · vector trong `schema/spine/vectors/`.
 
 ## 1. Hình
 

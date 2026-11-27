@@ -5,7 +5,7 @@
 
 > **Phiên bản:** 1.1.0 · 2026-11-25 · **Trạng thái:** **Chấp nhận** — chủ dự án duyệt 2026-11-25 <!-- [2026-11-25 10:30 AM Johnny Chu - Chu Hoàng Anh] STD-4 — chủ duyệt 2026-11-25 -->
 > **Bản mẫu:** `@bizcity/platform` (`db/migrations/0001_platform_nen_tang.sql`, `core/auth.ts`, `core/roles.ts`, `core/authz/`, `core/authz-manifest.ts`); open-cake `apps/api/src/auth/` + `db/migrations/0103_flex.sql` (user meta).
-> **Máy đọc:** `packages/contracts/schema/users/authz-manifest.schema.json` · **Kiểm:** `node tools/users-check.mjs`.
+> **Máy đọc:** `schema/users/authz-manifest.schema.json` · **Kiểm:** `node tools/users-check.mjs`.
 > **Đi cùng:** `bizcity_authorization@1` (open-ketoan `docs/contracts/BIZCITY-AUTHORIZATION-v1.md`, bộ tính quyền) · canon §9.
 
 ## 0. Một câu
