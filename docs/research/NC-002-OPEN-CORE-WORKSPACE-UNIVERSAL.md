@@ -1,7 +1,7 @@
 # NC-002 — open-core: Workspace, App Registry và các chuẩn Universal (bản kiến trúc để chuẩn hoá mọi app TypeScript)
 <!-- [2026-11-27 09:48 AM Johnny Chu - Chu Hoàng Anh] NC-002 — chủ (2026-11-27): dựa trên open-setup đang có, chuẩn hoá Universal Options / Metadata / Cache / Records & Hooks / Document / Post / Media R2 / App Registry; khách là thành viên WP multisite bizcity.vn; plugin WP ghi chép + help desk, open-setup tạo ứng dụng; đặt tên open-core; tách open-cake thành open-core + module CRM; tuân stack chung và các contract bizcity_workspace@1, bizcity_app_registry@1… -->
 
-> **Loại:** nghiên cứu + đề xuất kiến trúc (không phải chuẩn) · **Trạng thái:** chờ chủ chốt §12 · **Nối tiếp:** [NC-001](NC-001-KERNEL-TU-WORDPRESS.md) (bảy lớp học từ WordPress) · open-cake [26-NOI-LUU-TEP](https://github.com/hoanganh8389/open-cake/blob/main/docs/architecture/26-NOI-LUU-TEP.md) (lưu tệp / R2).
+> **Loại:** nghiên cứu + đề xuất kiến trúc (không phải chuẩn) · **Trạng thái:** **chủ chốt Q-OC-1…9 ngày 2026-11-27** (§12) <!-- [2026-11-27 10:15 AM Johnny Chu - Chu Hoàng Anh] NC-002 — chủ chốt Q-OC-1…9 --> · **Nối tiếp:** [NC-001](NC-001-KERNEL-TU-WORDPRESS.md) (bảy lớp học từ WordPress) · open-cake [26-NOI-LUU-TEP](https://github.com/hoanganh8389/open-cake/blob/main/docs/architecture/26-NOI-LUU-TEP.md) (lưu tệp / R2).
 > **Áp đầu tiên:** open-cake ([PHASE-019](https://github.com/hoanganh8389/open-cake/blob/main/docs/phases/PHASE-019-TACH-OPEN-CORE/README.md)). Sau đó: open-ketoan, open-kiot (TS), open-hrm, open-mrp, open-base, open-requests…
 > **Repo liên quan:** bizcity-platform (nền, chuẩn) · bizcity-open-setup (Site Manager) · bizcity-web (WP multisite bizcity.vn, trang dùng thử) · bizcity-llm-router (Hub: danh tính, khoá) · từng app.
 
@@ -26,7 +26,7 @@ Bizcity Platform & Business Contracts — chuẩn backend và dữ liệu xuyên
 
 ### 1.1 Từ vựng — ghép với chuẩn đã duyệt
 
-Chuẩn MULTISITE (Q-STD-1, duyệt 2026-11-25) gọi "doanh nghiệp thuê hệ thống" là **site**. Mô hình mới gọi đúng thứ đó là **Workspace** ở tầng nghiệp vụ. Đề xuất giữ cả hai, mỗi từ một tầng:
+Chuẩn MULTISITE (Q-STD-1, duyệt 2026-11-25) gọi "doanh nghiệp thuê hệ thống" là **site**, nhưng trong mã, bảng `sites` ở control DB của mỗi app thực chất là **một app của một doanh nghiệp** — một từ đang mang hai nghĩa. **Chốt (Q-OC-2):** ba từ — **Workspace** (doanh nghiệp, `ws_…` + slug) · **Instance** (một app × một Workspace; trong mã **vẫn là bảng `sites`, không đổi tên bảng**, thêm cột `workspace_id`) · **Tenant** (đơn vị bên trong instance). MULTISITE lên 1.1 sửa §1 từ vựng (PR riêng, R-PLAT-7).
 
 | Từ | Nghĩa | Định danh | Ai làm chủ | Ánh xạ hiện tại |
 |---|---|---|---|---|
@@ -99,7 +99,7 @@ Mọi thao tác: `Idempotency-Key`, người gọi là `actor = support:<wp id>`
 
 | WordPress | open-core |
 |---|---|
-| `wp-includes` + `wp-admin` phát hành có phiên bản | `@open-core/*` phát hành có phiên bản (semver), mọi app ghim một dải |
+| `wp-includes` + `wp-admin` phát hành có phiên bản | `@bizcity/*` phát hành có phiên bản dưới tên sản phẩm **open-core** (semver), mọi app ghim một dải |
 | plugin (`wp-content/plugins/x`) | **module** (`modules/<key>` hoặc gói `@open-cake/crm`) có manifest |
 | `register_post_type`, `register_meta`, `register_setting`, `add_action`… | registry có kiểu của open-core (NC-001 §8) |
 | WP multisite một CSDL | một Workspace × một app = một CSDL; một tiến trình phục vụ nhiều instance |
@@ -107,20 +107,20 @@ Mọi thao tác: `Idempotency-Key`, người gọi là `actor = support:<wp id>`
 
 ### 4.2 open-core và bizcity-platform
 
-`@bizcity/platform` **đã là** phần kernel của open-core (registry site, auth, actions, events, settings, migration…). Không dựng repo thứ hai chép lại (một nguồn, R-PLAT-3). Đề xuất: **open-core là tên phát hành**; nguồn vẫn là repo `bizcity-platform`, bổ sung máy chủ khung, giao diện khung, module SDK; khi đủ thì đổi tên repo (Q-OC-1).
+`@bizcity/platform` **đã là** phần kernel của open-core (registry site, auth, actions, events, settings, migration…). Không dựng repo thứ hai chép lại (một nguồn, R-PLAT-3). **Chốt (Q-OC-1):** giữ repo `bizcity-platform` và **tên gói `@bizcity/*`**; "open-core" là **tên sản phẩm phát hành** (bản lõi có phiên bản). Gói mới cùng tên miền: `@bizcity/server`, `@bizcity/web-shell`, `@bizcity/module-sdk`… — không app nào phải đổi import.
 
 ### 4.3 Gói (pnpm workspace)
 
 | Gói | Chứa | Nguồn hiện tại |
 |---|---|---|
-| `@open-core/kernel` | Site · Identity · Options · Meta · Object · Cache · Storage · Event · Workflow · Audit · Migration · Database Router (NC-001) | `@bizcity/platform` |
-| `@open-core/contracts` | schema dùng chung, hợp đồng `bizcity_*@1`, sinh OpenAPI | `@bizcity/contracts` + phần nền của `@open-cake/contracts` |
-| `@open-core/server` | khởi động Fastify: nhận site theo `Host`, xác thực, dựng `ctx`, nạp module, gắn action → REST + MCP, `/_sites/v1`, sức khoẻ, số đo | `apps/api/src/{server,runtime,auth,observability,stream,migrate}.ts` của open-cake |
-| `@open-core/web-shell` | React shell: điều hướng theo registry menu, đăng nhập, người dùng & vai, cài đặt, media, bản ghi mềm | `apps/web/src/app`, `screens/{staff,Settings,RecordTypeScreen}` của open-cake |
-| `@open-core/ui-kit` | token, thành phần chung | `@open-cake/ui-kit` |
-| `@open-core/action-client` | `useAction` / `useQueryAction`, bộ giả lập | `@open-cake/action-client` |
-| `@open-core/module-sdk` | `defineModule`, manifest, kiểu cho action / entity / setting / meta / hook / menu | mới (dựa `module-registry` của nền) |
-| `@open-core/cli` · `@open-core/conformance` | `bizcity site …`, tạo module mẫu, bộ kiểm chuẩn | `tools/` của nền |
+| `@bizcity/platform` (kernel, giữ tên) | Site · Identity · Options · Meta · Object · Cache · Storage · Event · Workflow · Audit · Migration · Database Router (NC-001) | `@bizcity/platform` |
+| `@bizcity/contracts` | schema dùng chung, hợp đồng `bizcity_*@1`, sinh OpenAPI | `@bizcity/contracts` (có sẵn) + phần nền của `@open-cake/contracts` |
+| `@bizcity/server` | khởi động Fastify: nhận site theo `Host`, xác thực, dựng `ctx`, nạp module, gắn action → REST + MCP, `/_sites/v1`, sức khoẻ, số đo | `apps/api/src/{server,runtime,auth,observability,stream,migrate}.ts` của open-cake |
+| `@bizcity/web-shell` | React shell: điều hướng theo registry menu, đăng nhập, người dùng & vai, cài đặt, media, bản ghi mềm | `apps/web/src/app`, `screens/{staff,Settings,RecordTypeScreen}` của open-cake |
+| `@bizcity/ui-kit` | token, thành phần chung | `@open-cake/ui-kit` |
+| `@bizcity/action-client` | `useAction` / `useQueryAction`, bộ giả lập | `@open-cake/action-client` |
+| `@bizcity/module-sdk` | `defineModule`, manifest, kiểu cho action / entity / setting / meta / hook / menu | mới (dựa `module-registry` của nền) |
+| `@bizcity/cli` · `@bizcity/conformance` | `bizcity site …`, tạo module mẫu, bộ kiểm chuẩn | `tools/` của nền |
 
 ### 4.4 Module
 
@@ -177,19 +177,19 @@ Thêm vào danh sách hợp đồng: `bizcity_records@1`, `bizcity_hooks@1`, `bi
 | Migration | SQL migrations | ✓ (theo site, sao lưu trước) | — |
 | Validation | Zod | ✓ | — |
 | Request Context | AsyncLocalStorage | ✓ (`core/request-context.ts`) | bọc thành `ctx` (NC-001 P-K1) |
-| Cache | Redis | adapter tuỳ chọn trong chuẩn (R-CACHE-6) | **Q-OC-5**: bắt buộc ở mạng bizcity, tuỳ chọn ở bản tự cài |
-| Event Bus | NATS JetStream | outbox PostgreSQL là chuẩn (R-OUTBOX-1) | **Q-OC-3**: JetStream làm đường chuyển **sau** outbox, không thay outbox |
-| Identity Provider | Keycloak | Hub (WP) là nguồn `sub`, vé HMAC | **Q-OC-4**: xem §7.1 |
+| Cache | Redis | adapter tuỳ chọn trong chuẩn (R-CACHE-6) | **chốt Q-OC-5**: bật trong cấu hình triển khai của mạng, **mã vẫn chạy khi Redis vắng**; Redis **riêng** cho open-core (instance hoặc giới hạn bộ nhớ riêng), **không dùng chung Redis của WP** (Object Cache Pro đang để Redis tự xoá khoá khi đầy) |
+| Event Bus | NATS JetStream | outbox PostgreSQL là chuẩn (R-OUTBOX-1) | **chốt Q-OC-3**: **outbox giữ nguyên là nguồn sự kiện**; JetStream chỉ có thể thêm làm đường chuyển sau outbox khi có ≥ 2 dấu hiệu: > ~100 instance / máy, > 3 bên nhận một loại sự kiện, cần phát lại; bản tự cài không có NATS |
+| Identity Provider | Keycloak | Hub (WP) là nguồn `sub`, vé HMAC | **chốt Q-OC-4**: làm A ngay, sẵn sàng B (§7.1) |
 | Object Storage | S3 / MinIO | đề xuất 26 (R2 = S3, MinIO cho test) | `bizcity_storage@1` |
 | API Contract | OpenAPI | `defineAction` có zod, chưa sinh OpenAPI | sinh OpenAPI 3.1 từ registry action (một nguồn) |
 | AI Integration | MCP | ✓ (`expose.mcp`) | — |
 | Observability | OpenTelemetry | ✓ | — |
-| Monorepo | pnpm workspace | open-cake dùng **npm workspaces** | **Q-OC-6**: chuyển pnpm ở bước tách gói (OC-1) |
+| Monorepo | pnpm workspace | open-cake dùng **npm workspaces** | **chốt Q-OC-6**: pnpm (chặn import gói không khai báo ⇒ giữ ranh giới "module không chạm nội bộ lõi"); thứ tự open-cake (PR riêng, 170 test xanh) → bizcity-platform → open-ketoan; ghi vào APP-SKELETON |
 | Testing | Vitest | ✓ | — |
 
 ### 7.1 Keycloak và Hub
 
-Ba cách, chủ chọn (Q-OC-4):
+**Chốt (Q-OC-4, 2026-11-27): làm A ngay, sẵn sàng cho B.** open-core đặt đăng nhập sau giao diện `IdentityProvider` có hai bộ: `hub-ticket` (vé HMAC của Hub, đang chạy) và `oidc` (để sẵn). Bật Keycloak (B) khi có một trong: app bên thứ ba / cộng đồng cần OIDC chuẩn; khách đòi MFA hoặc SSO với AD / Google Workspace; tách VPS riêng cho dịch vụ danh tính (Keycloak cần ~0,5–1 GB RAM, VPS hiện chạy chung WP + zalo-hub). Ba cách đã cân:
 
 | Cách | Làm | Được | Mất |
 |---|---|---|---|
@@ -201,14 +201,14 @@ Ba cách, chủ chọn (Q-OC-4):
 
 | Phần hiện tại | Về đâu |
 |---|---|
-| `apps/api/src/server.ts`, `runtime.ts`, `auth/`, `observability.ts`, `stream.ts`, `migrate.ts`, `client-errors.ts` | `@open-core/server` |
+| `apps/api/src/server.ts`, `runtime.ts`, `auth/`, `observability.ts`, `stream.ts`, `migrate.ts`, `client-errors.ts` | `@bizcity/server` |
 | `apps/api/src/records.ts`, `db/migrations/0103_flex.sql` | kernel (Records + Meta) |
 | `apps/api/src/connector-link.ts`, `care/channel-link.ts` (phần cấu hình) | module CRM (kênh), phần lưu tệp → kernel Storage |
 | `apps/api/src/care/` (kernel chạm khách, hộp thư, kênh, gửi tin), `orders/`, `catalog.ts` | **module `cake.crm`** (catalog: module riêng `cake.catalog` — app khác có thể dùng lại) |
 | `packages/care-kernel` | module CRM |
-| `packages/contracts` | tách: phần nền (lỗi, action, phân trang, vai) → `@open-core/contracts`; `cake/*` → module |
-| `packages/ui-kit`, `packages/action-client` | `@open-core/ui-kit`, `@open-core/action-client` |
-| `apps/web/src/app/*`, `screens/{staff,Settings,RecordTypeScreen}`, `channel-setup/LinkSettings` (khung) | `@open-core/web-shell` |
+| `packages/contracts` | tách: phần nền (lỗi, action, phân trang, vai) → `@bizcity/contracts`; `cake/*` → module |
+| `packages/ui-kit`, `packages/action-client` | `@bizcity/ui-kit`, `@bizcity/action-client` |
+| `apps/web/src/app/*`, `screens/{staff,Settings,RecordTypeScreen}`, `channel-setup/LinkSettings` (khung) | `@bizcity/web-shell` |
 | `apps/web/src/screens/{Inbox*,Contacts,Contact360,Channels,channel-setup,orders,catalog,Dashboard}` | module CRM (giao diện) |
 | `apps/web/src/i18n/vi/{app,staff}.ts` / `{inbox,catalog,setup,orders}.ts` | shell / module |
 
@@ -222,17 +222,17 @@ Ba cách, chủ chọn (Q-OC-4):
 | OC-1 | open-cake: chuyển pnpm, vẽ ranh giới gói (core / module) **trong cùng repo**, thêm kiểm "module không import nội bộ core" | open-cake |
 | OC-2 | `SiteContext` (NC-001 P-K1) ở nền; open-cake dùng | bizcity-platform → open-cake |
 | OC-3 | Universal Cache · Options · Meta · Records ở kernel (P-K2…P-K4), Storage (P-K7) | bizcity-platform → open-cake |
-| OC-4 | `@open-core/module-sdk` + manifest + nạp module; CRM chạy như module | bizcity-platform + open-cake |
-| OC-5 | rút `@open-core/server` + `@open-core/web-shell` ra nền; phát hành open-core 1.0 | bizcity-platform |
+| OC-4 | `@bizcity/module-sdk` + manifest + nạp module; CRM chạy như module | bizcity-platform + open-cake |
+| OC-5 | rút `@bizcity/server` + `@bizcity/web-shell` ra nền; phát hành open-core 1.0 | bizcity-platform |
 | OC-6 | open-setup: `bizcity_workspace@1`, `bizcity_app_registry@1`, `bizcity_app_instance@1` (tổng quát hoá DocType, thêm `product`), API help desk; bizcity-web: plugin "Bizcity Workspace" | open-setup + bizcity-web |
-| OC-7 | open-ketoan nhận open-core qua R-FLOW; open-kiot / hrm / mrp / base / requests khởi tạo từ `@open-core/cli create-app` | các app |
+| OC-7 | open-ketoan nhận open-core qua R-FLOW; open-kiot / hrm / mrp / base / requests khởi tạo từ `@bizcity/cli create-app` | các app |
 
 ## 10. Vì sao tiết kiệm công (và token) về sau
 
 - **Một bộ luật đọc một lần:** người / agent sửa module chỉ cần biết manifest + registry của open-core, không đọc lại máy chủ, xác thực, migration, đệm của từng app.
 - **Phần chung sửa một chỗ:** lỗi đệm, đăng nhập, lưu tệp, nhiều site sửa ở open-core, mọi app nhận qua nâng phiên bản — hôm nay đang phải sửa ở open-ketoan rồi chép sang (ví dụ F-4 của tài liệu 26).
 - **Bề mặt module nhỏ:** một module CRM là action + entity + màn + migration riêng — ngữ cảnh đọc ít hơn hẳn cả app.
-- **Bộ kiểm tự động** (`@open-core/conformance`) chặn lệch chuẩn trước khi review.
+- **Bộ kiểm tự động** (`@bizcity/conformance`) chặn lệch chuẩn trước khi review.
 
 ## 11. Rủi ro
 
@@ -243,20 +243,24 @@ Ba cách, chủ chọn (Q-OC-4):
 | Hai tên một thứ (site / workspace, settings / options) gây lẫn | bảng từ vựng §1.1 + đổi tên có bí danh, một nguồn |
 | Plugin WP thành nơi "tự làm" thay open-setup | luật §3.1: plugin chỉ gọi open-setup, không gọi app |
 
-## 12. Câu hỏi chờ chủ
+## 12. Quyết định của chủ (2026-11-27)
+<!-- [2026-11-27 10:15 AM Johnny Chu - Chu Hoàng Anh] NC-002 — chủ chốt Q-OC-1…9 (đổi đề xuất ở Q-OC-1: giữ tên gói @bizcity/*; Q-OC-4: A ngay, sẵn sàng B) -->
 
-| Mã | Câu hỏi | Đề xuất |
+| Mã | Câu hỏi | Chốt |
 |---|---|---|
-| Q-OC-1 | open-core là repo mới hay là `bizcity-platform` đổi tên / mở rộng | **mở rộng `bizcity-platform`**, phát hành tên `@open-core/*`, đổi tên repo khi đến 1.0 |
-| Q-OC-2 | Dùng "Workspace" ở tầng nghiệp vụ, giữ "site / instance" ở tầng kỹ thuật (§1.1) | có |
-| Q-OC-3 | NATS JetStream: thay outbox hay đứng sau outbox | đứng sau outbox |
-| Q-OC-4 | Keycloak: A / B / C (§7.1) | B |
-| Q-OC-5 | Redis bắt buộc ở mạng bizcity, tuỳ chọn ở bản tự cài | có |
-| Q-OC-6 | Chuyển open-cake sang pnpm ở OC-1 | có |
-| Q-OC-7 | Plugin "Bizcity Workspace" đặt ở đâu | module mới trong `bizcity-web` (cạnh trang dùng thử đang gọi open-setup), tách plugin riêng khi lớn |
-| Q-OC-8 | Tên miền gốc sản phẩm (`opencake.net`, `openketoan.com`, `openkiot.com`…) | khai ở App Registry, open-setup đọc |
-| Q-OC-9 | `bizcity_settings@1` đổi tên thành `bizcity_options@1` | có, giữ bí danh một phiên bản lớn |
+| Q-OC-1 | open-core là repo mới hay `bizcity-platform` | **giữ repo và tên gói `@bizcity/*`; "open-core" là tên sản phẩm phát hành** (§4.2) |
+| Q-OC-2 | từ vựng | **Workspace** (doanh nghiệp, `ws_…` + slug) · **Instance** (app × Workspace; bảng `sites` giữ tên) · **Tenant** (đơn vị trong instance) (§1.1) |
+| Q-OC-3 | NATS JetStream | **outbox giữ nguyên là nguồn sự kiện**; JetStream chỉ là đường chuyển sau outbox, khi có dấu hiệu (§7) |
+| Q-OC-4 | Keycloak | **A ngay, sẵn sàng B** qua `IdentityProvider` (`hub-ticket` · `oidc`) (§7.1) |
+| Q-OC-5 | Redis | mã vẫn chạy khi Redis vắng; Redis **riêng** cho open-core (instance / giới hạn bộ nhớ riêng), **không dùng chung Redis của WP** (§7) |
+| Q-OC-6 | pnpm | có — giữ ranh giới "module không chạm nội bộ lõi"; open-cake trước (PR riêng, 170 test xanh) → bizcity-platform → open-ketoan |
+| Q-OC-7 | plugin Workspace | **module trong bizcity-web** `include/workspace/`, ranh giới riêng, REST `bizcity-web/v1/workspaces`; tổng quát hoá trình gọi open-setup đang riêng cho Kế Toán |
+| Q-OC-8 | tên miền gốc | đã sở hữu **`opencake.net`, `openkiot.com`, `openketoan.com`**; DNS + TLS wildcard (`*.opencake.net`…) trên **Cloudflare**. Khai `root_domains[]` trong App Registry; instance **không** nằm dưới `*.bizcity.vn` (đã trỏ blog WP); một slug giữ chung trên mọi tên miền gốc và tên blog WP |
+| Q-OC-9 | `bizcity_settings@1` → `bizcity_options@1` | có, **không gấp** — làm cùng P-K3, giữ bí danh một phiên bản lớn |
+
+**Việc kéo theo:** MULTISITE 1.1 (từ vựng, `sites.workspace_id`) · APP-SKELETON thêm pnpm · App Registry có `root_domains[]` · open-core có `IdentityProvider` từ P-K1.
 
 ## Nhật ký
 
 - 2026-11-27: bản đầu.
+- 2026-11-27: chủ chốt Q-OC-1…9; §4.2–§4.3 đổi sang tên gói `@bizcity/*`; §7, §7.1 ghi quyết định Redis / NATS / Keycloak / pnpm; §12 thành bảng quyết định.
