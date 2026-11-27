@@ -1,7 +1,7 @@
 # NC-003 — Ba vai nền và tách open-core khỏi open-ketoan (một nguồn mã lõi, phiên bản liền mạch)
 <!-- [2026-11-27 11:08 PM Johnny Chu - Chu Hoàng Anh] NC-003 — chủ (2026-11-27): "1 repo là open-cake (frontend + backend quản lý), open-core là lõi nhân hệ thống, đủ chuẩn universal settings, upload, cache, api, documents… để sau + pos / + hrm / + mrp, open-ketoan cũng khớp open-core; versioning liền mạch, khớp chuẩn open-platform và registry provision DB của open-setup". Chủ đồng ý ba vai, ba repo và chốt Q-CORE-1…4. -->
 
-> **Loại:** nghiên cứu + kế hoạch xuyên repo · **Trạng thái:** **chủ chốt Q-CORE-1…4 ngày 2026-11-27** (§10); Q-CORE-5…7 chờ chủ
+> **Loại:** nghiên cứu + kế hoạch xuyên repo · **Trạng thái:** **chủ chốt Q-CORE-1…7 ngày 2026-11-27** (§10) <!-- [2026-11-27 11:19 PM Johnny Chu - Chu Hoàng Anh] NC-003 — chủ đồng ý Q-CORE-5…7 theo đề xuất -->
 > **Thay:** NC-002 Q-OC-1 ("giữ repo bizcity-platform làm open-core") và NC-002 §13 (hai bản mã nền) — xem §10.
 > **Luật cấp hệ:** canon open-hub **R-CANON-17** ([§2.2](https://github.com/hoanganh8389/open-hub/blob/main/docs/canon/BIZCITY-OPEN-CANON-v1.md)) · kế hoạch gói chung [KE-HOACH-GOI-CHUNG §6](https://github.com/hoanganh8389/open-hub/blob/main/docs/canon/KE-HOACH-GOI-CHUNG-BIZCITY-PLATFORM.md)
 > **Đọc mã:** open-ketoan main `8f480aa` · bizcity-platform `21cc3f8` (subtree từ open-ketoan `6ad77b6`) · open-cake `1271cb7` · bizcity-open-setup main `0f6628c`
@@ -159,9 +159,9 @@ open-ketoan/  = open-core + module kế toán
 | **Q-CORE-2** | "Documents" trong lõi là gì | **Chốt:** khung chứng từ chung (đánh số, phiên bản, liên kết, đính kèm, in, ký); loại chứng từ cụ thể ở module. Tri thức / tài liệu là chuẩn KNOWLEDGE, module khác |
 | **Q-CORE-3** | Sửa nền ở đâu | **Chốt:** chỉ ở open-core; open-ketoan nhận qua bản phát hành (đóng băng từ C3, qua R-FLOW). **Giải NC-002 §13** |
 | **Q-CORE-4** | Phiên bản | **Chốt:** mọi gói `@bizcity/*` chung một số (lockstep); "open-core X.Y" là mốc duy nhất open-setup ghi vào registry |
-| Q-CORE-5 | Văn bản hợp đồng `bizcity_site_provisioning@1` ở đâu khi mã đã ở open-core | *Đề xuất:* chuyển sang open-platform (`docs/standard/`, cạnh MULTISITE), open-ketoan giữ liên kết; tới khi chốt, vẫn ở open-ketoan `docs/contracts/` |
-| Q-CORE-6 | Tên gói đụng nhau ở open-ketoan | *Đề xuất:* `@bizcity/kernel` → `@open-ketoan/kernel`; `@bizcity/module-sdk` của open-core **không biết sổ**, phần `ctx.ledger` thành `@open-ketoan/module-sdk` mở rộng (declaration merging); `@bizcity/ui-kit` / `cli` gộp về bản open-core |
-| Q-CORE-7 | Phát hành ở đâu | *Đề xuất:* giữ GitHub Release tgz (như 0.2.0) tới 1.0; sau đó npm công khai `@bizcity` |
+| **Q-CORE-5** | Văn bản hợp đồng `bizcity_site_provisioning@1` ở đâu khi mã đã ở open-core | **Chốt (2026-11-27):** chuyển sang open-platform (`docs/standard/`, cạnh MULTISITE), open-ketoan giữ liên kết; tới khi chốt, vẫn ở open-ketoan `docs/contracts/` |
+| **Q-CORE-6** | Tên gói đụng nhau ở open-ketoan | **Chốt (2026-11-27):** `@bizcity/kernel` → `@open-ketoan/kernel`; `@bizcity/module-sdk` của open-core **không biết sổ**, phần `ctx.ledger` thành `@open-ketoan/module-sdk` mở rộng (declaration merging); `@bizcity/ui-kit` / `cli` gộp về bản open-core |
+| **Q-CORE-7** | Phát hành ở đâu | **Chốt (2026-11-27):** giữ GitHub Release tgz (như 0.2.0) tới 1.0; sau đó npm công khai `@bizcity` |
 
 ## 11. Repo phải sửa gì (C0)
 
@@ -177,3 +177,4 @@ open-ketoan/  = open-core + module kế toán
 ## Nhật ký
 
 - 2026-11-27: mở NC-003 (C0); chủ chốt Q-CORE-1…4.
+- 2026-11-27: <!-- [2026-11-27 11:19 PM Johnny Chu - Chu Hoàng Anh] NC-003 --> chủ đồng ý Q-CORE-5…7 theo đề xuất (hợp đồng provisioning về open-platform; `@open-ketoan/kernel`, `@open-ketoan/module-sdk`; phát hành tgz GitHub Release tới 1.0); bắt đầu C1 — tạo repo open-core.
