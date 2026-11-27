@@ -3,7 +3,7 @@
 <!-- [2026-11-25 06:12 PM Johnny Chu - Chu Hoàng Anh] STD-11 — chuẩn mới thuộc trụ cột T5 (quan sát, truy lỗi), nối FAILURE-MAP (T2) và DELIVERY (T13). Chủ duyệt 2026-11-25 ("đồng ý"). Khảo sát của chủ: 100% dev không thấy log, lần ghi bị từ chối, bộ kiểm đầu vào, công cụ truy vết. Việc của nhóm Lõi là dựng môi trường; contributors code từng màn. -->
 
 > **Phiên bản:** 0.1.0-draft · 2026-11-25 · **Trạng thái:** Nháp — chủ duyệt hướng 2026-11-25
-> **Máy đọc:** ngân hàng câu hỏi [`cau-hoi-nguoc.json`](cau-hoi-nguoc.json) ([schema](../../packages/contracts/schema/feedback/reverse-questions.schema.json))
+> **Máy đọc:** ngân hàng câu hỏi [`cau-hoi-nguoc.json`](cau-hoi-nguoc.json) ([schema](../../schema/feedback/reverse-questions.schema.json))
 > **Công cụ:** `tools/loi.mjs` (lỗi thật ở máy dev, gói chỉ mã, SC-LOOP-1) · `tools/failure-check.mjs --questions` · skill [`skills/tu-duy-nguoc`](../../skills/tu-duy-nguoc/SKILL.md)
 > **Liên quan:** [FAILURE-MAP](BIZCITY-FAILURE-MAP-v1.md) · [OBSERVABILITY](BIZCITY-OBSERVABILITY-v1.md) · [DELIVERY](BIZCITY-DELIVERY-v1.md)
 

@@ -4,7 +4,7 @@
 
 > **Phiên bản:** 1.0.0-draft · 2026-11-25 · **Trạng thái:** Nháp — thiết kế đã chốt (Q-ORD-1..8, §8); lên 1.0.0 khi open-pos-backend và một bản CRM chạy `order-flow-check` trên bản thử ĐẠT
 > **Đứng trên:** [`bizcity_spine@1`](BIZCITY-SPINE-v1.md) (định danh, `*Ref`, `doc_ref`, gửi sau, đối chiếu) · `bizcity_event@1`, `bizcity_ledger_intake@1`, `bizcity_errors@1` (open-ketoan) · [API-PROFILE](BIZCITY-API-PROFILE-v1.md) · [OBSERVABILITY](BIZCITY-OBSERVABILITY-v1.md)
-> **Máy đọc:** [`order-flow.schema.json`](../../packages/contracts/schema/order/order-flow.schema.json) + vector · **Kiểm:** `node tools/order-flow-check.mjs` (SC-ORD-1, 2) · hộp đen `--profile receiver | stock` (SC-ORD-3, 4) · `--self-test`
+> **Máy đọc:** [`order-flow.schema.json`](../../schema/order/order-flow.schema.json) + vector · **Kiểm:** `node tools/order-flow-check.mjs` (SC-ORD-1, 2) · hộp đen `--profile receiver | stock` (SC-ORD-3, 4) · `--self-test`
 > **Thiết kế, hiện trạng, giao việc:** [PHASE-001](../phases/PHASE-001-LUONG-DON-CRM-POS-KE-TOAN/README.md)
 
 ## 0. Một câu

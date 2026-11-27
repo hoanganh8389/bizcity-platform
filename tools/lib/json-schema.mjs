@@ -7,7 +7,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 export const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
-export const SCHEMA_DIR = join(ROOT, 'packages/contracts/schema/spine');
+export const SCHEMA_DIR = join(ROOT, 'schema/spine');
 
 export function loadSchema(name) {
   return JSON.parse(readFileSync(join(SCHEMA_DIR, name), 'utf8'));

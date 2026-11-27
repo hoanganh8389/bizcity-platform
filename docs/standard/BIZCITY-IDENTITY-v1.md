@@ -3,7 +3,7 @@
 <!-- [2026-11-24 08:10 PM Johnny Chu - Chu Hoàng Anh] SPINE-4 — hợp đồng thứ nhất trong ba hợp đồng còn lại của bộ kiểm tương thích. Viết từ cái ĐANG CHẠY: open-ketoan apps/api/src/modules/auth/wp-sso.ts (vé HMAC-SHA256 ≤ 5 phút, đổi vé lấy phiên), canon §4 "người dùng chung", R-TEN-9; thêm sub = wp:<id> theo chuẩn spine §2 (chủ duyệt Q-SPINE-1). -->
 
 > **Phiên bản:** 1.1.0 · 2026-11-25 · **Trạng thái:** **Chấp nhận** — chủ dự án duyệt 2026-11-24 (Q-IDENT-1, 2) <!-- [2026-11-24 09:50 PM Johnny Chu - Chu Hoàng Anh] SPINE-5 --> · **Thuộc:** `@bizcity/contracts`
-> **Máy đọc:** `packages/contracts/schema/spine/identity.schema.json` (vé và phiên).
+> **Máy đọc:** `schema/spine/identity.schema.json` (vé và phiên).
 
 ## 0. Một câu
 

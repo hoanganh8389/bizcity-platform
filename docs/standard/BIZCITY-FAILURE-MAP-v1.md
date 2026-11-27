@@ -4,7 +4,7 @@
 
 > **Phiên bản:** 0.2.0-draft · 2026-11-25 · **Trạng thái:** Nháp — chủ duyệt hướng 2026-11-25; chốt 1.0.0 sau màn thử ở open-ketoan (phiếu mua hàng)
 > **Bản mẫu:** open-ketoan — mã lỗi `bizcity_errors@1` (`packages/contracts/src/errors.ts`), thư viện phát hiện `bizcity_findings@1` (Gate A / B / L, mã `IN-*`), phương án khắc phục `bizcity_remedy@1`, `error.fields`, nhật ký từ chối HT19, danh mục 93 tình huống lỗi ở tầng sổ (PHASE-022).
-> **Máy đọc:** [`failure-map.schema.json`](../../packages/contracts/schema/failure-map/failure-map.schema.json) · **Kiểm:** `node tools/failure-check.mjs --repo <thư mục>` (SC-FAIL-1..7) · độ phủ: `--report` · dựng khung: `--scaffold`.
+> **Máy đọc:** [`failure-map.schema.json`](../../schema/failure-map/failure-map.schema.json) · **Kiểm:** `node tools/failure-check.mjs --repo <thư mục>` (SC-FAIL-1..7) · độ phủ: `--report` · dựng khung: `--scaffold`.
 
 ## 0. Một câu
 

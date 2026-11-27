@@ -5,7 +5,7 @@
 
 > **Phiên bản:** 1.1.0 · 2026-11-24 · **Trạng thái:** **Chấp nhận** — chủ dự án duyệt 2026-11-24 (Q-SPINE-1..4, §9; 1.1: open-cake Q-017-1/2) <!-- [2026-11-24 06:05 PM Johnny Chu - Chu Hoàng Anh] SPINE-2 --> · **Thuộc:** `@bizcity/contracts` (gói nền chung)
 > **Đứng dưới:** [BIZCITY OPEN CANON](https://github.com/hoanganh8389/open-hub/blob/main/docs/canon/BIZCITY-OPEN-CANON-v1.md) §3 (bốn trục dữ liệu), [chuẩn dữ liệu trục cứng + lớp mềm](https://github.com/hoanganh8389/open-hub/blob/main/docs/canon/CHUAN-DU-LIEU-TRUC-VA-LOP-MEM.md), luật tối thượng P-0 của chương trình open-pos ⇄ open-ketoan ([ADR-OKT-1](https://github.com/hoanganh8389/bizcity-open-setup/blob/main/docs/chuong-trinh/OKT/00-ADR-OKT-1.md)).
-> **Máy đọc:** `packages/contracts/schema/spine/*.schema.json` · vector kiểm `schema/spine/vectors/` · lệnh `node tools/spine-check.mjs`.
+> **Máy đọc:** `schema/spine/*.schema.json` · vector kiểm `schema/spine/vectors/` · lệnh `node tools/spine-check.mjs`.
 
 ## 0. Một câu
 

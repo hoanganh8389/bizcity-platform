@@ -16,7 +16,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { ROOT, print, validate } from './lib/json-schema.mjs';
 
-const ORDER_DIR = join(ROOT, 'packages/contracts/schema/order');
+const ORDER_DIR = join(ROOT, 'schema/order');
 const SCHEMA = JSON.parse(readFileSync(join(ORDER_DIR, 'order-flow.schema.json'), 'utf8'));
 const STD = readFileSync(join(ROOT, 'docs/standard/BIZCITY-ORDER-FLOW-v1.md'), 'utf8');
 const RECEIVER_PATH = '/wp-json/open-pos/v1/order-requests';

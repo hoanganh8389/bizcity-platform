@@ -22,7 +22,7 @@
 ## bizcity-platform — chuẩn và bộ kiểm (phase này)
 
 - **Vai:** giữ hình trên dây, schema, vector, công cụ kiểm; **không** chạy nghiệp vụ.
-- **Việc:** LD-PLAT-1 viết `docs/standard/BIZCITY-ORDER-FLOW-v1.md` (`bizcity_stock_read@1`, `bizcity_order_request@1`) từ [20-HOP-DONG-NHAP](20-HOP-DONG-NHAP.md) sau khi chủ chốt, kèm `standards.json`, bản đồ chuẩn, CHANGELOG (R-PLAT-7) · LD-PLAT-2 schema `packages/contracts/schema/order/` + vector tốt / xấu · LD-PLAT-3 `tools/order-flow-check.mjs` (hộp đen, chạy được với repo PHP: gửi lặp, sửa khi đã khoá, mã lạ, sai chi nhánh, chữ ký sai) · LD-PLAT-4 phiếu nghiệm thu đầu-cuối NT-LD-001 (kịch bản README §7) + `BAN-GIAO.md` khi đóng.
+- **Việc:** LD-PLAT-1 viết `docs/standard/BIZCITY-ORDER-FLOW-v1.md` (`bizcity_stock_read@1`, `bizcity_order_request@1`) từ [20-HOP-DONG-NHAP](20-HOP-DONG-NHAP.md) sau khi chủ chốt, kèm `standards.json`, bản đồ chuẩn, CHANGELOG (R-PLAT-7) · LD-PLAT-2 schema `schema/order/` + vector tốt / xấu · LD-PLAT-3 `tools/order-flow-check.mjs` (hộp đen, chạy được với repo PHP: gửi lặp, sửa khi đã khoá, mã lạ, sai chi nhánh, chữ ký sai) · LD-PLAT-4 phiếu nghiệm thu đầu-cuối NT-LD-001 (kịch bản README §7) + `BAN-GIAO.md` khi đóng.
 - **Xong khi:** `standard-check` và `order-flow-check --self-test` ĐẠT; hai bản CRM và open-pos-backend chạy công cụ trên bản thử ĐẠT.
 
 ## open-ketoan — chủ tồn kho và sổ

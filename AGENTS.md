@@ -14,8 +14,8 @@ Ba vai nền (canon R-CANON-17, [NC-003](docs/research/NC-003-TACH-OPEN-CORE.md)
 | **open-setup** | `bizcity-open-setup` | registry Workspace × app, cấp instance qua `bizcity_site_provisioning@1`, ghi `core_version` |
 
 - **Một chiều phụ thuộc:** canon open-hub → open-platform quy định → open-core hiện thực và phải qua bộ kiểm ở đây → app = open-core + module → open-setup dựng instance.
-- **Mã `packages/*` ở repo này đang chờ dời** sang open-core (NC-003 bước C2). Tới lúc đó: **không thêm tính năng mới** vào `packages/*`; sửa lỗi gấp thì làm ở đây và ghi vào NC-003 §Nhật ký để C2 mang theo. Sau C2 repo này **không còn mã chạy**.
-- Luật R-PLAT-1…5 dưới đây là luật của **mã lõi** — từ C2 áp ở open-core (chép nguyên mã luật, không đặt lại); R-PLAT-6, R-PLAT-7 (chuẩn, spine) ở lại repo này.
+- <!-- [2026-11-27 11:31 PM Johnny Chu - Chu Hoàng Anh] NC-003 C2 --> **Mã lõi đã dời sang [open-core](https://github.com/hoanganh8389/open-core)** (C2, giữ lịch sử, 0.3.0). Repo này **không còn mã chạy**: sửa lõi = PR vào open-core. Ở đây chỉ còn chuẩn, `schema/` (hợp đồng nền máy đọc, trước ở `packages/contracts/schema`), `tools/`, nghiên cứu. Kiểm: `npm test`.
+- Luật R-PLAT-1…5 dưới đây là luật của **mã lõi** — áp ở open-core (AGENTS của open-core chép nguyên mã luật); R-PLAT-6, R-PLAT-7 (chuẩn, spine) áp ở repo này.
 - Đổi chuẩn ⇒ PR ở đây **trước**; open-core hiện thực sau, ghi mức đạt bằng bộ kiểm (không ghi "đạt" khi chưa có phép kiểm).
 
 Đọc: [README](README.md) → [kế hoạch tách](https://github.com/hoanganh8389/open-hub/blob/main/docs/canon/KE-HOACH-GOI-CHUNG-BIZCITY-PLATFORM.md) → [canon chung](https://github.com/hoanganh8389/open-hub/blob/main/docs/canon/README.md).
@@ -26,5 +26,5 @@ Ba vai nền (canon R-CANON-17, [NC-003](docs/research/NC-003-TACH-OPEN-CORE.md)
 - **R-PLAT-4** mọi thay đổi: dấu R-SIG `[YYYY-MM-DD HH:MM AM/PM Johnny Chu - Chu Hoàng Anh] <CODE> — …` theo giờ máy (**không** tên agent / model), mức K0–K3, CHANGELOG, test ma trận open-ketoan + open-cake.
 - **R-PLAT-5** không thêm phụ thuộc khi chưa có lý do trong ADR.
 - Chỉ qua PR; không đẩy thẳng `main` khi đã có mã.
-- **R-PLAT-6** đổi `docs/standard/BIZCITY-SPINE-v1.md` ⇒ đổi cùng PR: schema `packages/contracts/schema/spine/`, vector, `tools/spine-check.mjs`; chạy `node tools/spine-check.mjs` phải ĐẠT. Thêm trục mới cần ADR (chuẩn §7). Đổi `tools/spine-contract.mjs` ⇒ chạy lại vào một bản open-ketoan thử (CSDL có chữ "test"), **không bao giờ** `--allow-write` vào bản cài thật. <!-- [2026-11-24 08:40 PM Johnny Chu - Chu Hoàng Anh] SPINE-4 --> <!-- [2026-11-24 05:08 PM Johnny Chu - Chu Hoàng Anh] SPINE-1 -->
+- **R-PLAT-6** đổi `docs/standard/BIZCITY-SPINE-v1.md` ⇒ đổi cùng PR: schema `schema/spine/`, vector, `tools/spine-check.mjs`; chạy `node tools/spine-check.mjs` phải ĐẠT. Thêm trục mới cần ADR (chuẩn §7). Đổi `tools/spine-contract.mjs` ⇒ chạy lại vào một bản open-ketoan thử (CSDL có chữ "test"), **không bao giờ** `--allow-write` vào bản cài thật. <!-- [2026-11-24 08:40 PM Johnny Chu - Chu Hoàng Anh] SPINE-4 --> <!-- [2026-11-24 05:08 PM Johnny Chu - Chu Hoàng Anh] SPINE-1 -->
 - **R-PLAT-7** thêm / đổi tệp chuẩn ở `docs/standard/` ⇒ cùng PR: `standards.json`, bản đồ `docs/standard/README.md`, CHANGELOG; `node tools/standard-check.mjs` phải ĐẠT. **Không đặt lại mã luật** đã có ở repo gốc (R-API-*, R-SEC-*, R-LOG-*, R-OBS-*…): chuẩn nền dẫn lại mã gốc, mã mới dùng tiền tố `R-STD-*` / `R-USER-*` / `R-WEBARCH-*`. Không ghi mức "đạt" khi chưa có phép kiểm chạy được. <!-- [2026-11-24 11:48 PM Johnny Chu - Chu Hoàng Anh] STD-1 -->
