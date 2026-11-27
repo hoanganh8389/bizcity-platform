@@ -178,3 +178,4 @@ open-ketoan/  = open-core + module kế toán
 
 - 2026-11-27: mở NC-003 (C0); chủ chốt Q-CORE-1…4.
 - 2026-11-27: <!-- [2026-11-27 11:19 PM Johnny Chu - Chu Hoàng Anh] NC-003 --> chủ đồng ý Q-CORE-5…7 theo đề xuất (hợp đồng provisioning về open-platform; `@open-ketoan/kernel`, `@open-ketoan/module-sdk`; phát hành tgz GitHub Release tới 1.0); bắt đầu C1 — tạo repo open-core.
+- 2026-11-27: <!-- [2026-11-27 11:20 PM Johnny Chu - Chu Hoàng Anh] NC-003 C1 --> **C1 ☑** — repo công khai [open-core](https://github.com/hoanganh8389/open-core) (`bf2e323`): pnpm workspace, `.gitattributes eol=lf`, `tools/kiem-khung.mjs` (R-CORE-1 một số phiên bản chặn; R-PLAT-1 cảnh báo tới C4, `--strict` từ C4), CI = kiểm khung + `standard-check` của open-platform (ĐẠT mức S1), `bizcity.app.json` qua `spine-check`. Chưa có gói — C2 dời `packages/*`.
