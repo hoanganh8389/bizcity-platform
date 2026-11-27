@@ -16,6 +16,7 @@ Ba vai nền (canon R-CANON-17, [NC-003](docs/research/NC-003-TACH-OPEN-CORE.md)
 - **Một chiều phụ thuộc:** canon open-hub → open-platform quy định → open-core hiện thực và phải qua bộ kiểm ở đây → app = open-core + module → open-setup dựng instance.
 - <!-- [2026-11-27 11:31 PM Johnny Chu - Chu Hoàng Anh] NC-003 C2 --> **Mã lõi đã dời sang [open-core](https://github.com/hoanganh8389/open-core)** (C2, giữ lịch sử, 0.3.0). Repo này **không còn mã chạy**: sửa lõi = PR vào open-core. Ở đây chỉ còn chuẩn, `schema/` (hợp đồng nền máy đọc, trước ở `packages/contracts/schema`), `tools/`, nghiên cứu. Kiểm: `npm test`.
 - Luật R-PLAT-1…5 dưới đây là luật của **mã lõi** — áp ở open-core (AGENTS của open-core chép nguyên mã luật); R-PLAT-6, R-PLAT-7 (chuẩn, spine) áp ở repo này.
+- <!-- [2026-11-28 12:24 AM Johnny Chu - Chu Hoàng Anh] NC-004 — trụ cột xuyên doanh nghiệp, open-core bảo đảm (canon R-CANON-18) --> Trụ cột xuyên doanh nghiệp: [NC-004](docs/research/NC-004-TRU-COT-XUYEN-DOANH-NGHIEP.md) — đổi spine (1.2: `qty` nhỏ nhất, `site` / `tenant`, `doc_ref`) theo R-PLAT-6; chuẩn DOCUMENT / WORKFLOW / MCP / SECRETS / HUB 1.1 dời văn bản từ open-ketoan, giữ mã luật gốc (R-PLAT-7).
 - Đổi chuẩn ⇒ PR ở đây **trước**; open-core hiện thực sau, ghi mức đạt bằng bộ kiểm (không ghi "đạt" khi chưa có phép kiểm).
 
 Đọc: [README](README.md) → [kế hoạch tách](https://github.com/hoanganh8389/open-hub/blob/main/docs/canon/KE-HOACH-GOI-CHUNG-BIZCITY-PLATFORM.md) → [canon chung](https://github.com/hoanganh8389/open-hub/blob/main/docs/canon/README.md).
