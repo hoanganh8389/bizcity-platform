@@ -62,7 +62,7 @@ Báo cáo kiểm theo [`bizcity_conformance_report@1`](BIZCITY-CONFORMANCE-REPOR
 ## 3b. Hợp đồng nền (bản chủ ở đây từ 2026-11-28)
 <!-- [2026-11-28 02:55 PM Johnny Chu - Chu Hoàng Anh] D1 — hợp đồng nền dời từ open-ketoan + hai chuẩn mới (NC-004 §10, Q-PIL-10) -->
 
-Dời nguyên văn từ open-ketoan `docs/contracts/` @ `4e5cbc8` (đợt D1), giữ mã luật gốc; open-ketoan chỉ còn liên kết (thay qua R-FLOW). Mã hiện thực ở open-core `@bizcity/platform`. Đợt D2 (MASTER-DATA, ITEM-MASTER, MODULE, EXTENSION, FINDINGS, REMEDY, POLICY, DATA) đã dời <!-- [2026-11-28 03:35 PM Johnny Chu - Chu Hoàng Anh] D2 -->; xét sau (LIBRARY, CONNECTOR, DOMAIN, MODULES) theo [NC-004](../research/NC-004-TRU-COT-XUYEN-DOANH-NGHIEP.md) §10.
+Dời nguyên văn từ open-ketoan `docs/contracts/` @ `4e5cbc8` (đợt D1, D2), giữ mã luật gốc; open-ketoan giữ bản chép có dòng "Bản chủ" cho bộ kiểm tới C6 (R-FLOW, open-ketoan #755) — sửa ở đây trước. Mã hiện thực ở open-core `@bizcity/platform`. Đợt D2 (MASTER-DATA, ITEM-MASTER, MODULE, EXTENSION, FINDINGS, REMEDY, POLICY, DATA) đã dời <!-- [2026-11-28 03:35 PM Johnny Chu - Chu Hoàng Anh] D2 -->; xét sau (LIBRARY, CONNECTOR, DOMAIN, MODULES) theo [NC-004](../research/NC-004-TRU-COT-XUYEN-DOANH-NGHIEP.md) §10.
 
 | Chuẩn | Giữ | Trụ |
 |---|---|---|
