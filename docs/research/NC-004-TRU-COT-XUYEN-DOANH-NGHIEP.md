@@ -165,6 +165,19 @@ Cách dời: chép nguyên văn vào `docs/standard/` (giữ mã luật, lịch 
 | Xét sau | `LIBRARY`, `CONNECTOR`, `DOMAIN`, `MODULES` | còn trộn nghiệp vụ kế toán — phân loại ở C4 |
 
 
+## 11. Dòng dữ liệu xuyên app
+<!-- [2026-11-28 05:22 PM Johnny Chu - Chu Hoàng Anh] NC-004 §11 — dòng dữ liệu xuyên app (chủ hỏi 2026-11-28: "tính xuyên suốt về mặt dữ liệu đối với các repo dùng chung open-core") -->
+
+**Các app không dùng chung bảng** — mỗi app một CSDL cho mỗi instance (R-CANON-13). Liền mạch nhờ ba lớp, đều do open-core bảo đảm:
+
+| Lớp | Nghĩa | Còn thiếu |
+|---|---|---|
+| Hình giống nhau | mọi CSDL có cùng bảng lõi (migration của open-core): người dùng `sub = wp:<id>`, cài đặt, `audit_logs`, `outbox`, bí mật, **bốn bảng chứng từ** | bốn bảng chứng từ chưa ở migration lõi |
+| Định danh chung | `tenant ↔ blog_id` · `item_id` · `partner.code ↔ contact_id` · `branch_code` · `doc_ref@version` · `QtyLine` (spine 1.2) | kiểu TS chưa có ở `@bizcity/contracts` |
+| Đường chuyển có hợp đồng | **xuống:** changefeed `/api/v1/sync/<trục>?since=` + `digest` (chủ → bản sao) · **ngang:** outbox → app nhận, `Idempotency-Key = <doc_ref>@<version>`, bên nhận ghi `document_links` · **truy nguồn:** `traceparent` + `audit_logs` chuỗi băm | changefeed chỉ open-ketoan; gửi / nhận chứng từ mỗi app tự viết; truy nguồn chỉ trong một CSDL |
+
+Kế hoạch mã: [open-core PHASE-002](https://github.com/hoanganh8389/open-core/blob/main/docs/phases/PHASE-002-DONG-DU-LIEU-XUYEN-APP/README.md) (S002-1…7; câu chờ chủ Q-DD-1…4: chữ ký giữa app, app nhận tắt, gửi nhiều đích, quyền khi truy nguồn).
+
 ## Nhật ký
 
 - 2026-11-28: mở NC-004; chủ chốt Q-PIL-1…3 trong lời giao việc.
