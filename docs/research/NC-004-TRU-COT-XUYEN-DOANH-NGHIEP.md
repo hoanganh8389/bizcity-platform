@@ -154,7 +154,7 @@ Kéo theo: canon §3.3 `docKey` = `doc_ref` của chứng từ nguồn (bỏ quy
 ## 10. Văn bản chuẩn dời từ open-ketoan sang open-platform (Q-PIL-10)
 <!-- [2026-11-28 02:15 PM Johnny Chu - Chu Hoàng Anh] NC-004 — chủ chốt Q-PIL-5, Q-PIL-9, Q-PIL-10 (2026-11-28) -->
 
-Cách dời: chép nguyên văn vào `docs/standard/` (giữ mã luật, lịch sử phiên bản, ghi "dời từ open-ketoan `docs/contracts` @ `4e5cbc8`"), thêm vào `standards.json` + bản đồ chuẩn (R-PLAT-7), `standard-check` ĐẠT; bên open-ketoan thay nội dung bằng liên kết **qua R-FLOW** (claim + PR vào `dev`).
+Cách dời: chép nguyên văn vào `docs/standard/` (giữ mã luật, lịch sử phiên bản, ghi "dời từ open-ketoan `docs/contracts` @ `4e5cbc8`"), thêm vào `standards.json` + bản đồ chuẩn (R-PLAT-7), `standard-check` ĐẠT; bên open-ketoan **qua R-FLOW** (claim [open-ketoan #755](https://github.com/hoanganh8389/open-ketoan/pull/755) + PR vào `dev`): **giữ nguyên văn**, thêm dòng "Bản chủ ở open-platform" — vì bộ kiểm SC-CON-4 / SC-CON-5 / SC-DOC-4 của open-ketoan đọc nội dung (thử thay bằng liên kết làm đỏ 3 phép kiểm); thay hẳn bằng liên kết ở C6 khi bộ kiểm đọc bản chủ. Sửa văn bản: PR ở open-platform trước, rồi chép sang. <!-- [2026-11-28 03:44 PM Johnny Chu - Chu Hoàng Anh] D2 — cách dời phía open-ketoan -->
 
 | Đợt | Văn bản (open-ketoan `docs/contracts/`) | Lý do |
 |---|---|---|
