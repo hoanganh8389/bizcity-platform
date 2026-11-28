@@ -516,6 +516,110 @@
         "open-core"
       ],
       "checks": []
+    },
+    {
+      "id": "bizcity_master_data@1",
+      "file": "BIZCITY-MASTER-DATA-v1.md",
+      "version": "1.1.0",
+      "status": "accepted",
+      "pillar": "axes",
+      "reference": [
+        "open-ketoan",
+        "open-core"
+      ],
+      "checks": [],
+      "moved_from": "open-ketoan docs/contracts/BIZCITY-MASTER-DATA-v1.md@4e5cbc8"
+    },
+    {
+      "id": "bizcity_item_master@1",
+      "file": "BIZCITY-ITEM-MASTER-v1.md",
+      "version": "0.3.0-draft",
+      "status": "draft",
+      "pillar": "axes",
+      "reference": [
+        "open-ketoan",
+        "open-core"
+      ],
+      "checks": [],
+      "moved_from": "open-ketoan docs/contracts/BIZCITY-ITEM-MASTER-v1.md@4e5cbc8"
+    },
+    {
+      "id": "bizcity_module@1",
+      "file": "BIZCITY-MODULE-v1.md",
+      "version": "1.6.0-draft",
+      "status": "draft",
+      "pillar": "T1",
+      "reference": [
+        "open-ketoan",
+        "open-core"
+      ],
+      "checks": [],
+      "moved_from": "open-ketoan docs/contracts/BIZCITY-MODULE-v1.md@4e5cbc8"
+    },
+    {
+      "id": "bizcity_extension@1",
+      "file": "BIZCITY-EXTENSION-v1.md",
+      "version": "1.5.0-draft",
+      "status": "draft",
+      "pillar": "T1",
+      "reference": [
+        "open-ketoan",
+        "open-core"
+      ],
+      "checks": [],
+      "moved_from": "open-ketoan docs/contracts/BIZCITY-EXTENSION-v1.md@4e5cbc8"
+    },
+    {
+      "id": "bizcity_findings@1",
+      "file": "BIZCITY-FINDINGS-v1.md",
+      "version": "1.1.0-draft",
+      "status": "draft",
+      "pillar": "T2",
+      "reference": [
+        "open-ketoan",
+        "open-core"
+      ],
+      "checks": [],
+      "moved_from": "open-ketoan docs/contracts/BIZCITY-FINDINGS-v1.md@4e5cbc8"
+    },
+    {
+      "id": "bizcity_remedy@1",
+      "file": "BIZCITY-REMEDY-v1.md",
+      "version": "1.0.0-draft",
+      "status": "draft",
+      "pillar": "T2",
+      "reference": [
+        "open-ketoan",
+        "open-core"
+      ],
+      "checks": [],
+      "moved_from": "open-ketoan docs/contracts/BIZCITY-REMEDY-v1.md@4e5cbc8"
+    },
+    {
+      "id": "bizcity_policy@1",
+      "file": "BIZCITY-POLICY-v1.md",
+      "version": "1.5.0-draft",
+      "status": "draft",
+      "pillar": "axes",
+      "reference": [
+        "open-ketoan",
+        "open-core"
+      ],
+      "checks": [],
+      "moved_from": "open-ketoan docs/contracts/BIZCITY-POLICY-v1.md@4e5cbc8"
+    },
+    {
+      "id": "bizcity_data@1",
+      "file": "BIZCITY-DATA-v1.md",
+      "version": "1.1.0-draft",
+      "status": "draft",
+      "pillar": "axes",
+      "reference": [
+        "open-ketoan",
+        "open-core"
+      ],
+      "checks": [],
+      "moved_from": "open-ketoan docs/contracts/BIZCITY-DATA-v1.md@4e5cbc8"
     }
   ],
   "decisions": {

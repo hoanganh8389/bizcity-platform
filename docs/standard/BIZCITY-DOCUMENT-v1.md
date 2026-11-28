@@ -36,7 +36,7 @@ Chứng từ nghiệp vụ **không** sinh bút toán. Chỉ khi chuyển sang t
 
 | Cột | Kiểu | Nghĩa |
 |---|---|---|
-| `id`, `tenant_id`, `created_*`, `updated_*` | theo [Data](https://github.com/hoanganh8389/open-ketoan/blob/main/docs/contracts/BIZCITY-DATA-v1.md) | |
+| `id`, `tenant_id`, `created_*`, `updated_*` | theo [Data](BIZCITY-DATA-v1.md) | |
 | `doc_no` | `text` | số do `nextNumber` cấp; `UNIQUE (tenant_id, doc_no)` |
 | `doc_date` | `date` | ngày chứng từ (luật khoá theo ngày áp vào đây) |
 | `branch_code` | `text` | chi nhánh (mã danh mục chuẩn), nếu nghiệp vụ có chi nhánh |

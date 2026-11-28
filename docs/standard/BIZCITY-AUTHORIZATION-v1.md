@@ -6,7 +6,7 @@
 <!-- [2026-11-11 09:30 AM kiennt] PHASE-028 — 1.2.0-draft (chữ chốt đề xuất D-AUTH-19, D-AUTH-24 — 80 §3.4): §3a quyền theo loại chứng từ và quyền kéo theo -->
 
 > **Phiên bản:** 1.2.0-draft · 2026-11-11 (1.1.0-draft · 2026-11-09; 1.0.0-draft · 2026-11-06) · **Trạng thái:** Nháp · **Căn cứ:** [ADR-0027](https://github.com/hoanganh8389/open-ketoan/blob/main/docs/adr/ADR-0027-core-authorization-plugin-role-editor.md) (đã chấp nhận) · **Phase:** [PHASE-028](https://github.com/hoanganh8389/open-ketoan/blob/main/docs/phases/PHASE-028-CORE-AUTHORIZATION-PLUGIN-ROLE-EDITOR/README.md)
-> **Mở rộng (không thay):** [`bizcity_module@1`](https://github.com/hoanganh8389/open-ketoan/blob/main/docs/contracts/BIZCITY-MODULE-v1.md) §3 `permissions[]`. Hợp đồng này chốt **cách tính một quyết định**; nơi lưu vai trò và lần gán theo ADR-0027 D-AUTH-01 (`user_role_assignments`).
+> **Mở rộng (không thay):** [`bizcity_module@1`](BIZCITY-MODULE-v1.md) §3 `permissions[]`. Hợp đồng này chốt **cách tính một quyết định**; nơi lưu vai trò và lần gán theo ADR-0027 D-AUTH-01 (`user_role_assignments`).
 
 ## 1. Mục đích
 
