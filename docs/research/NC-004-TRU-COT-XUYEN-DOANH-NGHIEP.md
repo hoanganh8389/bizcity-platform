@@ -1,7 +1,7 @@
 # NC-004 — Trụ cột xuyên doanh nghiệp trên open-core: một chuẩn với open-ketoan cho POS, HRM, MRP, mua, kho, CRM
 <!-- [2026-11-28 12:24 AM Johnny Chu - Chu Hoàng Anh] NC-004 — chủ (2026-11-28): "đảm bảo bộ trụ cột của open-ketoan có tính chất xuyên suốt toàn bộ doanh nghiệp như item id, tenant = blog_id (1 chuỗi nhiều cửa hàng = nhiều tenant id), contact id (open-cake) = partner (open-ketoan), business document, yaml của document, user role permission, universal về meta, settings, posts, quy tắc đơn vị tính (quy về nhỏ nhất)… cùng tiêu chuẩn kỹ thuật universal, cache, test, bàn điều tra, trace… open-core đảm bảo xuyên suốt để hrm, pos, mrp, mua, kho, crm liền mạch một chuẩn với open-ketoan, dữ liệu chuyển tiếp được, trace được nguồn gốc chứng từ, versioning chứng từ; open-core đảm bảo chuẩn chung api, mcp, có sẵn four-step setting api để 4 bước kết nối open-hub". -->
 
-> **Loại:** nghiên cứu + đề xuất chuẩn · **Trạng thái:** chủ chốt Q-PIL-1…3 trong lời giao việc (§9); Q-PIL-4…10 chờ chủ
+> **Loại:** nghiên cứu + đề xuất chuẩn · **Trạng thái:** chủ chốt Q-PIL-1…3, 5, 9, 10 (§9); Q-PIL-4, 6, 7, 8 phân tích ở §9.1, chờ chủ <!-- [2026-11-28 02:15 PM Johnny Chu - Chu Hoàng Anh] NC-004 — chủ chốt Q-PIL-5, Q-PIL-9, Q-PIL-10 (2026-11-28) -->
 > **Đứng trên:** canon R-CANON-17 (ba vai), **R-CANON-18** (trụ cột do open-core bảo đảm — thêm cùng đợt) · [NC-003](NC-003-TACH-OPEN-CORE.md) (tách open-core, bước C0–C8)
 > **Đọc:** open-ketoan `dev` `4e5cbc8` (`docs/contracts`, `docs/rules`, `packages/contracts/src`, `db/migrations`) · bizcity-platform `docs/standard` + `schema/` · open-hub canon · open-cake `docs/architecture` · bizcity-twin-ai `docs/rules/PHASE-0-RULE-FOUR-STEP-SETUP-AXIS.md`, `core/channel-gateway/docs/PHASE-0.83-FOUR-STEP-SETUP/`
 
@@ -50,7 +50,7 @@ Bàn điều tra nhập một mã bất kỳ (`doc_ref`, `traceId`, `requestId`,
 |---|---|---|---|---|---|
 | T-1 | **API** | phong bì `{ok,data,meta}` / `{ok:false,error{code,message,details,requestId,traceId}}`, `Idempotency-Key` 7 ngày, 409 `IDEMPOTENCY_CONFLICT` | API-PROFILE R-API-1..12 | `defineAction` ⇒ REST (`@bizcity/server`, C5) | — |
 | T-2 | **MCP** | `POST /mcp`, STD-MCP-1..10, `confirm_token` (`mcp_confirm_tokens`, 0037), ghi chỉ tạo nháp | canon R-CANON-2, R-CANON-12 | action `expose.mcp` ⇒ tool, bảng `mcp_confirm_tokens` ở migration lõi | bảng chưa ở lõi; chưa có chuẩn MCP ở open-platform (đang ở open-ketoan `docs/contracts`) |
-| T-3 | **Four-step setup (kết nối open-hub)** | bizcity-twin-ai R-SETUP-4 v1.4 (PHP, đủ); open-cake một phần (đường tự cài `cake-connector`); open-ketoan có thiết kế, chưa mã | BIZCITY-HUB-v1 (loại khoá R-STD-KEY-2) | **`bizcity_hub_setup@1`** (§5) + màn chung ở `@bizcity/web-shell` | Hub chưa có đầu máy-gọi-máy trạng thái khoá (`/keys/self` mới ở thiết kế); chưa có hợp đồng QR cho app không phải WP |
+| T-3 | **Four-step setup (kết nối open-hub)** | bizcity-twin-ai R-SETUP-4 v1.4 (PHP, đủ); open-cake một phần (đường tự cài `cake-connector`); open-ketoan có thiết kế, chưa mã | BIZCITY-HUB-v1 (loại khoá R-STD-KEY-2) | **`bizcity_hub_setup@1`** (§5) + màn chung ở `@bizcity/web-shell` (chốt Q-PIL-9) | Hub chưa có đầu máy-gọi-máy trạng thái khoá (`/keys/self` mới ở thiết kế); chưa có hợp đồng QR cho app không phải WP |
 | T-4 | **Đệm** | R-CACHE-1..6 | CACHE (khoá có `site`, R-SITE-6) | module Cache chung, chạy khi vắng Redis (NC-003 C5) | chưa có mã chung |
 | T-5 | **Kiểm** | `tests/conformance/selfcheck.mjs` (block / ratchet / info / planned) | TESTING bốn làn, R-STD-TEST-1 | `@bizcity/conformance` (khung selfcheck + phép kiểm trụ: `doc_ref`, `qty`, quyền, migration) | chưa rút ra |
 | T-6 | **Bàn điều tra** | `ban-dieu-tra.ts`: màn `/dev/{tong-quan,tra-ma,nhat-ky,ghi-so,su-kien,toan-ven,kich-ban,van-hanh}`, kịch bản TH-xx, tóm tắt cho AI; `loi-trinh-duyet.ts` (lỗi trình duyệt có che PII); phát hiện `bizcity_findings@1` + cách sửa `bizcity_remedy@1` | FAILURE-MAP, FEEDBACK-LOOP | **màn bàn điều tra chung** ở web-shell + action `core.trace.lookup`; app khai thêm màn / kịch bản | đang là màn của open-ketoan; màn `ghi-so` là nghiệp vụ sổ ⇒ để module |
@@ -125,13 +125,47 @@ open-hrm = open-core + module hrm
 | **Q-PIL-2** | Tenant | **Chốt (chủ):** `tenant ↔ blog_id` (WordPress) một-một; **một chuỗi nhiều cửa hàng = nhiều tenant** (R-OKT-CONN: một blog = một shop = một tenant). Chi nhánh / kho / phòng ban vẫn là cây `branches` **bên trong** một tenant |
 | **Q-PIL-3** | Khách | **Chốt (chủ):** `contact_id` (open-cake) ↔ `partner` (open-ketoan) qua `partner.code` theo SPINE §4 (SĐT đã xác minh → `CAKE-<contact_id>` → `KHACH-LE`); không ghép theo tên |
 | Q-PIL-4 | Regex `doc_ref` | *Đề xuất:* `^[a-z][a-z0-9-]*\.[a-z][a-z0-9_-]*:[A-Za-z0-9_.:-]{1,200}$` — bắt buộc `<module>.<type>` (như open-ketoan), id ký tự an toàn (như spine), dài tới 200 |
-| Q-PIL-5 | Workspace (doanh nghiệp, NC-002) với blog | *Đề xuất:* Workspace = **blog chủ của chuỗi** (hoặc của doanh nghiệp một cửa hàng); mỗi cửa hàng = blog con = tenant; doanh nghiệp một cửa hàng: blog Workspace cũng là blog tenant |
+| **Q-PIL-5** | Workspace với blog / trạng thái | **Chốt (chủ, 2026-11-28):** Workspace ở open-setup / open-core **chỉ ghi chép trạng thái** (bản phản chiếu); **trạng thái hoạt động gốc nằm ở phía WordPress bizcity hub** (bizcity.vn: thành viên, blog, gói, khoá). open-setup đọc / nhận thông báo từ hub rồi ghi lại, không tự quyết bật / tắt |
 | Q-PIL-6 | Thang phạm vi cài đặt | *Đề xuất:* `install → site → tenant → branch → (phạm vi app khai: accounting_unit, period, doc_type, record…) → user` |
 | Q-PIL-7 | Nhân viên (HRM) | *Đề xuất:* nhân viên = `user` khi có đăng nhập + hồ sơ `hrm.employee` (chứng từ / bản ghi của module), ánh xạ `contact` khi cần chăm sóc — NC riêng |
 | Q-PIL-8 | Bước ④ Agent Guru | *Đề xuất:* tuỳ chọn — app không dùng agent khai `steps: [account, transport, identity]` |
-| Q-PIL-9 | Màn bốn bước | *Đề xuất:* một thành phần React trong `@bizcity/web-shell`; WordPress giữ bản PHP cùng nhãn |
-| Q-PIL-10 | Chuẩn chứng từ / workflow / MCP / bí mật | *Đề xuất:* văn bản dời từ open-ketoan `docs/contracts` sang open-platform `docs/standard` (giữ mã luật gốc, R-PLAT-7), open-ketoan giữ liên kết |
+| **Q-PIL-9** | Màn bốn bước | **Chốt (chủ):** màn bốn bước đặt ở **open-core** (`@bizcity/web-shell` + đầu `/api/v1/setup/*` ở `@bizcity/server`) — kế toán, HRM, cake, POS dùng cùng một bản; không app nào vẽ lại (R-S4-11) |
+| **Q-PIL-10** | Văn bản chuẩn đang ở open-ketoan | **Chốt (chủ):** **dời sang open-platform** (`docs/standard/`, giữ mã luật gốc R-PLAT-7); open-ketoan giữ liên kết. Danh sách dời: §10 |
+
+### 9.1 Phân tích các câu còn mở
+<!-- [2026-11-28 02:15 PM Johnny Chu - Chu Hoàng Anh] NC-004 — chủ chốt Q-PIL-5, Q-PIL-9, Q-PIL-10 (2026-11-28) -->
+
+**Q-PIL-4 · Regex `doc_ref`.**
+| Phương án | Hình | Được | Mất |
+|---|---|---|---|
+| A — spine hiện tại | `^[a-z][a-z0-9_-]*(\.[a-z][a-z0-9_-]*)*:[A-Za-z0-9_.-]{1,64}$` | id an toàn cho URL / khoá đệm | **không bắt buộc** `<module>.<type>` ⇒ `order:1` lọt; id ≤ 64 hụt với `docKey` dài của sổ |
+| B — open-ketoan hiện tại | `^[a-z][a-z0-9-]*\.[a-z][a-z0-9_-]*:\S{1,200}$` | bắt buộc `<module>.<type>` | id nhận mọi ký tự không trắng (`/`, `#`, `?`, chữ có dấu) ⇒ vỡ URL, khoá đệm, tên tệp |
+| **C — đề xuất** | `^[a-z][a-z0-9-]*\.[a-z][a-z0-9_-]*:[A-Za-z0-9_.:-]{1,200}$` | giữ `<module>.<type>` của B + bộ ký tự an toàn của A; `:` trong id cho `docKey` dạng `<source>:<branch>:<type>:<id>` | dữ liệu open-ketoan có id ngoài bộ ký tự (nếu có) phải chuẩn hoá — **kiểm trước** bằng truy vấn trên bản sao trước khi chốt |
+Kéo theo: canon §3.3 `docKey` = `doc_ref` của chứng từ nguồn (bỏ quy ước riêng); vector + `spine-check` đổi cùng PR (S-PIL-1).
+
+**Q-PIL-6 · Thang phạm vi cài đặt.** Hai thang đang lệch: open-platform `system → site → tenant → branch → user`, open-ketoan `install → tenant → accounting_unit → branch → period → doc_type → record → user`.
+*Đề xuất:* **thang lõi cố định** `install → site → tenant → branch → user` (đủ cho mọi app, khớp Q-PIL-2: chuỗi = nhiều tenant, chi nhánh trong tenant) + **bậc app khai** chèn vào chỗ đã định: `accounting_unit` (sau tenant, trước branch), `period`, `doc_type`, `record` (sau branch, trước user) qua `registerSettingScopes` (NC-003 C4). open-ketoan giữ nguyên hành vi (thang của nó là thang lõi + bậc khai); `site` là bậc mới cho cài đặt dùng chung mọi tenant của một chuỗi. Rủi ro: `install` ≡ `system` — chọn một tên (`install`, theo dữ liệu đang có).
+
+**Q-PIL-7 · Nhân viên (HRM).** Ba vai một người: `user` (đăng nhập, `sub = wp:<id>`), `contact` (khách / người liên hệ của cake), `partner` (đối tượng công nợ: tạm ứng, lương phải trả). *Đề xuất:* thêm trục **`employee`** do module HRM làm chủ — `employee_id` ULID, `user_id` tuỳ chọn (nhân viên không đăng nhập vẫn có hồ sơ), `partner_ref` khi phát sinh công nợ với kế toán (như cake R-SPINE), **không** gộp vào `users`; chứng từ lương / chấm công dùng `doc_ref` `hrm.*`. Cần NC riêng (NC-005) trước khi có open-hrm; tới đó không app nào tự tạo bảng nhân viên.
+
+**Q-PIL-8 · Bước ④ Agent Guru.** R-SETUP-4 coi ④ là bước bắt buộc của bizcity-twin-ai (app có agent). App như kế toán, kho có thể chưa dùng agent. *Đề xuất:* `bizcity_hub_setup@1` khai `steps` theo app: ① ② bắt buộc với mọi app nối Hub, ③ khi app có kênh, ④ khi app có agent — bước không khai **không hiện** (không phải "Khoá"); `ready` = mọi bước đã khai đều Đạt. Giữ nhãn và thứ tự R-S4-1 cho các bước có hiện.
+
+## 10. Văn bản chuẩn dời từ open-ketoan sang open-platform (Q-PIL-10)
+<!-- [2026-11-28 02:15 PM Johnny Chu - Chu Hoàng Anh] NC-004 — chủ chốt Q-PIL-5, Q-PIL-9, Q-PIL-10 (2026-11-28) -->
+
+Cách dời: chép nguyên văn vào `docs/standard/` (giữ mã luật, lịch sử phiên bản, ghi "dời từ open-ketoan `docs/contracts` @ `4e5cbc8`"), thêm vào `standards.json` + bản đồ chuẩn (R-PLAT-7), `standard-check` ĐẠT; bên open-ketoan thay nội dung bằng liên kết **qua R-FLOW** (claim + PR vào `dev`).
+
+| Đợt | Văn bản (open-ketoan `docs/contracts/`) | Lý do |
+|---|---|---|
+| **D1 — trụ lõi cần ngay** | `BIZCITY-DOCUMENT-v1`, `BIZCITY-LINEAGE-v1`, `BIZCITY-MCP-v1`, `BIZCITY-SECRETS-v1`, `BIZCITY-SITE-PROVISIONING-v1` (Q-CORE-5), `BIZCITY-ACTION-v1`, `BIZCITY-API-v1`, `BIZCITY-ERRORS-v1`, `BIZCITY-EVENT-v1`, `BIZCITY-EVIDENCE-v1`, `BIZCITY-AUTHORIZATION-v1`, `BIZCITY-SETTINGS-MATRIX-v1` + `bizcity-settings.registry.json` (phần lõi) | open-core đã mang mã của các trụ này |
+| **D2 — trụ dữ liệu / module** | `BIZCITY-MASTER-DATA-v1`, `BIZCITY-ITEM-MASTER-v1`, `BIZCITY-MODULE-v1` (+ schema), `BIZCITY-EXTENSION-v1`, `BIZCITY-FINDINGS-v1`, `BIZCITY-REMEDY-v1`, `BIZCITY-POLICY-v1`, `BIZCITY-DATA-v1` | trụ P-1, P-4, module-sdk (C5), bàn điều tra |
+| **Mới** | **`BIZCITY-WORKFLOW-v1`** (`bizcity_workflow@1`, từ `core/workflow.ts`), **`BIZCITY-HUB-SETUP-v1`** (`bizcity_hub_setup@1`, §5) | chưa có văn bản ở đâu |
+| **Ở lại open-ketoan** (nghiệp vụ kế toán) | `LEDGER-INTAKE`, `POSTING-RULE`, `POSTING-TEMPLATE`, `PRESET`, `INVENTORY`, `INTAKE-FINDINGS`, `COMPLIANCE`, `COMBO` | thuộc module kế toán / kho của open-ketoan |
+| Xét sau | `LIBRARY`, `CONNECTOR`, `DOMAIN`, `MODULES` | còn trộn nghiệp vụ kế toán — phân loại ở C4 |
+
 
 ## Nhật ký
 
 - 2026-11-28: mở NC-004; chủ chốt Q-PIL-1…3 trong lời giao việc.
+
+- 2026-11-28: <!-- [2026-11-28 02:15 PM Johnny Chu - Chu Hoàng Anh] NC-004 — chủ chốt Q-PIL-5, Q-PIL-9, Q-PIL-10 (2026-11-28) --> chủ chốt Q-PIL-5 (Workspace chỉ ghi trạng thái; trạng thái gốc ở WP bizcity hub), Q-PIL-9 (màn bốn bước ở open-core), Q-PIL-10 (dời văn bản chuẩn sang open-platform, §10); phân tích Q-PIL-4, 6, 7, 8 (§9.1).
