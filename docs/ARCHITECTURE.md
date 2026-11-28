@@ -71,7 +71,7 @@ Chi tiết: [`bizcity_spine@1`](standard/BIZCITY-SPINE-v1.md).
 
 **1. Master data — chủ: open-ketoan.** Mặt hàng mang `item_id` (ULID, không đổi suốt đời); **mã hàng có phiên bản và ngày hiệu lực**, đổi mã không đổi sổ. Đơn vị tính, chi nhánh / kho, đối tượng công nợ cũng do kế toán làm chủ. App khác giữ bản sao hoặc danh mục cục bộ ràng buộc muộn, **không tự tạo mặt hàng từ chứng từ**. Thuế suất và tài khoản đi từ **chính sách hạch toán** của kế toán, không gắn cứng vào mã hàng và không do app bán hàng tự đặt.
 
-**2. Chứng từ — mỗi app làm chủ chứng từ mình phát hành.** Định danh `doc_ref` = `<module>.<loại>:<id>` (ví dụ `cake.order_request:01J…` → `pos.order:8812` → `bizcity.ledger.event:<docKey>`), bất biến. Chứng từ nối nhau bằng `document_links(from, to, role)`. Không xoá vật lý; sửa / huỷ là chứng từ đảo. Không có "mã gốc" tự đặt đi xuyên các app.
+**2. Chứng từ — mỗi app làm chủ chứng từ mình phát hành.** Định danh `doc_ref` = `<module>.<loại>:<id>` (ví dụ `cake.order_request:01J…` → `pos.order:8812` → `ledger.event:<docKey>`), bất biến. Chứng từ nối nhau bằng `document_links(from, to, role)`. Không xoá vật lý; sửa / huỷ là chứng từ đảo. Không có "mã gốc" tự đặt đi xuyên các app.
 
 **3. Khách 360 — chủ: open-cake.** Một người một `contact_id`, kèm các **danh tính có bằng chứng** (số điện thoại, email, MST, `zalo_uid`, `fb_psid`). Chỉ gộp khi có bằng chứng, không gộp theo tên. **Khách (contact) ≠ đối tượng công nợ (partner) ≠ người dùng (user):** khách nối sang đối tượng công nợ bằng `partner_ref` một chiều; nhân viên là người dùng.
 

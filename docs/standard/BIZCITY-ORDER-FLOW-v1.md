@@ -18,7 +18,7 @@
 | tồn kho | open-ketoan | — | CRM chỉ đọc (§2), đệm ≤ 60 giây, không lưu làm sự thật |
 | yêu cầu đặt hàng | CRM (open-cake / open-crm) | `cake.order_request:<ULID>` · `ocrm.order_request:<id>` | không phải chứng từ kế toán |
 | đơn chờ, đơn bán, giao hàng | open-pos-backend + open-pos | `pos.order_request:<id>` · `pos.order:<id>` · `pos.shipment:<id>` | CRM nghe sự kiện (§5) |
-| phiếu bán, bút toán | open-ketoan | `bizcity.ledger.event:<docKey>` | POS gửi qua bridge / module `pos` |
+| phiếu bán, bút toán | open-ketoan | `ledger.event:<docKey>` (spine 1.2) | POS gửi qua bridge / module `pos` |
 
 Liên kết: `pos.order` → yêu cầu đặt hàng (role `source`); phiếu bán Kế Toán → `pos.order` (role `source`). Không có mã đơn gốc chung (SPINE §8).
 

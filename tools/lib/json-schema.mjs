@@ -52,6 +52,8 @@ export function validate(root, schema, value, path = '$', errs = []) {
   }
   if (t === 'object') {
     for (const k of schema.required || []) if (!(k in value)) errs.push(`${path}: thiếu "${k}"`);
+    // [2026-11-28 02:36 PM Johnny Chu - Chu Hoàng Anh] SPINE-1.2 — dependentRequired (QtyLine: có unitQty thì phải có unit + unitRatio)
+    for (const [k, deps] of Object.entries(schema.dependentRequired || {})) if (k in value) for (const dk of deps) if (!(dk in value)) errs.push(`${path}: có "${k}" thì phải có "${dk}"`);
     for (const [k, sub] of Object.entries(schema.properties || {})) if (k in value) validate(root, sub, value[k], `${path}.${k}`, errs);
     if (schema.additionalProperties === false) {
       for (const k of Object.keys(value)) if (!(schema.properties && k in schema.properties)) errs.push(`${path}: thuộc tính lạ "${k}"`);

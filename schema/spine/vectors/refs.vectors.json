@@ -1,5 +1,5 @@
 {
-  "$comment": "[2026-11-24 05:08 PM Johnny Chu - Chu Hoàng Anh] SPINE-1 — vector kiểm SC-SPINE-2: mỗi mục = { schema, def, valid[], invalid[] }. Thêm trục = thêm vector.",
+  "$comment": "[2026-11-24 05:08 PM Johnny Chu - Chu Hoàng Anh] SPINE-1 — vector kiểm SC-SPINE-2: mỗi mục = { schema, def, valid[], invalid[] }. Thêm trục = thêm vector. [2026-11-28 02:36 PM Johnny Chu - Chu Hoàng Anh] SPINE-1.2 — vector spine 1.2.",
   "cases": [
     {
       "name": "tenant slug",
@@ -8,15 +8,18 @@
       "valid": [
         "demo",
         "abc-shop",
-        "a1"
+        "hoa-mai",
+        "a12"
       ],
       "invalid": [
         "Demo",
         "1abc",
-        "a",
         "",
         "abc_shop",
-        "x-this-slug-is-way-too-long-for-the-rule"
+        "x-this-slug-is-way-too-long-for-the-rule",
+        "a",
+        "a1",
+        "ab"
       ]
     },
     {
@@ -59,8 +62,10 @@
       "valid": [
         "pos.order:8812",
         "cake.order_request:01JD8K2Q4F3M9R7X5T1V0W6Y8Z",
-        "bizcity.ledger.event:PX-2026-0007",
-        "hop-dong.contract:HD-2026-0007"
+        "ledger.event:PX-2026-0007",
+        "ledger.event:pos:CN01:sale:8812",
+        "hop-dong.contract:HD-2026-0007",
+        "purchase.order:PO.2026.11-0042"
       ],
       "invalid": [
         "DOC-ORD-8812",
@@ -68,7 +73,12 @@
         "Pos.order:1",
         ":8812",
         "pos..order:1",
-        "pos.order:a b"
+        "pos.order:a b",
+        "bizcity.ledger.event:PX-2026-0007",
+        "order:1",
+        "pos.order:a/b",
+        "pos.order:HĐ-1",
+        "pos.order:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
       ]
     },
     {
@@ -234,14 +244,24 @@
       "valid": [
         {
           "from": "pos.order:8812",
-          "to": "bizcity.ledger.event:PX-0007",
+          "to": "ledger.event:PX-0007",
           "role": "ledger"
+        },
+        {
+          "from": "inventory.issue:XK-1",
+          "to": "pos.sale:8812",
+          "role": "source"
+        },
+        {
+          "from": "pos.sale:8813",
+          "to": "pos.sale:8812",
+          "role": "adjusts"
         }
       ],
       "invalid": [
         {
           "from": "pos.order:8812",
-          "to": "bizcity.ledger.event:PX-0007",
+          "to": "ledger.event:PX-0007",
           "role": "parent"
         },
         {
@@ -434,6 +454,117 @@
             }
           ],
           "verdict": "KHÔNG ĐẠT"
+        }
+      ]
+    },
+    {
+      "name": "site slug (1.2)",
+      "schema": "refs.schema.json",
+      "def": "site",
+      "valid": [
+        "demo",
+        "chuoi-hoa-mai"
+      ],
+      "invalid": [
+        "Demo",
+        "a1",
+        "chuoi_hoa_mai",
+        ""
+      ]
+    },
+    {
+      "name": "blog_ref tenant ↔ blog_id (1.2)",
+      "schema": "refs.schema.json",
+      "def": "blog_ref",
+      "valid": [
+        "wp-blog:1",
+        "wp-blog:120394"
+      ],
+      "invalid": [
+        "wp:1",
+        "wp-blog:",
+        "blog:12",
+        "wp-blog:abc"
+      ]
+    },
+    {
+      "name": "qty đơn vị nhỏ nhất (1.2)",
+      "schema": "refs.schema.json",
+      "def": "qty",
+      "valid": [
+        "24",
+        "0.5",
+        "-3",
+        "12.1234"
+      ],
+      "invalid": [
+        "1.23456",
+        "1,5",
+        "",
+        "1e3",
+        24
+      ]
+    },
+    {
+      "name": "QtyLine (1.2)",
+      "schema": "refs.schema.json",
+      "def": "QtyLine",
+      "valid": [
+        {
+          "item": {
+            "code": "SP-0042"
+          },
+          "qty": "24"
+        },
+        {
+          "item": {
+            "id": "01JD8K2Q4F3M9R7X5T1V0W6Y8Z"
+          },
+          "qty": "48",
+          "unit": "Thùng",
+          "unitQty": "2",
+          "unitRatio": "24"
+        }
+      ],
+      "invalid": [
+        {
+          "item": {
+            "code": "SP-0042"
+          }
+        },
+        {
+          "item": {
+            "code": "SP-0042"
+          },
+          "qty": "2",
+          "unit": "Thùng",
+          "unitQty": "2"
+        },
+        {
+          "item": {
+            "code": "SP-0042"
+          },
+          "qty": "24",
+          "uom": "Thùng"
+        }
+      ]
+    },
+    {
+      "name": "Envelope site + tenant (1.2)",
+      "schema": "refs.schema.json",
+      "def": "Envelope",
+      "valid": [
+        {
+          "site": "chuoi-hoa-mai",
+          "tenant": "hoa-mai-q1"
+        },
+        {
+          "tenant": "demo"
+        }
+      ],
+      "invalid": [
+        {
+          "site": "chuoi-hoa-mai"
         }
       ]
     }
