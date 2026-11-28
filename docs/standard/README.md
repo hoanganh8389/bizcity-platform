@@ -62,7 +62,7 @@ Báo cáo kiểm theo [`bizcity_conformance_report@1`](BIZCITY-CONFORMANCE-REPOR
 ## 3b. Hợp đồng nền (bản chủ ở đây từ 2026-11-28)
 <!-- [2026-11-28 02:55 PM Johnny Chu - Chu Hoàng Anh] D1 — hợp đồng nền dời từ open-ketoan + hai chuẩn mới (NC-004 §10, Q-PIL-10) -->
 
-Dời nguyên văn từ open-ketoan `docs/contracts/` @ `4e5cbc8` (đợt D1), giữ mã luật gốc; open-ketoan chỉ còn liên kết (thay qua R-FLOW). Mã hiện thực ở open-core `@bizcity/platform`. Đợt D2 (MASTER-DATA, ITEM-MASTER, MODULE, EXTENSION, FINDINGS, REMEDY, POLICY, DATA) theo [NC-004](../research/NC-004-TRU-COT-XUYEN-DOANH-NGHIEP.md) §10.
+Dời nguyên văn từ open-ketoan `docs/contracts/` @ `4e5cbc8` (đợt D1, D2), giữ mã luật gốc; open-ketoan giữ bản chép có dòng "Bản chủ" cho bộ kiểm tới C6 (R-FLOW, open-ketoan #755) — sửa ở đây trước. Mã hiện thực ở open-core `@bizcity/platform`. Đợt D2 (MASTER-DATA, ITEM-MASTER, MODULE, EXTENSION, FINDINGS, REMEDY, POLICY, DATA) đã dời <!-- [2026-11-28 03:35 PM Johnny Chu - Chu Hoàng Anh] D2 -->; xét sau (LIBRARY, CONNECTOR, DOMAIN, MODULES) theo [NC-004](../research/NC-004-TRU-COT-XUYEN-DOANH-NGHIEP.md) §10.
 
 | Chuẩn | Giữ | Trụ |
 |---|---|---|
@@ -80,6 +80,14 @@ Dời nguyên văn từ open-ketoan `docs/contracts/` @ `4e5cbc8` (đợt D1), g
 | [SETTINGS-MATRIX](BIZCITY-SETTINGS-MATRIX-v1.md) | `bizcity_settings@1`: lớp A / B / C, thang phạm vi (Q-PIL-6) | P-8 |
 | [SECRETS](BIZCITY-SECRETS-v1.md) | bí mật mã hoá theo đơn vị (`platform.secrets`) | T-9 |
 | [SITE-PROVISIONING](BIZCITY-SITE-PROVISIONING-v1.md) | `/_sites/v1` cho open-setup (Q-CORE-5) | T10 |
+| [MASTER-DATA](BIZCITY-MASTER-DATA-v1.md) | danh mục cho phân hệ / plugin: đối tượng, chi nhánh, kho, changefeed <!-- [2026-11-28 03:35 PM Johnny Chu - Chu Hoàng Anh] D2 --> | P-1, P-4 |
+| [ITEM-MASTER](BIZCITY-ITEM-MASTER-v1.md) | `item_id` bất biến, mã có phiên bản, phân loại theo ngày  | P-1 |
+| [MODULE](BIZCITY-MODULE-v1.md) | manifest module `bizcity.module.json`, `defineModule`  | T1 |
+| [EXTENSION](BIZCITY-EXTENSION-v1.md) | điểm mở rộng: màn, menu, hook  | T1 |
+| [FINDINGS](BIZCITY-FINDINGS-v1.md) | thư viện phát hiện hai cổng kiểm (bàn điều tra)  | T-6 |
+| [REMEDY](BIZCITY-REMEDY-v1.md) | phương án khắc phục có cấu trúc  | T-6 |
+| [POLICY](BIZCITY-POLICY-v1.md) | chính sách nghiệp vụ cho nguồn ngoài: lấy, tính, gửi tham chiếu  | axes |
+| [DATA](BIZCITY-DATA-v1.md) | hợp đồng dữ liệu  | axes |
 
 ## 4. Repo mới bắt đầu thế nào (MRP, HRM, …)
 

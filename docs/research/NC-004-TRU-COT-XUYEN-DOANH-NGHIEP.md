@@ -154,7 +154,7 @@ Kéo theo: canon §3.3 `docKey` = `doc_ref` của chứng từ nguồn (bỏ quy
 ## 10. Văn bản chuẩn dời từ open-ketoan sang open-platform (Q-PIL-10)
 <!-- [2026-11-28 02:15 PM Johnny Chu - Chu Hoàng Anh] NC-004 — chủ chốt Q-PIL-5, Q-PIL-9, Q-PIL-10 (2026-11-28) -->
 
-Cách dời: chép nguyên văn vào `docs/standard/` (giữ mã luật, lịch sử phiên bản, ghi "dời từ open-ketoan `docs/contracts` @ `4e5cbc8`"), thêm vào `standards.json` + bản đồ chuẩn (R-PLAT-7), `standard-check` ĐẠT; bên open-ketoan thay nội dung bằng liên kết **qua R-FLOW** (claim + PR vào `dev`).
+Cách dời: chép nguyên văn vào `docs/standard/` (giữ mã luật, lịch sử phiên bản, ghi "dời từ open-ketoan `docs/contracts` @ `4e5cbc8`"), thêm vào `standards.json` + bản đồ chuẩn (R-PLAT-7), `standard-check` ĐẠT; bên open-ketoan **qua R-FLOW** (claim [open-ketoan #755](https://github.com/hoanganh8389/open-ketoan/pull/755) + PR vào `dev`): **giữ nguyên văn**, thêm dòng "Bản chủ ở open-platform" — vì bộ kiểm SC-CON-4 / SC-CON-5 / SC-DOC-4 của open-ketoan đọc nội dung (thử thay bằng liên kết làm đỏ 3 phép kiểm); thay hẳn bằng liên kết ở C6 khi bộ kiểm đọc bản chủ. Sửa văn bản: PR ở open-platform trước, rồi chép sang. <!-- [2026-11-28 03:44 PM Johnny Chu - Chu Hoàng Anh] D2 — cách dời phía open-ketoan -->
 
 | Đợt | Văn bản (open-ketoan `docs/contracts/`) | Lý do |
 |---|---|---|
@@ -171,4 +171,5 @@ Cách dời: chép nguyên văn vào `docs/standard/` (giữ mã luật, lịch 
 
 - 2026-11-28: <!-- [2026-11-28 02:15 PM Johnny Chu - Chu Hoàng Anh] NC-004 — chủ chốt Q-PIL-5, Q-PIL-9, Q-PIL-10 (2026-11-28) --> chủ chốt Q-PIL-5 (Workspace chỉ ghi trạng thái; trạng thái gốc ở WP bizcity hub), Q-PIL-9 (màn bốn bước ở open-core), Q-PIL-10 (dời văn bản chuẩn sang open-platform, §10); phân tích Q-PIL-4, 6, 7, 8 (§9.1).
 - 2026-11-28: <!-- [2026-11-28 02:36 PM Johnny Chu - Chu Hoàng Anh] NC-004 — chủ chốt Q-PIL-4, 6, 8; Q-PIL-7 ghi nợ --> chủ chốt Q-PIL-4 (regex C), Q-PIL-6 (thang lõi + bậc app khai), Q-PIL-8 (ready = bốn bước; bước ④ = lớp phân quyền khoanh phạm vi: vault / module + vai…); Q-PIL-7 ghi nợ, tạm `user_meta`. **S-PIL-1 ☑** — spine 1.2.
-- 2026-11-28: <!-- [2026-11-28 02:55 PM Johnny Chu - Chu Hoàng Anh] D1 --> **D1 ☑ (phía open-platform)** — 12 hợp đồng nền ở `docs/standard/` + `BIZCITY-WORKFLOW-v1`, `BIZCITY-HUB-SETUP-v1`. Còn: open-ketoan thay bản ở `docs/contracts` bằng liên kết (claim + PR vào `dev`, R-FLOW); D2.
+- 2026-11-28: <!-- [2026-11-28 02:55 PM Johnny Chu - Chu Hoàng Anh] D1 --> **D1 ☑ (phía open-platform)** — 12 hợp đồng nền ở `docs/standard/` + `BIZCITY-WORKFLOW-v1`, `BIZCITY-HUB-SETUP-v1`. Còn: open-ketoan thay bản ở `docs/contracts` bằng liên kết (claim + PR vào `dev`, R-FLOW).
+- 2026-11-28: <!-- [2026-11-28 03:35 PM Johnny Chu - Chu Hoàng Anh] D2 --> **D2 ☑ (phía open-platform)** — MASTER-DATA, ITEM-MASTER, MODULE, EXTENSION, FINDINGS, REMEDY, POLICY, DATA.

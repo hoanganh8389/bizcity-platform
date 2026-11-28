@@ -1,6 +1,6 @@
 # `bizcity_document@1` — Document Contract
 <!-- [2026-11-28 02:55 PM Johnny Chu - Chu Hoàng Anh] D1 — NC-004 §10 (Q-PIL-10, chủ chốt 2026-11-28): dời nguyên văn từ open-ketoan docs/contracts/BIZCITY-DOCUMENT-v1.md @ 4e5cbc8; giữ mã luật gốc (R-PLAT-7); liên kết tới tài liệu còn ở open-ketoan đổi sang URL tuyệt đối. -->
-> **Nơi ở:** open-platform (`bizcity-platform/docs/standard/`) từ 2026-11-28 — bản chủ. Bản ở [open-ketoan `docs/contracts/BIZCITY-DOCUMENT-v1.md`](https://github.com/hoanganh8389/open-ketoan/blob/main/docs/contracts/BIZCITY-DOCUMENT-v1.md) chỉ còn liên kết về đây (thay qua R-FLOW). Mã hiện thực: [open-core](https://github.com/hoanganh8389/open-core) `@bizcity/platform`.
+> **Nơi ở:** open-platform (`bizcity-platform/docs/standard/`) từ 2026-11-28 — bản chủ. Bản ở [open-ketoan `docs/contracts/BIZCITY-DOCUMENT-v1.md`](https://github.com/hoanganh8389/open-ketoan/blob/main/docs/contracts/BIZCITY-DOCUMENT-v1.md) là bản chép giữ cho bộ kiểm của open-ketoan (SC-CON-4 / SC-CON-5 / SC-DOC-4), có dòng "Bản chủ" trỏ về đây — sửa ở đây trước rồi chép sang; thay hẳn bằng liên kết ở C6. Mã hiện thực: [open-core](https://github.com/hoanganh8389/open-core) `@bizcity/platform`.
 <!-- [2026-11-22 06:30 PM Johnny Chu - Chu Hoàng Anh] PHASE-040 — bizcity_document 1.5.0-draft: sáu nhóm trạng thái (STD-DOC-4 khớp STATUS_GROUPS), §5.2 ba chiều trạng thái, STD-DOC-9 hợp đồng xuyên suốt — ADR-0038, R-DOC-CONT -->
 <!-- [2026-10-29 10:24 PM Johnny Chu - Chu Hoàng Anh] INIT — khởi tạo Bizcity Core Framework: sổ cái chỉ thêm, cửa nạp sự việc, CANON, hợp đồng, bộ kiểm chuẩn. -->
 <!-- [2026-10-31 03:36 PM Johnny Chu - Chu Hoàng Anh] PHASE-012 — bizcity_document 1.1.0-draft: §5.1 hiện trạng runtime documents.workflow (khoá YAML, levels, sod, owner, ledger), hai luồng đã chuyển. -->
@@ -36,7 +36,7 @@ Chứng từ nghiệp vụ **không** sinh bút toán. Chỉ khi chuyển sang t
 
 | Cột | Kiểu | Nghĩa |
 |---|---|---|
-| `id`, `tenant_id`, `created_*`, `updated_*` | theo [Data](https://github.com/hoanganh8389/open-ketoan/blob/main/docs/contracts/BIZCITY-DATA-v1.md) | |
+| `id`, `tenant_id`, `created_*`, `updated_*` | theo [Data](BIZCITY-DATA-v1.md) | |
 | `doc_no` | `text` | số do `nextNumber` cấp; `UNIQUE (tenant_id, doc_no)` |
 | `doc_date` | `date` | ngày chứng từ (luật khoá theo ngày áp vào đây) |
 | `branch_code` | `text` | chi nhánh (mã danh mục chuẩn), nếu nghiệp vụ có chi nhánh |

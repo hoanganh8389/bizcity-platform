@@ -1,6 +1,6 @@
 # `bizcity_event@1` — Event Contract (sự kiện miền)
 <!-- [2026-11-28 02:55 PM Johnny Chu - Chu Hoàng Anh] D1 — NC-004 §10 (Q-PIL-10, chủ chốt 2026-11-28): dời nguyên văn từ open-ketoan docs/contracts/BIZCITY-EVENT-v1.md @ 4e5cbc8; giữ mã luật gốc (R-PLAT-7); liên kết tới tài liệu còn ở open-ketoan đổi sang URL tuyệt đối. -->
-> **Nơi ở:** open-platform (`bizcity-platform/docs/standard/`) từ 2026-11-28 — bản chủ. Bản ở [open-ketoan `docs/contracts/BIZCITY-EVENT-v1.md`](https://github.com/hoanganh8389/open-ketoan/blob/main/docs/contracts/BIZCITY-EVENT-v1.md) chỉ còn liên kết về đây (thay qua R-FLOW). Mã hiện thực: [open-core](https://github.com/hoanganh8389/open-core) `@bizcity/platform`.
+> **Nơi ở:** open-platform (`bizcity-platform/docs/standard/`) từ 2026-11-28 — bản chủ. Bản ở [open-ketoan `docs/contracts/BIZCITY-EVENT-v1.md`](https://github.com/hoanganh8389/open-ketoan/blob/main/docs/contracts/BIZCITY-EVENT-v1.md) là bản chép giữ cho bộ kiểm của open-ketoan (SC-CON-4 / SC-CON-5 / SC-DOC-4), có dòng "Bản chủ" trỏ về đây — sửa ở đây trước rồi chép sang; thay hẳn bằng liên kết ở C6. Mã hiện thực: [open-core](https://github.com/hoanganh8389/open-core) `@bizcity/platform`.
 <!-- [2026-11-03 08:05 PM Johnny Chu - Chu Hoàng Anh] SC-DOC-4 — sửa tham chiếu đường dẫn lỗi thời sau khi tách Kernel / Platform (mã đã dời; gói đích chưa tách ghi rõ "chưa tách") -->
 <!-- [2026-10-29 10:24 PM Johnny Chu - Chu Hoàng Anh] INIT — khởi tạo Bizcity Core Framework: sổ cái chỉ thêm, cửa nạp sự việc, CANON, hợp đồng, bộ kiểm chuẩn. -->
 <!-- [2026-10-30 01:11 PM Johnny Chu - Chu Hoàng Anh] CONG-BO — tuyên bố tối thượng, 7 nguyên tắc AP, ba lớp kiểm soát, ma trận tuân thủ, kiểm nâng cấp migration. -->
@@ -134,14 +134,14 @@ Gửi ra ngoài (webhook tới WooCommerce, Cell) là một subscriber đặc bi
 | `bizcity.module.enabled` / `.disabled` | bật / tắt module cho đơn vị | `module:<id>` |
 | `bizcity.intake.rejected` <!-- [2026-11-03 11:40 AM Johnny Chu - Chu Hoàng Anh] PHASE-021 — W4 (S021-20) --> | cửa nạp từ chối, tạo mục bể chờ mới (gửi trùng không phát lại); `data` = `{ inboxId, docKey, docType, channel, appKey, codes, score }` — chỉ mã và số, không nguyên văn (R-INTAKE-12) | `intake:<id>` |
 | `bizcity.intake.resolved` | mục bể đóng (`fixed_at_source`, `resubmitted`, `accepted`, `dismissed`); `data` = `{ inboxId, docKey, status, eventId, patched }` | `intake:<id>` |
-| `bizcity.policy.published` | một bản chính sách được ghi vào sổ đăng ký (phát hành inline, lưu chính sách của module…); `data` = `{ policyId, policyKey, version, ownerModule, ruleContract, effectiveFrom, contentHash, closes }`, `closes` = `{ version, effectiveTo }` của bản trước bị đóng hoặc `null`. **Không mang nội dung**: nguồn tải lại bằng `GET /api/v1/policies` ([bizcity_policy@1](https://github.com/hoanganh8389/open-ketoan/blob/main/docs/contracts/BIZCITY-POLICY-v1.md)) | `policy:<policyId>` |
+| `bizcity.policy.published` | một bản chính sách được ghi vào sổ đăng ký (phát hành inline, lưu chính sách của module…); `data` = `{ policyId, policyKey, version, ownerModule, ruleContract, effectiveFrom, contentHash, closes }`, `closes` = `{ version, effectiveTo }` của bản trước bị đóng hoặc `null`. **Không mang nội dung**: nguồn tải lại bằng `GET /api/v1/policies` ([bizcity_policy@1](BIZCITY-POLICY-v1.md)) | `policy:<policyId>` |
 | `bizcity.policy.retired` | chính sách bị ngừng (các bản `published` → `retired`); `data` = `{ policyId, retiredVersions[] }` | `policy:<policyId>` |
 
 Module dùng `bizcity.ledger.entry.posted` để biết **chắc chắn** sổ đã ghi (ví dụ đổi kỳ hợp đồng sang "đã thu" chỉ khi bút toán thu tiền đã vào sổ, kể cả ở chế độ chờ duyệt của kế toán).
 
 ## 7a. Webhook cho app ngoài tiến trình (ADR-0011 mức 2)
 
-App `kind: "app"` ([Module §3a](https://github.com/hoanganh8389/open-ketoan/blob/main/docs/contracts/BIZCITY-MODULE-v1.md)) nhận sự kiện bằng webhook, đi trên **cùng** outbox (thử lại, `dead`, `replay` như mọi subscriber; không có hàng đợi thứ hai).
+App `kind: "app"` ([Module §3a](BIZCITY-MODULE-v1.md)) nhận sự kiện bằng webhook, đi trên **cùng** outbox (thử lại, `dead`, `replay` như mọi subscriber; không có hàng đợi thứ hai).
 
 - Mỗi app có `events.subscribes` + `app.webhook.url` → một subscriber `<key>.webhook` (module = khoá app).
 - **Chỉ đơn vị đã kết nối app** và đồng ý loại sự kiện đó mới có việc giao: `SubscriberDef.accepts(trx, tenantId, type)` chạy trong giao dịch phát. Lúc giao, handler kiểm lại: kết nối đã tắt / bỏ loại sự kiện → không gửi, việc giao xong (bật lại không tự gửi bù; quản trị dùng `core.events.replay`).

@@ -1,12 +1,12 @@
 # `bizcity_authorization@1` — Hợp đồng phân quyền (nháp)
 <!-- [2026-11-28 02:55 PM Johnny Chu - Chu Hoàng Anh] D1 — NC-004 §10 (Q-PIL-10, chủ chốt 2026-11-28): dời nguyên văn từ open-ketoan docs/contracts/BIZCITY-AUTHORIZATION-v1.md @ 4e5cbc8; giữ mã luật gốc (R-PLAT-7); liên kết tới tài liệu còn ở open-ketoan đổi sang URL tuyệt đối. -->
-> **Nơi ở:** open-platform (`bizcity-platform/docs/standard/`) từ 2026-11-28 — bản chủ. Bản ở [open-ketoan `docs/contracts/BIZCITY-AUTHORIZATION-v1.md`](https://github.com/hoanganh8389/open-ketoan/blob/main/docs/contracts/BIZCITY-AUTHORIZATION-v1.md) chỉ còn liên kết về đây (thay qua R-FLOW). Mã hiện thực: [open-core](https://github.com/hoanganh8389/open-core) `@bizcity/platform`.
+> **Nơi ở:** open-platform (`bizcity-platform/docs/standard/`) từ 2026-11-28 — bản chủ. Bản ở [open-ketoan `docs/contracts/BIZCITY-AUTHORIZATION-v1.md`](https://github.com/hoanganh8389/open-ketoan/blob/main/docs/contracts/BIZCITY-AUTHORIZATION-v1.md) là bản chép giữ cho bộ kiểm của open-ketoan (SC-CON-4 / SC-CON-5 / SC-DOC-4), có dòng "Bản chủ" trỏ về đây — sửa ở đây trước rồi chép sang; thay hẳn bằng liên kết ở C6. Mã hiện thực: [open-core](https://github.com/hoanganh8389/open-core) `@bizcity/platform`.
 <!-- [2026-11-06 00:50 AM Johnny Chu - Chu Hoàng Anh] PHASE-028 — chữ chốt hình dạng bộ tính quyền (W3 đợt 1): mô hình Cho / Nới / Cấm, phạm vi, mục đích, điều kiện, mã lý do; bám ADR-0027 đã chấp nhận -->
 <!-- [2026-11-09 03:05 PM kiennt] PHASE-028 — 1.1.0-draft (D-AUTH-22, thi hành PHASE-030 / 22 §3 #1–#4 đã duyệt 06/11): bỏ hiệu lực Nới; điều kiện 8 → 5 (bỏ doc_date_back_days, doc_date_forward_days, respect_lock_date, status_in); amount_max = hạn mức duyệt cá nhân -->
 <!-- [2026-11-11 09:30 AM kiennt] PHASE-028 — 1.2.0-draft (chữ chốt đề xuất D-AUTH-19, D-AUTH-24 — 80 §3.4): §3a quyền theo loại chứng từ và quyền kéo theo -->
 
 > **Phiên bản:** 1.2.0-draft · 2026-11-11 (1.1.0-draft · 2026-11-09; 1.0.0-draft · 2026-11-06) · **Trạng thái:** Nháp · **Căn cứ:** [ADR-0027](https://github.com/hoanganh8389/open-ketoan/blob/main/docs/adr/ADR-0027-core-authorization-plugin-role-editor.md) (đã chấp nhận) · **Phase:** [PHASE-028](https://github.com/hoanganh8389/open-ketoan/blob/main/docs/phases/PHASE-028-CORE-AUTHORIZATION-PLUGIN-ROLE-EDITOR/README.md)
-> **Mở rộng (không thay):** [`bizcity_module@1`](https://github.com/hoanganh8389/open-ketoan/blob/main/docs/contracts/BIZCITY-MODULE-v1.md) §3 `permissions[]`. Hợp đồng này chốt **cách tính một quyết định**; nơi lưu vai trò và lần gán theo ADR-0027 D-AUTH-01 (`user_role_assignments`).
+> **Mở rộng (không thay):** [`bizcity_module@1`](BIZCITY-MODULE-v1.md) §3 `permissions[]`. Hợp đồng này chốt **cách tính một quyết định**; nơi lưu vai trò và lần gán theo ADR-0027 D-AUTH-01 (`user_role_assignments`).
 
 ## 1. Mục đích
 
