@@ -2,7 +2,7 @@
   "$comment": "[2026-11-24 11:48 PM Johnny Chu - Chu Hoàng Anh] STD-1 — sổ chuẩn nền máy đọc: mỗi chuẩn một dòng (tệp, phiên bản, trạng thái, trụ cột, bản mẫu, phép kiểm). tools/standard-check.mjs tự kiểm sổ này với thư mục docs/standard/. bizcity.vn và repo app đọc tệp này để biết chuẩn nào đang hiệu lực. [2026-11-25 10:30 AM Johnny Chu - Chu Hoàng Anh] STD-4 — chủ duyệt tám câu hỏi 2026-11-25: mọi chuẩn 1.0.0, chấp nhận.",
   "schema": "bizcity_standard_map@1",
   "version": "1.0.0",
-  "updated": "2026-11-25",
+  "updated": "2026-11-28",
   "map": "docs/standard/README.md",
   "architecture": "docs/ARCHITECTURE.md",
   "canon": "https://github.com/hoanganh8389/open-hub/blob/main/docs/canon/BIZCITY-OPEN-CANON-v1.md",
@@ -336,6 +336,186 @@
         "SC-LOOP-3"
       ],
       "tool": "tools/loi.mjs"
+    },
+    {
+      "id": "bizcity_document@1",
+      "file": "BIZCITY-DOCUMENT-v1.md",
+      "version": "1.5.0-draft",
+      "status": "draft",
+      "pillar": "axes",
+      "reference": [
+        "open-ketoan",
+        "open-core"
+      ],
+      "checks": [],
+      "moved_from": "open-ketoan docs/contracts/BIZCITY-DOCUMENT-v1.md@4e5cbc8"
+    },
+    {
+      "id": "bizcity_lineage@1",
+      "file": "BIZCITY-LINEAGE-v1.md",
+      "version": "0.4.0-draft",
+      "status": "draft",
+      "pillar": "axes",
+      "reference": [
+        "open-ketoan",
+        "open-core"
+      ],
+      "checks": [],
+      "moved_from": "open-ketoan docs/contracts/BIZCITY-LINEAGE-v1.md@4e5cbc8"
+    },
+    {
+      "id": "bizcity_mcp@1",
+      "file": "BIZCITY-MCP-v1.md",
+      "version": "1.1.0-draft",
+      "status": "draft",
+      "pillar": "T2",
+      "reference": [
+        "open-ketoan",
+        "open-core"
+      ],
+      "checks": [],
+      "moved_from": "open-ketoan docs/contracts/BIZCITY-MCP-v1.md@4e5cbc8"
+    },
+    {
+      "id": "bizcity_secrets@1",
+      "file": "BIZCITY-SECRETS-v1.md",
+      "version": "1.0.0",
+      "status": "accepted",
+      "pillar": "T4",
+      "reference": [
+        "open-ketoan",
+        "open-core"
+      ],
+      "checks": [],
+      "moved_from": "open-ketoan docs/contracts/BIZCITY-SECRETS-v1.md@4e5cbc8"
+    },
+    {
+      "id": "bizcity_site_provisioning@1",
+      "file": "BIZCITY-SITE-PROVISIONING-v1.md",
+      "version": "1.0.0",
+      "status": "accepted",
+      "pillar": "T10",
+      "reference": [
+        "open-ketoan",
+        "open-core"
+      ],
+      "checks": [],
+      "moved_from": "open-ketoan docs/contracts/BIZCITY-SITE-PROVISIONING-v1.md@4e5cbc8"
+    },
+    {
+      "id": "bizcity_action@1",
+      "file": "BIZCITY-ACTION-v1.md",
+      "version": "1.6.0-draft",
+      "status": "draft",
+      "pillar": "T2",
+      "reference": [
+        "open-ketoan",
+        "open-core"
+      ],
+      "checks": [],
+      "moved_from": "open-ketoan docs/contracts/BIZCITY-ACTION-v1.md@4e5cbc8"
+    },
+    {
+      "id": "bizcity_api@1",
+      "file": "BIZCITY-API-v1.md",
+      "version": "1.0.0",
+      "status": "accepted",
+      "pillar": "T2",
+      "reference": [
+        "open-ketoan",
+        "open-core"
+      ],
+      "checks": [],
+      "moved_from": "open-ketoan docs/contracts/BIZCITY-API-v1.md@4e5cbc8"
+    },
+    {
+      "id": "bizcity_errors@1",
+      "file": "BIZCITY-ERRORS-v1.md",
+      "version": "1.0.0",
+      "status": "accepted",
+      "pillar": "T2",
+      "reference": [
+        "open-ketoan",
+        "open-core"
+      ],
+      "checks": [],
+      "moved_from": "open-ketoan docs/contracts/BIZCITY-ERRORS-v1.md@4e5cbc8"
+    },
+    {
+      "id": "bizcity_event@1",
+      "file": "BIZCITY-EVENT-v1.md",
+      "version": "1.3.0-draft",
+      "status": "draft",
+      "pillar": "axes",
+      "reference": [
+        "open-ketoan",
+        "open-core"
+      ],
+      "checks": [],
+      "moved_from": "open-ketoan docs/contracts/BIZCITY-EVENT-v1.md@4e5cbc8"
+    },
+    {
+      "id": "bizcity_evidence@1",
+      "file": "BIZCITY-EVIDENCE-v1.md",
+      "version": "1.2.0-draft",
+      "status": "draft",
+      "pillar": "T5",
+      "reference": [
+        "open-ketoan",
+        "open-core"
+      ],
+      "checks": [],
+      "moved_from": "open-ketoan docs/contracts/BIZCITY-EVIDENCE-v1.md@4e5cbc8"
+    },
+    {
+      "id": "bizcity_authorization@1",
+      "file": "BIZCITY-AUTHORIZATION-v1.md",
+      "version": "1.2.0-draft",
+      "status": "draft",
+      "pillar": "T3",
+      "reference": [
+        "open-ketoan",
+        "open-core"
+      ],
+      "checks": [],
+      "moved_from": "open-ketoan docs/contracts/BIZCITY-AUTHORIZATION-v1.md@4e5cbc8"
+    },
+    {
+      "id": "bizcity_settings@1",
+      "file": "BIZCITY-SETTINGS-MATRIX-v1.md",
+      "version": "1.2.0-draft",
+      "status": "draft",
+      "pillar": "axes",
+      "reference": [
+        "open-ketoan",
+        "open-core"
+      ],
+      "checks": [],
+      "moved_from": "open-ketoan docs/contracts/BIZCITY-SETTINGS-MATRIX-v1.md@4e5cbc8"
+    },
+    {
+      "id": "bizcity_workflow@1",
+      "file": "BIZCITY-WORKFLOW-v1.md",
+      "version": "0.1.0-draft",
+      "status": "draft",
+      "pillar": "axes",
+      "reference": [
+        "open-ketoan",
+        "open-core"
+      ],
+      "checks": []
+    },
+    {
+      "id": "bizcity_hub_setup@1",
+      "file": "BIZCITY-HUB-SETUP-v1.md",
+      "version": "0.1.0-draft",
+      "status": "draft",
+      "pillar": "T11",
+      "reference": [
+        "bizcity-twin-ai",
+        "open-core"
+      ],
+      "checks": []
     }
   ],
   "decisions": {
