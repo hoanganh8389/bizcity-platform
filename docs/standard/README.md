@@ -51,7 +51,7 @@ Mỗi trụ cột có một tệp chuẩn, một bản mẫu tham chiếu đang 
 | T6 | Bộ nhớ đệm, hàng đợi (Redis tuỳ chọn) | [CACHE](BIZCITY-CACHE-v1.md) | open-ketoan R-CACHE (chưa có Redis) | tài liệu |
 | T7 | Kiểm thử, selfcheck, bằng chứng | [TESTING](BIZCITY-TESTING-v1.md) | open-ketoan `tests/conformance/` | đạt |
 | T8 | Phiên bản, migration SQL, sao lưu, nâng cấp, phát hành | [RELEASE](BIZCITY-RELEASE-v1.md) | open-ketoan R-REL / R-DB / R-BAK | một phần |
-| T9 | Giao diện React (model · view · controller), ui-kit, mockup | [WEB](BIZCITY-WEB-v1.md) | open-cake R-WEB-1..15 · open-ketoan `packages/ui-kit` | một phần |
+| T9 | Giao diện React (model · view · controller), ui-kit, mockup · **một giao diện cho mọi app** | [WEB](BIZCITY-WEB-v1.md) · [UX](BIZCITY-UX-v1.md) <!-- [2026-11-28 06:49 PM Johnny Chu - Chu Hoàng Anh] NC-005 --> | open-cake R-WEB-1..15 · open-ketoan `packages/ui-kit` | một phần |
 | T10 | Một bản mã, nhiều CSDL: registry site, định tuyến, cấp site | [MULTISITE](BIZCITY-MULTISITE-v1.md) | open-ketoan `packages/platform/src/db/site-*.ts` | một phần |
 | T11 | Hub, 1API, khoá, open-setup, bizcity-web | [HUB](BIZCITY-HUB-v1.md) | bizcity-llm-router · bizcity-open-setup · bizcity-web | một phần |
 | T12 | Tri thức và agent (MCP, Twin Brain) | [KNOWLEDGE](BIZCITY-KNOWLEDGE-v1.md) · [MCP](BIZCITY-MCP-v1.md) | open-ketoan `/mcp` | một phần |

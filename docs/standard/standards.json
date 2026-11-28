@@ -620,6 +620,21 @@
       ],
       "checks": [],
       "moved_from": "open-ketoan docs/contracts/BIZCITY-DATA-v1.md@4e5cbc8"
+    },
+    {
+      "id": "bizcity_ux@1",
+      "file": "BIZCITY-UX-v1.md",
+      "version": "0.1.0-draft",
+      "status": "draft",
+      "pillar": "T9",
+      "reference": [
+        "open-cake",
+        "open-hub",
+        "bizcity-twin-ai",
+        "open-ketoan",
+        "open-core"
+      ],
+      "checks": []
     }
   ],
   "decisions": {
