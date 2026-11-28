@@ -3,7 +3,7 @@
 <!-- [2026-11-24 05:43 PM Johnny Chu - Chu Hoàng Anh] SPINE-1.1 — chủ duyệt 2026-11-24 (open-cake Q-017-1/2): uom = tên ĐVT của chủ (Unicode có dấu như open-ketoan product_units.unit và 40 tên chuẩn open-pos H-9), không còn ASCII; partner.code từ open-cake = SĐT đã xác minh trước (khớp open-pos), không có mới CAKE-<contact_id>. -->
 <!-- [2026-11-24 05:08 PM Johnny Chu - Chu Hoàng Anh] SPINE-1 — chuẩn xuyên app bản đầu: tám trục định danh, bốn hình thức tham chiếu, bốn kiểu bảng (chủ · bản sao · gửi sau · đối chiếu), luật R-SPINE, kiểm SC-SPINE. Chủ chỉ đạo 2026-11-24: "mã lập trình có thể khác nhau, nhưng api contracts phải xuyên suốt". -->
 
-> **Phiên bản:** 1.1.0 · 2026-11-24 · **Trạng thái:** **Chấp nhận** — chủ dự án duyệt 2026-11-24 (Q-SPINE-1..4, §9; 1.1: open-cake Q-017-1/2) <!-- [2026-11-24 06:05 PM Johnny Chu - Chu Hoàng Anh] SPINE-2 --> · **Thuộc:** `@bizcity/contracts` (gói nền chung)
+> **Phiên bản:** 1.2.0 · 2026-11-28 (tách site / tenant, `qty` quy về đơn vị nhỏ nhất, `doc_ref` một bản — NC-004) · 1.1.0 · 2026-11-24 · **Trạng thái:** **Chấp nhận** — chủ dự án duyệt 2026-11-24 (Q-SPINE-1..4, §9; 1.1: open-cake Q-017-1/2) <!-- [2026-11-24 06:05 PM Johnny Chu - Chu Hoàng Anh] SPINE-2 --> · **Thuộc:** `@bizcity/contracts` (gói nền chung)
 > **Đứng dưới:** [BIZCITY OPEN CANON](https://github.com/hoanganh8389/open-hub/blob/main/docs/canon/BIZCITY-OPEN-CANON-v1.md) §3 (bốn trục dữ liệu), [chuẩn dữ liệu trục cứng + lớp mềm](https://github.com/hoanganh8389/open-hub/blob/main/docs/canon/CHUAN-DU-LIEU-TRUC-VA-LOP-MEM.md), luật tối thượng P-0 của chương trình open-pos ⇄ open-ketoan ([ADR-OKT-1](https://github.com/hoanganh8389/bizcity-open-setup/blob/main/docs/chuong-trinh/OKT/00-ADR-OKT-1.md)).
 > **Máy đọc:** `schema/spine/*.schema.json` · vector kiểm `schema/spine/vectors/` · lệnh `node tools/spine-check.mjs`.
 
@@ -27,14 +27,15 @@ Hệ đã có từng mảnh: `item_id` bất biến (open-ketoan ADR-0017), `doc
 
 | Trục | Khoá trên dây | Dạng | Chủ (mint ID) | App khác giữ | Nguồn chuẩn gốc |
 |---|---|---|---|---|---|
-| **tenant** (đơn vị / site) | `tenant` | slug `^[a-z][a-z0-9-]{1,30}$` = `tenants.code` của open-ketoan = slug site trong registry open-setup | **open-setup** (registry); open-ketoan cấp `tenant_id` bigint **nội bộ**, không lộ ra dây | slug trong mọi payload, sự kiện; khoá `X-Api-Key` gắn một tenant | R-CANON-13, R-TEN-* |
+| **site** (một CSDL mỗi app) <!-- [2026-11-28 02:36 PM Johnny Chu - Chu Hoàng Anh] SPINE-1.2 — NC-004 S-PIL-1 (chủ chốt Q-PIL-1, 2, 4) --> | `site` | slug `^[a-z][a-z0-9-]{2,29}$` (cùng MULTISITE) = slug trong registry open-setup | **open-setup** (registry) | khi một site có nhiều tenant: gửi kèm `site`; thiếu `site` ⇒ hiểu là site có cùng slug với `tenant` | R-CANON-13, MULTISITE |
+| **tenant** (đơn vị) | `tenant` | mã đơn vị `^[a-z][a-z0-9-]{2,29}$` = `tenants.code`; **`tenant ↔ blog_id` một-một** (`tenants.external_ref = wp-blog:<id>`); **một chuỗi nhiều cửa hàng = nhiều tenant** trong một site; site một đơn vị: `tenant` = slug site | **open-setup** (registry), `tenant_id` bigint **nội bộ**, không lộ ra dây | mã trong mọi payload, sự kiện; khoá `X-Api-Key` gắn một tenant; chi nhánh / kho / phòng ban là `branch` **trong** tenant | R-CANON-13, R-CANON-18, R-OKT-CONN |
 | **user** (người dùng) | `sub` | `^wp:[0-9]+$` (WordPress user ID của bizcity, chủ chốt 2026-11-24); dự phòng `^biz:[A-Za-z0-9_-]{1,64}$` cho tài khoản không qua WordPress | **WordPress (bizcity)** qua SSO | bảng người dùng cục bộ: `sub` → vai; **quyền vẫn ở từng app** | canon §4 người dùng chung, `bizcity_authorization@1` |
 | **item** (mặt hàng) | `item_id` | ULID Crockford 26 ký tự `^[0-9A-HJKMNP-TV-Z]{26}$` | **open-ketoan** (`items`, `item_codes` có hiệu lực) | bản sao + ảnh chụp mã tại ngày (`item_code_at`); **không tự tạo mặt hàng từ chứng từ** | `bizcity_item_master@1`, R-ITEM-0..9, IN-ITEM-* |
-| **uom** (đơn vị tính) | `uom` + `ratio` | `uom` = **tên ĐVT đúng như chủ lưu** (`product_units.unit`), Unicode có dấu, 1–20 ký tự, không khoảng trắng, phân biệt hoa thường (`Cái`, `Thùng`, `Lốc_6`; 40 tên chuẩn ở open-pos H-9) — `^[^\s]{1,20}$`; `ratio` số > 0 so với **đơn vị gốc của item** (`product_units.unit`, `ratio`, `is_default`) | **open-ketoan**, thuộc item master | sao chép cùng item; dòng chứng từ gửi `uom` + `qty`, **không gửi ratio** (chủ giữ); ĐVT không khai cho item ⇒ `IN-ITEM-003` | `bizcity_item_master@1` |
+| **uom** (đơn vị tính) | `uom` + `ratio` | `uom` = **tên ĐVT đúng như chủ lưu** (`product_units.unit`), Unicode có dấu, 1–20 ký tự, không khoảng trắng, phân biệt hoa thường (`Cái`, `Thùng`, `Lốc_6`; 40 tên chuẩn ở open-pos H-9) — `^[^\s]{1,20}$`; `ratio` số > 0 so với **đơn vị gốc của item** (`product_units.unit`, `ratio`, `is_default`) | **open-ketoan**, thuộc item master | sao chép cùng item; **1.2 (Q-PIL-1): dòng chứng từ gửi `qty` theo ĐƠN VỊ NHỎ NHẤT** (đơn vị tỷ lệ 1 = đơn vị kho), `unit` / `unitQty` / `unitRatio` chỉ để hiện — hình `QtyLine` (§3.1); số lượng `numeric(18,4)`, tỷ lệ `(18,6)`; ĐVT không khai cho item ⇒ `IN-ITEM-003` | `bizcity_item_master@1` |
 | **branch** (chi nhánh / kho) | `branch_code` | `^[A-Z0-9_.-]{1,20}$`; `branch_id` bigint nội bộ không lộ | **open-ketoan** (`branches`, `accounting_unit_id`) | POS: mỗi blog khai một `branch_code` (OKT S002-5); chuyển kho dùng `fromBranchCode` / `toBranchCode` | `bizcity_master_data@1` |
 | **partner** (đối tượng công nợ) | `partner.code` | `^[A-Za-z0-9_.-]{1,40}$`; `partner_id` bigint nội bộ không lộ | **open-ketoan**; ngoài gửi **mã**, một chiều | gửi `code`; open-cake gửi **số điện thoại đã xác minh** (cùng quy ước open-pos, để một người mua ở quầy và nhắn Fanpage là **một** đối tượng), không có số thì `CAKE-<contact_id>`, khách vãng lai `KHACH-LE`; lưu `partner_ref {code}` | R-MD-1, R-MD-2 |
 | **contact** (người / tổ chức tiếp xúc) | `contact_id` | ULID | **open-cake** | app khác mang **danh tính có bằng chứng** (`phone`, `email`, `tax_code`, `zalo_uid`, `fb_psid`), **không** mang `contact_id` tự đặt | R-CANON-1, R-CANON-3 |
-| **document** (chứng từ) | `doc_ref` | `^[a-z][a-z0-9_-]*(\.[a-z][a-z0-9_-]*)*:[A-Za-z0-9_.-]{1,64}$` = `<module>.<loại>:<id>`, bất biến (ví dụ vàng của canon: `cake.order_request:01J…`, `pos.order:8812`, `bizcity.ledger.event:<docKey>`) | **app phát hành** chứng từ đó | liên kết chéo ghi `doc_ref` **của app kia** vào `document_links (from, to, role)`; không có `root_document_id` tự đặt | `bizcity_document@1`, R-DOC-CONT-1, R-CANON-11 |
+| **document** (chứng từ) | `doc_ref` | **1.2:** `^[a-z][a-z0-9-]*\.[a-z][a-z0-9_-]*:[A-Za-z0-9_.:-]{1,200}$` = `<module>.<loại>:<id>` (đúng một dấu chấm, id ký tự an toàn ≤ 200, cho phép `:`), bất biến; mỗi phiên bản mang `version` + `content_hash`; `docKey` = `doc_ref` của chứng từ nguồn (ví dụ: `cake.order_request:01J…`, `pos.order:8812`, `ledger.event:pos:CN01:sale:8812`) | **app phát hành** chứng từ đó | liên kết chéo ghi `doc_ref` **của app kia** vào `document_links (from, to, role)`; không có `root_document_id` tự đặt | `bizcity_document@1`, R-DOC-CONT-1, R-CANON-11 |
 
 Ngoài tám trục còn **sổ riêng của từng app** (bút toán, `txn_id` giao dịch ba chân, sổ chạm khách): mỗi app **một** trục sổ riêng và không giữ trục sổ của app khác (R-CANON-1). Trục sổ riêng khai trong manifest `axes.owns`.
 
@@ -57,6 +58,19 @@ Mọi chỗ một app nhắc tới thực thể của trục là một **`*Ref`*
 | **R-SPINE-2** | **Chủ tra, người gửi không suy.** `code` → `id`, `identity` → `contact_id` do chủ làm, có bằng chứng, có ngày hiệu lực. Không khớp ⇒ **giữ lại và báo** (`IN-*` mức block / warn), không tự tạo. |
 | **R-SPINE-3** | Tham chiếu đã tra được thì **lưu `id`** vào bảng của mình (I-4 "định danh lưu, không suy"), kèm ảnh chụp mã tại ngày để in / tra cứu. |
 | **R-SPINE-4** | Mã (`code`, `uom`, `branch_code`) có **phiên bản và ngày hiệu lực**; đổi mã không đổi `id`; `as_of` mặc định = ngày chứng từ. |
+
+### 3.1 Dòng số lượng `QtyLine` (1.2)
+<!-- [2026-11-28 02:36 PM Johnny Chu - Chu Hoàng Anh] SPINE-1.2 — NC-004 S-PIL-1 (chủ chốt Q-PIL-1, 2, 4) -->
+
+```json
+{ "item": { "code": "SP-0042" }, "qty": "48", "unit": "Thùng", "unitQty": "2", "unitRatio": "24" }
+```
+
+| Luật | Nội dung |
+|---|---|
+| **R-SPINE-11** | `qty` **luôn** theo đơn vị nhỏ nhất của item (tỷ lệ 1); chuỗi thập phân ≤ 4 chữ số lẻ. Người nhận ghi sổ / kho theo `qty`, không quy đổi lại |
+| **R-SPINE-12** | `unit`, `unitQty`, `unitRatio` chỉ để hiện / in; có `unitQty` thì phải có `unit` + `unitRatio`; người nhận kiểm `qty = unitQty × unitRatio` (lệch ⇒ `IN-ITEM-*` mức block) |
+| **R-SPINE-13** | Tỷ lệ là chuỗi thập phân ≤ 6 chữ số lẻ; tiền `numeric(18,2)` theo R-DB-9 (đơn vị đo không chia hết — kg / g, m / cm — chọn đơn vị nhỏ nhất làm gốc) |
 
 ## 4. Tự đứng và đồng bộ — bốn kiểu bảng
 
@@ -174,8 +188,13 @@ Ba lane và bốn mức C0–C3: [open-hub · DE-XUAT-BO-KIEM-TUONG-THICH](https
 | Q-SPINE-2 | Vị trí kho, lô | **Lớp mềm** cho tới khi app thứ hai cần (§2) |
 | Q-SPINE-3 | open-ketoan mở changefeed `since` + digest cho `items`, `partners`, `branches` | **Duyệt.** Theo R-FLOW của open-ketoan; bridge C8 và cake chuyển sang kéo theo cursor sau khi có |
 | Q-SPINE-4 | `bizcity.app.json` ở gốc mọi repo, kể cả plugin WordPress | **Duyệt.** Repo chưa có thì thêm bằng PR chỉ tài liệu |
+| Q-SPINE-5 <!-- [2026-11-28 02:36 PM Johnny Chu - Chu Hoàng Anh] SPINE-1.2 — NC-004 S-PIL-1 (chủ chốt Q-PIL-1, 2, 4) --> | Số lượng trên dòng | **`qty` quy về đơn vị nhỏ nhất** (NC-004 Q-PIL-1, chủ chốt 2026-11-28) — §2 uom, §3.1 |
+| Q-SPINE-6 | Site và tenant | **Tách** `site` / `tenant`; `tenant ↔ blog_id` một-một, chuỗi = nhiều tenant (NC-004 Q-PIL-2); slug một bản `{2,29}` theo MULTISITE |
+| Q-SPINE-7 | `doc_ref` | **Một regex** (NC-004 Q-PIL-4): bắt buộc `<module>.<loại>`, id an toàn ≤ 200; `docKey` = `doc_ref` nguồn; `DocLink.role` đủ chín vai của open-ketoan (`applies`, `uses`, `adjusts` thêm). **Trước khi app áp:** chạy truy vấn trên bản sao dữ liệu open-ketoan tìm id ngoài bộ ký tự (`[^A-Za-z0-9_.:-]`) và dài > 200 — có thì chuẩn hoá trước |
 
 ## 10. Lịch sử
+
+- **1.2.0 (2026-11-28):** <!-- [2026-11-28 02:36 PM Johnny Chu - Chu Hoàng Anh] SPINE-1.2 — NC-004 S-PIL-1 (chủ chốt Q-PIL-1, 2, 4) --> tách `site` / `tenant` (`tenant ↔ blog_id`, `blog_ref`), slug `{2,29}`; `QtyLine` + R-SPINE-11..13 (`qty` đơn vị nhỏ nhất); `doc_ref` một regex, ví dụ `ledger.event:<docKey>` thay `bizcity.ledger.event:`; `DocLink` thêm `applies`, `uses`, `adjusts`; `Envelope.site`. Schema `refs`, `identity`, `knowledge` + vector đổi cùng; `tools/lib/json-schema.mjs` hiểu `dependentRequired`. **Phá tương thích nhỏ:** slug 2 ký tự và `doc_ref` nhiều dấu chấm không còn hợp lệ.
 
 - **1.1.0 (2026-11-24):** `uom` nhận tên ĐVT có dấu của chủ (bản 1.0 bắt ASCII — lệch dữ liệu thật của open-ketoan / open-pos); `partner.code` từ open-cake: SĐT đã xác minh → `CAKE-<contact_id>` → `KHACH-LE`. Nguồn: open-cake PHASE-017 `20-DOI-CHIEU-SPINE-VA-LEAN.md` S5, S6.
 

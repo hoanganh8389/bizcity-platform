@@ -19,7 +19,7 @@
 | Tồn kho (số lượng theo `item_id` × `branch_code` × kho) | **open-ketoan** | CRM chỉ **đọc**, không lưu làm sự thật (đệm ≤ 60 giây) | tồn chỉ đổi khi chứng từ được **ghi sổ**, không đổi khi nhận |
 | Khách (`contact_id`), hội thoại, **yêu cầu đặt hàng** `cake.order_request` | **open-cake** (bản WordPress: open-crm) | POS mang **danh tính có bằng chứng** (SĐT) + `doc_ref` của CRM | yêu cầu đặt hàng **không** phải chứng từ kế toán, không nộp sổ |
 | **Đơn chờ** + **đơn bán** + **giao hàng** (`pos.order_request`, `pos.order`, `pos.shipment`) | **open-pos-backend / open-pos** | CRM nghe sự kiện, ghi touch `kind=document` | luật đơn chờ là luật của POS (§3) |
-| Chứng từ kế toán, bút toán (`bizcity.ledger.event:<docKey>`) | **open-ketoan** | POS gửi qua bridge (gửi sau) | app ngoài kể sự việc, Kế Toán định khoản |
+| Chứng từ kế toán, bút toán (`ledger.event:<docKey>`) | **open-ketoan** | POS gửi qua bridge (gửi sau) | app ngoài kể sự việc, Kế Toán định khoản |
 | Mặt hàng, ĐVT, chi nhánh, đối tượng công nợ | **open-ketoan** | bản sao ở POS (tsm) và CRM (`catalog_source=ketoan`) | dòng đơn gửi `item {id}` lấy từ bản sao, hoặc `{code}` |
 
 Không có "mã đơn gốc" đi xuyên app (SPINE §8): mỗi app phát `doc_ref` của mình, nối bằng `document_links (from, to, role)`.

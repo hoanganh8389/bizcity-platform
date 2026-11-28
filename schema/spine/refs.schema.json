@@ -2,95 +2,329 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://bizcity.vn/schema/spine/refs.schema.json",
   "title": "bizcity_spine@1 — định danh và hình thức tham chiếu trên dây",
-  "$comment": "[2026-11-24 05:08 PM Johnny Chu - Chu Hoàng Anh] SPINE-1 — tám trục (BIZCITY-SPINE-v1.md §2) và bốn hình thức *Ref (§3). Máy đọc cho mọi ngôn ngữ.",
+  "$comment": "[2026-11-24 05:08 PM Johnny Chu - Chu Hoàng Anh] SPINE-1 — tám trục (BIZCITY-SPINE-v1.md §2) và bốn hình thức *Ref (§3). Máy đọc cho mọi ngôn ngữ. [2026-11-28 02:36 PM Johnny Chu - Chu Hoàng Anh] SPINE-1.2 — NC-004 S-PIL-1: tách site / tenant (tenant ↔ blog_id), slug một bản theo MULTISITE, doc_ref bắt buộc <module>.<type> + id ≤ 200 ký tự an toàn, qty quy về đơn vị nhỏ nhất (QtyLine), DocLink đủ vai của open-ketoan.",
   "$defs": {
-    "ulid": { "type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$" },
-    "tenant": { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,30}$" },
-    "sub": { "type": "string", "pattern": "^(wp:[0-9]+|biz:[A-Za-z0-9_-]{1,64})$" },
-    "item_id": { "$ref": "#/$defs/ulid" },
-    "contact_id": { "$ref": "#/$defs/ulid" },
-    "uom": { "type": "string", "pattern": "^[^\\s]{1,20}$", "$comment": "1.1: tên ĐVT của chủ, Unicode có dấu (Cái, Thùng), không khoảng trắng" },
-    "branch_code": { "type": "string", "pattern": "^[A-Z0-9_.-]{1,20}$" },
-    "partner_code": { "type": "string", "pattern": "^[A-Za-z0-9_.-]{1,40}$" },
-    "doc_ref": { "type": "string", "pattern": "^[a-z][a-z0-9_-]*(\\.[a-z][a-z0-9_-]*)*:[A-Za-z0-9_.-]{1,64}$" },
-    "date": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
-    "local_key": { "type": "string", "pattern": "^[a-z][a-z0-9-]*:[a-z][a-z0-9_-]*:[A-Za-z0-9_.-]{1,64}$" },
+    "ulid": {
+      "type": "string",
+      "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$"
+    },
+    "tenant": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{2,29}$",
+      "$comment": "1.2: mã đơn vị = tenants.code trong một site; tenant ↔ blog_id một-một (chuỗi nhiều cửa hàng = nhiều tenant); site một đơn vị: tenant = slug site"
+    },
+    "sub": {
+      "type": "string",
+      "pattern": "^(wp:[0-9]+|biz:[A-Za-z0-9_-]{1,64})$"
+    },
+    "item_id": {
+      "$ref": "#/$defs/ulid"
+    },
+    "contact_id": {
+      "$ref": "#/$defs/ulid"
+    },
+    "uom": {
+      "type": "string",
+      "pattern": "^[^\\s]{1,20}$",
+      "$comment": "1.1: tên ĐVT của chủ, Unicode có dấu (Cái, Thùng), không khoảng trắng"
+    },
+    "branch_code": {
+      "type": "string",
+      "pattern": "^[A-Z0-9_.-]{1,20}$"
+    },
+    "partner_code": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]{1,40}$"
+    },
+    "doc_ref": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*\\.[a-z][a-z0-9_-]*:[A-Za-z0-9_.:-]{1,200}$",
+      "$comment": "1.2: <module>.<loại>:<id>, đúng một dấu chấm trước dấu hai chấm; id ký tự an toàn, cho phép \":\" (docKey dạng <nguồn>:<chi nhánh>:<loại>:<id>)"
+    },
+    "date": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "local_key": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*:[a-z][a-z0-9_-]*:[A-Za-z0-9_.-]{1,64}$"
+    },
     "identity": {
       "type": "object",
-      "required": ["kind", "value"],
+      "required": [
+        "kind",
+        "value"
+      ],
       "additionalProperties": false,
       "properties": {
-        "kind": { "enum": ["phone", "email", "tax_code", "zalo_uid", "fb_psid", "fb_uid", "bank_account"] },
-        "value": { "type": "string", "minLength": 1, "maxLength": 200 },
-        "scope": { "type": "string", "maxLength": 100 },
-        "proof": { "type": "string", "maxLength": 100 }
+        "kind": {
+          "enum": [
+            "phone",
+            "email",
+            "tax_code",
+            "zalo_uid",
+            "fb_psid",
+            "fb_uid",
+            "bank_account"
+          ]
+        },
+        "value": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "scope": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "proof": {
+          "type": "string",
+          "maxLength": 100
+        }
       }
     },
     "refBase": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "id": { "type": "string", "minLength": 1, "maxLength": 64 },
-        "code": { "type": "string", "minLength": 1, "maxLength": 64 },
-        "as_of": { "$ref": "#/$defs/date" },
-        "identity": { "$ref": "#/$defs/identity" },
-        "local": { "$ref": "#/$defs/local_key" }
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "code": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "as_of": {
+          "$ref": "#/$defs/date"
+        },
+        "identity": {
+          "$ref": "#/$defs/identity"
+        },
+        "local": {
+          "$ref": "#/$defs/local_key"
+        }
       },
       "anyOf": [
-        { "required": ["id"] },
-        { "required": ["code"] },
-        { "required": ["identity"] },
-        { "required": ["local"] }
+        {
+          "required": [
+            "id"
+          ]
+        },
+        {
+          "required": [
+            "code"
+          ]
+        },
+        {
+          "required": [
+            "identity"
+          ]
+        },
+        {
+          "required": [
+            "local"
+          ]
+        }
       ]
     },
     "ItemRef": {
       "allOf": [
-        { "$ref": "#/$defs/refBase" },
-        { "properties": { "id": { "$ref": "#/$defs/item_id" }, "code": { "type": "string", "pattern": "^[A-Za-z0-9_.\\-/]{1,64}$" } }, "not": { "required": ["identity"] } }
+        {
+          "$ref": "#/$defs/refBase"
+        },
+        {
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/item_id"
+            },
+            "code": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_.\\-/]{1,64}$"
+            }
+          },
+          "not": {
+            "required": [
+              "identity"
+            ]
+          }
+        }
       ]
     },
     "PartnerRef": {
       "allOf": [
-        { "$ref": "#/$defs/refBase" },
-        { "properties": { "code": { "$ref": "#/$defs/partner_code" } }, "not": { "required": ["id"] } }
+        {
+          "$ref": "#/$defs/refBase"
+        },
+        {
+          "properties": {
+            "code": {
+              "$ref": "#/$defs/partner_code"
+            }
+          },
+          "not": {
+            "required": [
+              "id"
+            ]
+          }
+        }
       ],
       "$comment": "partner_id bigint là nội bộ open-ketoan, không lộ ra dây: ngoài chỉ gửi code (R-MD-2)."
     },
     "ContactRef": {
       "allOf": [
-        { "$ref": "#/$defs/refBase" },
-        { "properties": { "id": { "$ref": "#/$defs/contact_id" } }, "not": { "required": ["code"] } }
+        {
+          "$ref": "#/$defs/refBase"
+        },
+        {
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/contact_id"
+            }
+          },
+          "not": {
+            "required": [
+              "code"
+            ]
+          }
+        }
       ]
     },
     "BranchRef": {
       "type": "object",
-      "required": ["code"],
+      "required": [
+        "code"
+      ],
       "additionalProperties": false,
-      "properties": { "code": { "$ref": "#/$defs/branch_code" }, "as_of": { "$ref": "#/$defs/date" } }
+      "properties": {
+        "code": {
+          "$ref": "#/$defs/branch_code"
+        },
+        "as_of": {
+          "$ref": "#/$defs/date"
+        }
+      }
     },
     "UomRef": {
       "type": "object",
-      "required": ["uom"],
+      "required": [
+        "uom"
+      ],
       "additionalProperties": false,
-      "properties": { "uom": { "$ref": "#/$defs/uom" } },
-      "$comment": "Dòng chứng từ gửi uom + qty, không gửi ratio (chủ giữ)."
+      "properties": {
+        "uom": {
+          "$ref": "#/$defs/uom"
+        }
+      },
+      "$comment": "1.2: chỉ để hiện / in — số lượng trên dây là QtyLine.qty theo đơn vị nhỏ nhất."
     },
     "DocLink": {
       "type": "object",
-      "required": ["from", "to", "role"],
+      "required": [
+        "from",
+        "to",
+        "role"
+      ],
       "additionalProperties": false,
       "properties": {
-        "from": { "$ref": "#/$defs/doc_ref" },
-        "to": { "$ref": "#/$defs/doc_ref" },
-        "role": { "enum": ["source", "reverses", "replaces", "settles", "attachesTo", "ledger"] }
+        "from": {
+          "$ref": "#/$defs/doc_ref"
+        },
+        "to": {
+          "$ref": "#/$defs/doc_ref"
+        },
+        "role": {
+          "enum": [
+            "source",
+            "reverses",
+            "replaces",
+            "settles",
+            "attachesTo",
+            "ledger",
+            "applies",
+            "uses",
+            "adjusts"
+          ]
+        }
       }
     },
     "Envelope": {
       "type": "object",
-      "required": ["tenant"],
+      "required": [
+        "tenant"
+      ],
       "properties": {
-        "tenant": { "$ref": "#/$defs/tenant" },
-        "actor": { "type": "object", "properties": { "sub": { "$ref": "#/$defs/sub" } } }
+        "tenant": {
+          "$ref": "#/$defs/tenant"
+        },
+        "actor": {
+          "type": "object",
+          "properties": {
+            "sub": {
+              "$ref": "#/$defs/sub"
+            }
+          }
+        },
+        "site": {
+          "$ref": "#/$defs/site"
+        }
+      }
+    },
+    "site": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{2,29}$",
+      "$comment": "1.2: slug site (một CSDL mỗi app) trong registry open-setup"
+    },
+    "blog_ref": {
+      "type": "string",
+      "pattern": "^wp-blog:[0-9]+$",
+      "$comment": "1.2: tenants.external_ref — blog WordPress bizcity của đơn vị"
+    },
+    "qty": {
+      "type": "string",
+      "pattern": "^-?[0-9]{1,14}(\\.[0-9]{1,4})?$",
+      "$comment": "1.2: số lượng theo ĐƠN VỊ NHỎ NHẤT (tỷ lệ 1), chuỗi thập phân ≤ 4 chữ số lẻ — numeric(18,4)"
+    },
+    "ratio": {
+      "type": "string",
+      "pattern": "^[0-9]{1,12}(\\.[0-9]{1,6})?$",
+      "$comment": "1.2: tỷ lệ so với đơn vị nhỏ nhất, chuỗi thập phân ≤ 6 chữ số lẻ — numeric(18,6)"
+    },
+    "QtyLine": {
+      "type": "object",
+      "required": [
+        "item",
+        "qty"
+      ],
+      "additionalProperties": false,
+      "$comment": "1.2 (Q-PIL-1): qty LUÔN theo đơn vị nhỏ nhất của item; unit / unitQty / unitRatio chỉ để hiện; người nhận kiểm qty = unitQty × unitRatio khi có đủ ba",
+      "properties": {
+        "item": {
+          "$ref": "#/$defs/ItemRef"
+        },
+        "qty": {
+          "$ref": "#/$defs/qty"
+        },
+        "unit": {
+          "$ref": "#/$defs/uom"
+        },
+        "unitQty": {
+          "$ref": "#/$defs/qty"
+        },
+        "unitRatio": {
+          "$ref": "#/$defs/ratio"
+        }
+      },
+      "dependentRequired": {
+        "unitQty": [
+          "unit",
+          "unitRatio"
+        ],
+        "unitRatio": [
+          "unit"
+        ]
       }
     }
   }
