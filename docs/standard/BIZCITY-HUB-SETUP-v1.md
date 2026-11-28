@@ -39,6 +39,7 @@ Lõi lưu `agent_scopes(tenant, user, guru, scope_kind, scope_ref)`; MCP chỉ m
 | R-STD-S4-3 | Khoá Hub lưu bằng `platform.secrets` (khoá `bizcity.hub.api_key`, phạm vi tenant); **không bao giờ** trả lại khoá, chỉ bản che `biz-1a2b…9z8y` |
 | R-STD-S4-4 | **Khoá mềm** (B2B-KEY-3, R-SITE-13): hết hạn / thiếu ⇒ chỉ dải đỏ; sổ, báo cáo, API, sao lưu **không bao giờ dừng**; Hub không gọi được và lần trước `ok` ⇒ `unknown`, không hiện đỏ; đệm trạng thái 1 giờ |
 | R-STD-S4-5 | Không trộn loại khoá (R-STD-KEY-2): `biz-…` app → Hub · khoá API của app · `prov_…` open-setup → `/_sites/v1` |
+| R-STD-S4-6 <!-- [2026-11-28 03:43 PM Johnny Chu - Chu Hoàng Anh] D2 — chủ chốt Q-S4-3: một chuỗi dùng chung một khoá biz-… của site; Hub cấp theo tên miền --> | **Một chuỗi nhiều cửa hàng dùng chung một khoá `biz-…` của site** (R-CANON-13). Khoá dùng được ở tenant / tên miền nào là do **cấu hình phía Hub (llm-router)**: Hub có cấp khoá cho tên miền đó không (danh sách tên miền đã xác minh của khoá). App mỗi tenant gửi `X-BizCity-Client-Site` = tên miền của tenant; Hub từ chối ⇒ bước ① `fail` với `hint` "Cách sửa: thêm tên miền này vào khoá ở trang khoá của Hub" — app **không** tự cấp, không chép khoá sang tenant khác ngoài cấu hình |
 
 ## 3. Đầu API (open-core `@bizcity/server`)
 
@@ -59,7 +60,7 @@ Lõi lưu `agent_scopes(tenant, user, guru, scope_kind, scope_ref)`; MCP chỉ m
 |---|---|---|
 | Q-S4-1 | Hub chưa có đầu máy-gọi-máy trạng thái khoá / hạn | tạm dùng `/account/entitlement`; đích `open-hub-core/v1/keys/self` |
 | Q-S4-2 | Hub chưa có hợp đồng QR / đăng nhập kênh cho app không phải WordPress | chặn bước ③ của open-cake qua Hub (K3) |
-| Q-S4-3 | Chuỗi nhiều tenant (Q-PIL-2): dùng chung khoá của site (R-CANON-13 "một site một khoá") hay mỗi tenant / blog một khoá? | **chờ chủ** |
+| **Q-S4-3** | Chuỗi nhiều tenant: chung khoá hay mỗi tenant một khoá? | **Chốt (chủ, 2026-11-28):** chung một khoá của site; tenant / tên miền nào dùng được là do Hub cấp cho tên miền đó — R-STD-S4-6 |
 
 ## Lịch sử
 
