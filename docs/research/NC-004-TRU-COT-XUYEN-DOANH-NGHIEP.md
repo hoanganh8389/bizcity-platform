@@ -166,7 +166,7 @@ Cách dời: chép nguyên văn vào `docs/standard/` (giữ mã luật, lịch 
 
 
 ## 11. Dòng dữ liệu xuyên app
-<!-- [2026-11-28 05:22 PM Johnny Chu - Chu Hoàng Anh] NC-004 §11 — dòng dữ liệu xuyên app (chủ hỏi 2026-11-28: "tính xuyên suốt về mặt dữ liệu đối với các repo dùng chung open-core") -->
+<!-- [2026-11-28 05:19 PM Johnny Chu - Chu Hoàng Anh] NC-004 §11 — dòng dữ liệu xuyên app (chủ hỏi 2026-11-28: "tính xuyên suốt về mặt dữ liệu đối với các repo dùng chung open-core") -->
 
 **Các app không dùng chung bảng** — mỗi app một CSDL cho mỗi instance (R-CANON-13). Liền mạch nhờ ba lớp, đều do open-core bảo đảm:
 
