@@ -494,7 +494,7 @@
       "moved_from": "open-ketoan docs/contracts/BIZCITY-SETTINGS-MATRIX-v1.md@4e5cbc8"
     },
     {
-      "id": "bizcity_workflow@1",
+      "id": "bizcity_document_workflow@1",
       "file": "BIZCITY-WORKFLOW-v1.md",
       "version": "0.1.0-draft",
       "status": "draft",

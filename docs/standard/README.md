@@ -68,7 +68,7 @@ Dời nguyên văn từ open-ketoan `docs/contracts/` @ `4e5cbc8` (đợt D1), g
 |---|---|---|
 | [DOCUMENT](BIZCITY-DOCUMENT-v1.md) | chứng từ dùng chung: bốn bảng, `doc_ref`, phiên bản, liên kết, đánh số, in, ký | P-5 |
 | [LINEAGE](BIZCITY-LINEAGE-v1.md) | nguồn gốc dữ liệu / chuỗi chứng từ | P-5 |
-| [WORKFLOW](BIZCITY-WORKFLOW-v1.md) | **mới** — workflow YAML của chứng từ (`bizcity_workflow@1`) | P-6 |
+| [WORKFLOW](BIZCITY-WORKFLOW-v1.md) | **mới** — workflow YAML của chứng từ (`bizcity_document_workflow@1`) | P-6 |
 | [ACTION](BIZCITY-ACTION-v1.md) | một action ⇒ REST + MCP + React + sự kiện (`defineAction`, `ctx`) | T-1 |
 | [API](BIZCITY-API-v1.md) | phong bì API, `Idempotency-Key`, SSO `sub` | T-1 |
 | [ERRORS](BIZCITY-ERRORS-v1.md) | danh mục mã lỗi chung `bizcity_errors@1` | T-1 |

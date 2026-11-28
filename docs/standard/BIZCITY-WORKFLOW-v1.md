@@ -1,9 +1,12 @@
-# `bizcity_workflow@1` — Máy trạng thái chứng từ khai bằng YAML
+# `bizcity_document_workflow@1` — Máy trạng thái chứng từ khai bằng YAML (hồ sơ của bizcity_document@1 §5)
 
 <!-- [2026-11-28 02:55 PM Johnny Chu - Chu Hoàng Anh] D1 — chuẩn mới (NC-004 P-6, §10): viết ra từ mã đang chạy `@bizcity/platform/core/workflow.ts` (open-core 0.3.1, gốc open-ketoan PHASE-012 / PHASE-014) và hai tệp mẫu của open-ketoan; luật R-WF-* giữ mã gốc của bizcity_document@1 §5. -->
 
 > **Phiên bản:** 0.1.0-draft · 2026-11-28 · **Trạng thái:** Đề xuất · **Thuộc:** trụ chứng từ ([DOCUMENT](BIZCITY-DOCUMENT-v1.md) §5) · **Hiện thực:** open-core `@bizcity/platform/core/workflow.ts`
 > **Bản mẫu:** open-ketoan `apps/api/src/phan-he/mua-hang/purchase-document.workflow.yaml`, `apps/api/src/phan-he/quy/payment-requests/payment-request.workflow.yaml`
+
+<!-- [2026-11-28 03:38 PM Johnny Chu - Chu Hoàng Anh] D1 — đổi mã: `bizcity_workflow@1` đã bị bỏ ở open-ketoan (gộp vào bizcity_document@1 §5, 00-CANON dòng 345) ⇒ không đặt lại; dùng `bizcity_document_workflow@1` = hồ sơ máy đọc của DOCUMENT §5 -->
+> **Mã:** `bizcity_document_workflow@1` là **hồ sơ máy đọc của [`bizcity_document@1`](BIZCITY-DOCUMENT-v1.md) §5** (năng lực `documents.workflow`), không phải hợp đồng riêng. Mã cũ `bizcity_workflow@1` đã gộp vào DOCUMENT và **không dùng lại** (R-PLAT-7).
 
 ## 0. Một câu
 
