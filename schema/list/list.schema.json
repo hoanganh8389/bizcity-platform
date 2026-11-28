@@ -1,0 +1,474 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bizcity.vn/schema/list/list.schema.json",
+  "title": "bizcity_list@1 — danh sách dữ liệu chung (máy đọc)",
+  "$comment": "[2026-11-28 06:37 PM Johnny Chu - Chu Hoàng Anh] STD-LIST-2 — hình JSON chuẩn của: khai báo danh sách (ListDef), truy vấn (ListQuery — dạng JSON của tham số URL f.<cột>.<phép>), trang trả về (ListPage), tệp xuất JSON (ListExport) và dòng đầu NDJSON (ListExportHeader). Vector: vectors/list.vectors.json.",
+  "$defs": {
+    "listId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*\\.[a-z][a-z0-9_-]*\\.list$"
+    },
+    "field": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]{0,62}$"
+    },
+    "colType": {
+      "enum": [
+        "text",
+        "number",
+        "money",
+        "qty",
+        "date",
+        "datetime",
+        "enum",
+        "status",
+        "bool",
+        "item",
+        "partner",
+        "contact",
+        "branch",
+        "user"
+      ]
+    },
+    "op": {
+      "enum": [
+        "eq",
+        "ne",
+        "in",
+        "nin",
+        "prefix",
+        "like",
+        "gt",
+        "gte",
+        "lt",
+        "lte",
+        "between",
+        "null"
+      ]
+    },
+    "permission": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*:[a-z][a-z0-9-]*$"
+    },
+    "scalar": {
+      "type": [
+        "string",
+        "boolean"
+      ],
+      "maxLength": 200
+    },
+    "ListColumn": {
+      "type": "object",
+      "required": [
+        "field",
+        "type",
+        "label"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "$ref": "#/$defs/field"
+        },
+        "type": {
+          "$ref": "#/$defs/colType"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "filter": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/op"
+          },
+          "uniqueItems": true
+        },
+        "sort": {
+          "type": "boolean"
+        },
+        "search": {
+          "type": "boolean"
+        },
+        "sum": {
+          "type": "boolean"
+        },
+        "scope": {
+          "enum": [
+            "branch",
+            "warehouse",
+            "org_unit"
+          ]
+        },
+        "permission": {
+          "$ref": "#/$defs/permission"
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "value",
+              "label"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "value": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "ListDef": {
+      "type": "object",
+      "required": [
+        "contract",
+        "id",
+        "permission",
+        "columns",
+        "defaultSort"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "contract": {
+          "const": "bizcity_list@1"
+        },
+        "id": {
+          "$ref": "#/$defs/listId"
+        },
+        "label": {
+          "type": "string",
+          "maxLength": 80
+        },
+        "permission": {
+          "$ref": "#/$defs/permission"
+        },
+        "exportPermission": {
+          "$ref": "#/$defs/permission"
+        },
+        "columns": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 60,
+          "items": {
+            "$ref": "#/$defs/ListColumn"
+          }
+        },
+        "defaultSort": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 3,
+          "items": {
+            "$ref": "#/$defs/SortKey"
+          }
+        },
+        "exportFormats": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "csv",
+              "xlsx",
+              "json",
+              "ndjson"
+            ]
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "Filter": {
+      "type": "object",
+      "required": [
+        "field",
+        "op"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "$ref": "#/$defs/field"
+        },
+        "op": {
+          "$ref": "#/$defs/op"
+        },
+        "value": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/scalar"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 100,
+              "items": {
+                "$ref": "#/$defs/scalar"
+              }
+            }
+          ]
+        }
+      }
+    },
+    "SortKey": {
+      "type": "object",
+      "required": [
+        "field",
+        "dir"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "$ref": "#/$defs/field"
+        },
+        "dir": {
+          "enum": [
+            "asc",
+            "desc"
+          ]
+        }
+      }
+    },
+    "ListQuery": {
+      "type": "object",
+      "additionalProperties": false,
+      "$comment": "Dạng JSON của tham số URL: q · f.<field>.<op>=v (danh sách cách ',' ; between: a..b) · sort=-a,b · cursor · limit · count · sums. Lưu ở user_meta (bộ lọc đã lưu) và lặp lại trong tệp xuất.",
+      "properties": {
+        "q": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "filters": {
+          "type": "array",
+          "maxItems": 20,
+          "items": {
+            "$ref": "#/$defs/Filter"
+          }
+        },
+        "sort": {
+          "type": "array",
+          "maxItems": 3,
+          "items": {
+            "$ref": "#/$defs/SortKey"
+          }
+        },
+        "cursor": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,512}$"
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 200
+        },
+        "count": {
+          "enum": [
+            "none",
+            "exact"
+          ]
+        },
+        "sums": {
+          "type": "boolean"
+        }
+      }
+    },
+    "ListPage": {
+      "type": "object",
+      "required": [
+        "ok",
+        "data",
+        "meta"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "data": {
+          "type": "array",
+          "maxItems": 200,
+          "items": {
+            "type": "object"
+          }
+        },
+        "meta": {
+          "type": "object",
+          "required": [
+            "nextCursor",
+            "query"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "nextCursor": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "total": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sums": {
+              "type": "object"
+            },
+            "query": {
+              "$ref": "#/$defs/ListQuery"
+            },
+            "requestId": {
+              "type": "string"
+            },
+            "traceId": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "ListExportHeader": {
+      "type": "object",
+      "required": [
+        "contract",
+        "list",
+        "generatedAt",
+        "query",
+        "columns"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "contract": {
+          "const": "bizcity_list_export@1"
+        },
+        "list": {
+          "$ref": "#/$defs/listId"
+        },
+        "tenant": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]{2,29}$"
+        },
+        "generatedAt": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T"
+        },
+        "generatedBy": {
+          "type": "string"
+        },
+        "query": {
+          "$ref": "#/$defs/ListQuery"
+        },
+        "columns": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "field",
+              "type",
+              "label"
+            ],
+            "properties": {
+              "field": {
+                "$ref": "#/$defs/field"
+              },
+              "type": {
+                "$ref": "#/$defs/colType"
+              },
+              "label": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "masked": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/field"
+          },
+          "$comment": "cột bị che vì người xuất thiếu quyền cột (R-STD-LIST-11)"
+        }
+      }
+    },
+    "ListExport": {
+      "type": "object",
+      "required": [
+        "contract",
+        "list",
+        "generatedAt",
+        "query",
+        "columns",
+        "rows"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "contract": {
+          "const": "bizcity_list_export@1"
+        },
+        "list": {
+          "$ref": "#/$defs/listId"
+        },
+        "tenant": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]{2,29}$"
+        },
+        "generatedAt": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T"
+        },
+        "generatedBy": {
+          "type": "string"
+        },
+        "query": {
+          "$ref": "#/$defs/ListQuery"
+        },
+        "columns": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "field",
+              "type",
+              "label"
+            ],
+            "properties": {
+              "field": {
+                "$ref": "#/$defs/field"
+              },
+              "type": {
+                "$ref": "#/$defs/colType"
+              },
+              "label": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "masked": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/field"
+          },
+          "$comment": "cột bị che vì người xuất thiếu quyền cột (R-STD-LIST-11)"
+        },
+        "rows": {
+          "type": "array",
+          "maxItems": 10000,
+          "items": {
+            "type": "object"
+          }
+        }
+      },
+      "$comment": "export.json (≤ 10 000 dòng): một tài liệu = đầu (như ListExportHeader) + rows. export.ndjson: dòng 1 = ListExportHeader, mỗi dòng sau = một hàng."
+    }
+  }
+}

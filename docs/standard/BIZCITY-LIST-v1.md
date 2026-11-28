@@ -2,7 +2,7 @@
 
 <!-- [2026-11-28 06:32 PM Johnny Chu - Chu Hoàng Anh] STD-LIST-1 — chủ (2026-11-28): "universal user, user role, hook, menu register, chuẩn list table data và các công cụ filter, lọc, export… chuẩn hoá về open-core, đồng ý phase 003". Gom từ cái đang có: open-ketoan (DataGrid, FilterLayout, bộ tham số đã lưu, getPage có tổng, add-in excel-export) + open-cake (con trỏ keyset, useInfiniteQueryAction, bộ lọc trên URL). -->
 
-> **Phiên bản:** 0.1.0-draft · 2026-11-28 · **Trạng thái:** Đề xuất · **Trụ:** T2 (API) + T9 (giao diện) · **Hiện thực đích:** open-core `@bizcity/server` (`defineListAction`) + `@bizcity/web-shell` (`ListScreen`) — [open-core PHASE-003](https://github.com/hoanganh8389/open-core/blob/main/docs/phases/PHASE-003-KHUNG-QUAN-TRI-CHUNG/README.md)
+> **Phiên bản:** 0.2.0-draft · 2026-11-28 (JSON chuẩn + schema + vector + bộ kiểm; luật React) · 0.1.0-draft · **Trạng thái:** Đề xuất · **Trụ:** T2 (API) + T9 (giao diện) · **Hiện thực đích:** open-core `@bizcity/server` (`defineListAction`) + `@bizcity/web-shell` (`ListScreen`) — [open-core PHASE-003](https://github.com/hoanganh8389/open-core/blob/main/docs/phases/PHASE-003-KHUNG-QUAN-TRI-CHUNG/README.md)
 > **Đứng trên:** [API-PROFILE](BIZCITY-API-PROFILE-v1.md) (phong bì, con trỏ) · [WEB](BIZCITY-WEB-v1.md) R-WEB-2 (URL là nguồn vị trí), R-WEB-10 (ảo hoá + con trỏ) · [USERS-ROLES](BIZCITY-USERS-ROLES-v1.md) (quyền, phạm vi, `user_meta`) · [EVIDENCE](BIZCITY-EVIDENCE-v1.md)
 
 ## 0. Một câu
@@ -49,8 +49,30 @@ defineListAction({
 | `count` | `none` (mặc định) · `exact` | `exact` trả `meta.total`; chỉ khi màn cần (đếm tốn) |
 | `sums` | `1` | trả `meta.sums` cho cột `sum: true`, trên **toàn bộ kết quả lọc**, không chỉ trang |
 
-**Trả:** `{ ok: true, data: [...], meta: { nextCursor, total?, sums?, appliedFilters, sort } }`.
+**Trả:** `ListPage` — `{ ok: true, data: [...], meta: { nextCursor, total?, sums?, query } }` (`query` = truy vấn đã áp, dạng `ListQuery`).
 **Lỗi:** sai cột / phép / giá trị ⇒ `400 VALIDATION_ERROR` với `details.field = "f.total.gte"` (để màn tô đúng ô — FAILURE-MAP).
+
+## 2b. JSON chuẩn (máy đọc: [`schema/list/list.schema.json`](../../schema/list/list.schema.json), vector [`schema/list/vectors/list.vectors.json`](../../schema/list/vectors/list.vectors.json))
+<!-- [2026-11-28 06:41 PM Johnny Chu - Chu Hoàng Anh] STD-LIST-2 — chủ (2026-11-28): "gọi list ra, phân trang, filter, export chuẩn json, chuẩn hoá UI, react, api rest hết; open-core là infra; open-ketoan, open-cake, open-kiot sau này cũng phải rule chuẩn về react api" -->
+
+| Định nghĩa | Là gì | Dùng ở |
+|---|---|---|
+| `ListDef` (gồm `ListColumn`, `SortKey`) | khai báo danh sách: `contract: "bizcity_list@1"`, `id` `<module>.<thực thể>.list`, quyền xem / xuất, cột, `defaultSort`, `exportFormats` | `GET /api/v1/lists/<id>` — web-shell dựng bảng + thanh lọc từ đây; agent đọc để biết lọc được gì |
+| `ListQuery` (gồm `Filter`) | dạng **JSON** của tham số URL: `{ q, filters: [{field, op, value}], sort: [{field, dir}], cursor, limit, count, sums }`, thứ tự khoá cố định | bộ lọc đã lưu (`user_meta`), `meta.query` của trang, đầu tệp xuất, băm bằng chứng xuất, MCP |
+| `ListPage` | một trang kết quả | `GET` danh sách |
+| `ListExport` | `export.json` (≤ 10 000 dòng): `{ contract: "bizcity_list_export@1", list, tenant, generatedAt, generatedBy, query, columns, total, masked, rows }` | tải xuống, chuyển cho app khác / agent |
+| `ListExportHeader` | dòng đầu của `export.ndjson` (mỗi dòng sau = một hàng) — cho tệp lớn, đọc từng dòng | xuất nền (R-STD-LIST-8) |
+
+URL ⇄ JSON là **hai chiều, một nghĩa**: `parseListQuery` / `formatListQuery` (bản tham chiếu `tools/lib/list-query.mjs`; open-core hiện thực theo cùng vector). Xuất: `…/export.csv` · `…/export.xlsx` · **`…/export.json`** · **`…/export.ndjson`**.
+
+## 2c. React (mọi app — `@bizcity/web-shell`)
+
+| Mã | Luật |
+|---|---|
+| R-STD-LIST-12 | Danh sách trong app dùng **`<ListScreen list="<id>">`** (hoặc hook `useListQuery(id, query)` khi cần bố cục riêng) của web-shell — **không** tự dựng bảng + bộ lọc + phân trang + nút xuất |
+| R-STD-LIST-13 | Gọi máy chủ chỉ qua client chung (`@bizcity/action-client`: `useListQuery`, `useAction`); tệp view không có `fetch(`, `useQuery` (SC-WEB-P1) |
+| R-STD-LIST-14 | Trạng thái lọc / sắp xếp / con trỏ đọc ghi đúng tham số §2 trên URL (R-WEB-2); bộ lọc đã lưu đọc ghi `ListQuery` ở `user_meta` |
+| R-STD-LIST-15 | Ô lọc sinh từ `ListColumn.type` (khoảng ngày, chọn chi nhánh / mặt hàng / đối tượng theo spine, trạng thái theo nhóm) — app không tự viết ô lọc cho kiểu đã có |
 
 ## 3. Luật
 
@@ -82,4 +104,5 @@ defineListAction({
 
 ## Lịch sử
 
+- **0.2.0-draft (2026-11-28):** §2b JSON chuẩn (`ListDef`, `ListQuery`, `ListPage`, `ListExport`, `ListExportHeader`) + `schema/list/` + vector + `tools/list-check.mjs` (SC-LIST-1 vector, SC-LIST-2 URL ⇄ JSON, SC-LIST-3 CONTRACT); xuất `json` / `ndjson`; §2c luật React R-STD-LIST-12..15.
 - **0.1.0-draft (2026-11-28):** bản đầu.

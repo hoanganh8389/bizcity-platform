@@ -1,0 +1,91 @@
+{
+  "$comment": "[2026-11-28 06:41 PM Johnny Chu - Chu Hoàng Anh] STD-LIST-2 — vector bizcity_list@1: cases (schema/def/valid/invalid) + url (tham số URL ⇄ ListQuery JSON, hai chiều). open-core chạy cùng tệp này.",
+  "cases": [
+    {
+      "name": "ListDef — khai báo danh sách",
+      "def": "ListDef",
+      "valid": [
+        { "contract": "bizcity_list@1", "id": "pos.sale.list", "label": "Phiếu bán", "permission": "pos:ban-xem", "exportPermission": "pos:ban-xuat",
+          "columns": [
+            { "field": "doc_no", "type": "text", "label": "Số phiếu", "filter": ["eq", "prefix"], "sort": true, "search": true },
+            { "field": "branch", "type": "branch", "label": "Chi nhánh", "filter": ["in"], "scope": "branch" },
+            { "field": "status", "type": "status", "label": "Trạng thái", "filter": ["in"], "options": [{ "value": "draft", "label": "Nháp" }] },
+            { "field": "total", "type": "money", "label": "Tổng tiền", "filter": ["gte", "lte"], "sort": true, "sum": true },
+            { "field": "phone", "type": "text", "label": "SĐT", "permission": "pos:khach-sdt-xem" }
+          ],
+          "defaultSort": [{ "field": "issued_at", "dir": "desc" }], "exportFormats": ["csv", "xlsx", "json", "ndjson"] }
+      ],
+      "invalid": [
+        { "contract": "bizcity_list@1", "id": "pos.sale", "permission": "pos:ban-xem", "columns": [{ "field": "a", "type": "text", "label": "A" }], "defaultSort": [{ "field": "a", "dir": "asc" }] },
+        { "contract": "bizcity_list@1", "id": "pos.sale.list", "permission": "pos:ban-xem", "columns": [{ "field": "a", "type": "string", "label": "A" }], "defaultSort": [{ "field": "a", "dir": "asc" }] },
+        { "contract": "bizcity_list@1", "id": "pos.sale.list", "permission": "pos:ban-xem", "columns": [{ "field": "a", "type": "text", "label": "A", "filter": ["contains"] }], "defaultSort": [{ "field": "a", "dir": "asc" }] },
+        { "contract": "bizcity_list@1", "id": "pos.sale.list", "permission": "pos:ban-xem", "columns": [], "defaultSort": [{ "field": "a", "dir": "asc" }] },
+        { "contract": "bizcity_list@1", "id": "pos.sale.list", "permission": "pos:ban-xem", "columns": [{ "field": "a", "type": "text", "label": "A" }], "defaultSort": [{ "field": "a", "dir": "up" }] }
+      ]
+    },
+    {
+      "name": "ListQuery — truy vấn dạng JSON",
+      "def": "ListQuery",
+      "valid": [
+        {},
+        { "q": "hoa mai", "filters": [{ "field": "branch", "op": "in", "value": ["CN01", "CN02"] }, { "field": "total", "op": "gte", "value": "100000" }, { "field": "issued_at", "op": "between", "value": ["2026-11-01", "2026-11-30"] }, { "field": "note", "op": "null", "value": true }],
+          "sort": [{ "field": "issued_at", "dir": "desc" }, { "field": "doc_no", "dir": "asc" }], "limit": 50, "count": "exact", "sums": true },
+        { "cursor": "MjAyNi0xMS0yOHwwMUpE", "limit": 200 }
+      ],
+      "invalid": [
+        { "limit": 500 },
+        { "limit": 0 },
+        { "sort": [{ "field": "a", "dir": "asc" }, { "field": "b", "dir": "asc" }, { "field": "c", "dir": "asc" }, { "field": "d", "dir": "asc" }] },
+        { "filters": [{ "field": "total", "op": "contains", "value": "1" }] },
+        { "filters": [{ "field": "Total", "op": "eq", "value": "1" }] },
+        { "cursor": "có dấu cách" },
+        { "page": 2 },
+        { "count": "all" }
+      ]
+    },
+    {
+      "name": "ListPage — trang trả về",
+      "def": "ListPage",
+      "valid": [
+        { "ok": true, "data": [{ "doc_no": "PB-1", "total": "120000.00" }], "meta": { "nextCursor": "MjAy", "total": 31, "sums": { "total": "3720000.00" }, "query": { "limit": 1 } } },
+        { "ok": true, "data": [], "meta": { "nextCursor": null, "query": {} } }
+      ],
+      "invalid": [
+        { "ok": true, "data": [], "meta": { "query": {} } },
+        { "ok": true, "data": [], "meta": { "nextCursor": null, "page": 2, "query": {} } },
+        { "ok": false, "data": [], "meta": { "nextCursor": null, "query": {} } }
+      ]
+    },
+    {
+      "name": "ListExport — tệp export.json",
+      "def": "ListExport",
+      "valid": [
+        { "contract": "bizcity_list_export@1", "list": "pos.sale.list", "tenant": "hoa-mai", "generatedAt": "2026-11-28T18:41:00Z", "generatedBy": "wp:12",
+          "query": { "filters": [{ "field": "branch", "op": "in", "value": ["CN01"] }] }, "columns": [{ "field": "doc_no", "type": "text", "label": "Số phiếu" }], "total": 1, "masked": ["phone"],
+          "rows": [{ "doc_no": "PB-1" }] }
+      ],
+      "invalid": [
+        { "contract": "bizcity_list_export@1", "list": "pos.sale.list", "generatedAt": "2026-11-28T18:41:00Z", "query": {}, "columns": [{ "field": "doc_no", "type": "text", "label": "Số phiếu" }] },
+        { "contract": "bizcity_export@1", "list": "pos.sale.list", "generatedAt": "2026-11-28T18:41:00Z", "query": {}, "columns": [{ "field": "doc_no", "type": "text", "label": "Số phiếu" }], "rows": [] }
+      ]
+    },
+    {
+      "name": "ListExportHeader — dòng đầu export.ndjson",
+      "def": "ListExportHeader",
+      "valid": [
+        { "contract": "bizcity_list_export@1", "list": "pos.sale.list", "generatedAt": "2026-11-28T18:41:00Z", "query": {}, "columns": [{ "field": "doc_no", "type": "text", "label": "Số phiếu" }] }
+      ],
+      "invalid": [
+        { "contract": "bizcity_list_export@1", "list": "pos.sale.list", "generatedAt": "2026-11-28T18:41:00Z", "query": {}, "columns": [{ "field": "doc_no", "type": "text", "label": "Số phiếu" }], "rows": [] }
+      ]
+    }
+  ],
+  "url": [
+    { "url": "q=hoa%20mai&f.branch.in=CN01,CN02&f.total.gte=100000&f.issued_at.between=2026-11-01..2026-11-30&sort=-issued_at,doc_no&limit=50&count=exact&sums=1",
+      "query": { "q": "hoa mai", "filters": [{ "field": "branch", "op": "in", "value": ["CN01", "CN02"] }, { "field": "total", "op": "gte", "value": "100000" }, { "field": "issued_at", "op": "between", "value": ["2026-11-01", "2026-11-30"] }],
+        "sort": [{ "field": "issued_at", "dir": "desc" }, { "field": "doc_no", "dir": "asc" }], "limit": 50, "count": "exact", "sums": true } },
+    { "url": "f.name.in=A%5C,B,C", "query": { "filters": [{ "field": "name", "op": "in", "value": ["A,B", "C"] }] } },
+    { "url": "f.note.null=true&cursor=MjAy", "query": { "filters": [{ "field": "note", "op": "null", "value": true }], "cursor": "MjAy" } }
+  ],
+  "urlInvalid": ["f.total=1", "f.Total.eq=1", "f.d.between=2026-11-01", "page=2", "limit=abc"]
+}
