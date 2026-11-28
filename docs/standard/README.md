@@ -54,10 +54,32 @@ Mỗi trụ cột có một tệp chuẩn, một bản mẫu tham chiếu đang 
 | T9 | Giao diện React (model · view · controller), ui-kit, mockup | [WEB](BIZCITY-WEB-v1.md) | open-cake R-WEB-1..15 · open-ketoan `packages/ui-kit` | một phần |
 | T10 | Một bản mã, nhiều CSDL: registry site, định tuyến, cấp site | [MULTISITE](BIZCITY-MULTISITE-v1.md) | open-ketoan `packages/platform/src/db/site-*.ts` | một phần |
 | T11 | Hub, 1API, khoá, open-setup, bizcity-web | [HUB](BIZCITY-HUB-v1.md) | bizcity-llm-router · bizcity-open-setup · bizcity-web | một phần |
-| T12 | Tri thức và agent (MCP, Twin Brain) | [KNOWLEDGE](BIZCITY-KNOWLEDGE-v1.md) · `bizcity_mcp@1` (open-ketoan) | open-ketoan `/mcp` | một phần |
+| T12 | Tri thức và agent (MCP, Twin Brain) | [KNOWLEDGE](BIZCITY-KNOWLEDGE-v1.md) · [MCP](BIZCITY-MCP-v1.md) | open-ketoan `/mcp` | một phần |
 | T13 | Nghiệm thu, bảng việc, rà soát, bàn giao — "đã kiểm lại chưa, đạt chưa" | [DELIVERY](BIZCITY-DELIVERY-v1.md) | open-ketoan `docs/nghiem-thu/`, `BANG-VIEC.md`, `docs/reviews/`, `BAN-GIAO.md` · kiểm `tools/delivery-check.mjs` | một phần <!-- [2026-11-25 01:39 PM Johnny Chu - Chu Hoàng Anh] STD-8 --> |
 
 Báo cáo kiểm theo [`bizcity_conformance_report@1`](BIZCITY-CONFORMANCE-REPORT-v1.md).
+
+## 3b. Hợp đồng nền (bản chủ ở đây từ 2026-11-28)
+<!-- [2026-11-28 02:55 PM Johnny Chu - Chu Hoàng Anh] D1 — hợp đồng nền dời từ open-ketoan + hai chuẩn mới (NC-004 §10, Q-PIL-10) -->
+
+Dời nguyên văn từ open-ketoan `docs/contracts/` @ `4e5cbc8` (đợt D1), giữ mã luật gốc; open-ketoan chỉ còn liên kết (thay qua R-FLOW). Mã hiện thực ở open-core `@bizcity/platform`. Đợt D2 (MASTER-DATA, ITEM-MASTER, MODULE, EXTENSION, FINDINGS, REMEDY, POLICY, DATA) theo [NC-004](../research/NC-004-TRU-COT-XUYEN-DOANH-NGHIEP.md) §10.
+
+| Chuẩn | Giữ | Trụ |
+|---|---|---|
+| [DOCUMENT](BIZCITY-DOCUMENT-v1.md) | chứng từ dùng chung: bốn bảng, `doc_ref`, phiên bản, liên kết, đánh số, in, ký | P-5 |
+| [LINEAGE](BIZCITY-LINEAGE-v1.md) | nguồn gốc dữ liệu / chuỗi chứng từ | P-5 |
+| [WORKFLOW](BIZCITY-WORKFLOW-v1.md) | **mới** — workflow YAML của chứng từ (`bizcity_document_workflow@1`) | P-6 |
+| [ACTION](BIZCITY-ACTION-v1.md) | một action ⇒ REST + MCP + React + sự kiện (`defineAction`, `ctx`) | T-1 |
+| [API](BIZCITY-API-v1.md) | phong bì API, `Idempotency-Key`, SSO `sub` | T-1 |
+| [ERRORS](BIZCITY-ERRORS-v1.md) | danh mục mã lỗi chung `bizcity_errors@1` | T-1 |
+| [MCP](BIZCITY-MCP-v1.md) | MCP STD-MCP-1..10, `confirm_token`, ghi chỉ tạo nháp | T-2 |
+| [HUB-SETUP](BIZCITY-HUB-SETUP-v1.md) | **mới** — bốn bước kết nối open-hub (`bizcity_hub_setup@1`) | T-3 |
+| [EVENT](BIZCITY-EVENT-v1.md) | khuôn sự kiện, outbox | T-8 |
+| [EVIDENCE](BIZCITY-EVIDENCE-v1.md) | bằng chứng, `audit_logs` chuỗi băm, xuất bằng chứng | T-7 |
+| [AUTHORIZATION](BIZCITY-AUTHORIZATION-v1.md) | phân quyền: quyền, vai, phạm vi | P-7 |
+| [SETTINGS-MATRIX](BIZCITY-SETTINGS-MATRIX-v1.md) | `bizcity_settings@1`: lớp A / B / C, thang phạm vi (Q-PIL-6) | P-8 |
+| [SECRETS](BIZCITY-SECRETS-v1.md) | bí mật mã hoá theo đơn vị (`platform.secrets`) | T-9 |
+| [SITE-PROVISIONING](BIZCITY-SITE-PROVISIONING-v1.md) | `/_sites/v1` cho open-setup (Q-CORE-5) | T10 |
 
 ## 4. Repo mới bắt đầu thế nào (MRP, HRM, …)
 

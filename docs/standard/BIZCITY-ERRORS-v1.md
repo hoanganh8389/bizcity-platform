@@ -1,0 +1,374 @@
+<!-- [2026-11-09 10:23 PM Johnny Chu - Chu Hoàng Anh] PHASE-029 — 1.5.0-draft: reason VERSION_CONTENT_MISMATCH (RV-R1-08) -->
+<!-- [2026-11-28 02:55 PM Johnny Chu - Chu Hoàng Anh] D1 — NC-004 §10 (Q-PIL-10, chủ chốt 2026-11-28): dời nguyên văn từ open-ketoan docs/contracts/BIZCITY-ERRORS-v1.md @ 4e5cbc8; giữ mã luật gốc (R-PLAT-7); liên kết tới tài liệu còn ở open-ketoan đổi sang URL tuyệt đối. -->
+> **Nơi ở:** open-platform (`bizcity-platform/docs/standard/`) từ 2026-11-28 — bản chủ. Bản ở [open-ketoan `docs/contracts/BIZCITY-ERRORS-v1.md`](https://github.com/hoanganh8389/open-ketoan/blob/main/docs/contracts/BIZCITY-ERRORS-v1.md) chỉ còn liên kết về đây (thay qua R-FLOW). Mã hiện thực: [open-core](https://github.com/hoanganh8389/open-core) `@bizcity/platform`.
+# `bizcity_errors@1` — Mã lỗi, thông báo, gợi ý
+<!-- [2026-11-03 08:05 PM Johnny Chu - Chu Hoàng Anh] SC-DOC-4 — sửa tham chiếu đường dẫn lỗi thời sau khi tách Kernel / Platform (mã đã dời; gói đích chưa tách ghi rõ "chưa tách") -->
+<!-- [2026-10-30 12:10 PM Johnny Chu - Chu Hoàng Anh] ADR-0007 — chuẩn hoá mã lỗi, quan sát, bộ giám sát, cài nhanh, kiến trúc, đóng góp. -->
+<!-- [2026-11-01 04:13 PM Johnny Chu - Chu Hoàng Anh] ADR-0010 — OpenTelemetry từ lõi (PHASE-018 W5): span ở khớp nối Platform + cổng Kernel, lọc thuộc tính, traceparent qua outbox -->
+<!-- [2026-11-02 08:45 PM Johnny Chu - Chu Hoàng Anh] PHASE-021 — 1.2.0-draft: trường tuỳ chọn error.intake (bể chờ) -->
+
+> **Phiên bản:** 1.0.0 · 2026-10-30 · **Trạng thái:** Chấp nhận · **Thuộc:** Platform (`packages/platform/src/core/errors.ts`; gói đích `packages/actions`, lộ trình 2.5)
+> **Nguồn máy đọc (duy nhất):** [`packages/contracts/src/errors.ts`](https://github.com/hoanganh8389/open-ketoan/blob/main/packages/contracts/src/errors.ts) (`ERROR_CATALOG`).
+> - Bảng §3 phải khớp nguồn này; check **SC-ERR-1** chặn khi lệch.
+> - API dùng nó cho thông báo mặc định, MCP dùng cho `hint`, giao diện dùng cho cách xử lý.
+>
+> **Liên quan:** [BIZCITY-API-v1 §3](BIZCITY-API-v1.md) (khuôn phản hồi), [BIZCITY-ACTION-v1 §7](BIZCITY-ACTION-v1.md), [BIZCITY-MCP-v1 §2](BIZCITY-MCP-v1.md) (phong bì lỗi công cụ), [OBSERVABILITY](https://github.com/hoanganh8389/open-ketoan/blob/main/docs/ops/OBSERVABILITY.md) (log, `requestId`)
+
+## 1. Khuôn lỗi
+
+```json
+{ "ok": false,
+  "error": { "code": "PERIOD_LOCKED", "message": "Kỳ 10/2026 đã khoá …", "requestId": "req-1a2b",
+             "details": { "reason": "LEDGER_DIAGNOSTICS_FAILED", "…": "…" } } }
+```
+
+| Trường | Ý nghĩa | Ai dựa vào |
+|---|---|---|
+| `code` | Mã **đóng**, ổn định, thuộc bảng §3. HTTP status đi theo mã | Code bên gọi (rẽ nhánh), MCP, bảng điểm, cảnh báo |
+| `message` | Câu tiếng Việt cho **người dùng cuối**: sai gì, làm gì tiếp | Màn hình, Cell đọc cho người dùng |
+| `requestId` | Mã yêu cầu, trùng `reqId` trong log và `request_id` trong bằng chứng | Báo lỗi, tra log (OBSERVABILITY §3) |
+| `traceId` *(tuỳ chọn, 1.1.0-draft)* | Mã trace OpenTelemetry (32 hex), trùng `traceId` trong log và `trace_id` trong bằng chứng. Chỉ có khi truy vết bật ([ADR-0010](https://github.com/hoanganh8389/open-ketoan/blob/main/docs/adr/ADR-0010-opentelemetry-tu-loi.md)). Bên gọi **không** được bắt buộc có trường này | Ops mở trace trong Tempo (OBSERVABILITY §1.1) |
+| `intake` *(tuỳ chọn, 1.2.0-draft)* | Cửa nạp chứng từ từ chối và đã giữ ở bể chờ: `{ id, attempt, score, findings, url }` ([BIZCITY-INTAKE-FINDINGS-v1 §5](https://github.com/hoanganh8389/open-ketoan/blob/main/docs/contracts/BIZCITY-INTAKE-FINDINGS-v1.md)). Chỉ có ở `VALIDATION_ERROR` / `CONFLICT` của cửa nạp | Màn Trạm kiểm tra, bên tích hợp mở mục bể |
+| `details` | Máy đọc: `reason` (mã chi tiết §4), danh sách trường sai, `checks`, `diagnostics`… | Code bên gọi, giao diện hiện chi tiết |
+
+MCP bọc lỗi thành `{ success: false, code, message, hint, help_code, error: { code, retryable, details } }`. `hint` và `retryable` lấy từ bảng §3.
+
+## 2. Luật
+
+| Mã | Cấp | Luật | Kiểm bằng |
+|---|---|---|---|
+| **R-ERR-1** *(T0)* | 0 | `code` chỉ lấy từ `ERROR_CATALOG`. Thêm mã là thay đổi **minor**: thêm vào catalog, bảng §3, `bizcity-standard.json#errorCodes`, `ERROR_CODES` trong cùng PR. Đổi nghĩa hoặc đổi HTTP của mã đã phát hành là **major** | SC-ERR-1, SC-CON-6 |
+| **R-ERR-2** | 0 | Code server tạo lỗi bằng `Errors.*` (`apps/api/src/core/errors.ts`), không `reply.status(...).send({ ok: false … })` tay. Module dùng `Errors` của SDK | R-API, SC-API-* |
+| **R-ERR-3** | 1 | `message`:<br>- tiếng Việt có dấu, ≤ 200 ký tự, nói **cái gì sai và làm gì tiếp**;<br>- **không** chứa SQL, tên bảng, stack, đường dẫn tệp, bí mật, số tài khoản ngân hàng, dữ liệu cá nhân (R-SEC-10). | review; SC-ERR-1 kiểm catalog |
+| **R-ERR-4** | 1 | Lỗi 5xx: `message` chung ("Lỗi hệ thống"), chi tiết chỉ vào log mức `error` kèm `reqId`, `err.stack`. Không bao giờ trả lỗi gốc của thư viện / CSDL ra ngoài | `core/http.ts` |
+| **R-ERR-5** | 1 | Mọi phản hồi lỗi có `error.requestId` | `core/http.ts`; test |
+| **R-ERR-6** | 1 | `details.reason`: mã chi tiết `UPPER_SNAKE`, **tiền tố = chủ** (`LEDGER_`, `PERIOD_`, `MCP_`, `<MODULE>_`), khai ở §4, không đổi nghĩa sau khi phát hành. Bên gọi rẽ nhánh theo `code` trước, `reason` sau | SC-ERR-1 (tiền tố) |
+| **R-ERR-7** | 1 | Thử lại:<br>- **chỉ** mã có `retryable = true`, có giãn nhịp (1 s, 2 s, 4 s…, tối đa 5 lần);<br>- lệnh ghi thử lại phải giữ nguyên `Idempotency-Key`;<br>- `RATE_LIMITED` theo `Retry-After`. | tài liệu tích hợp |
+| **R-ERR-8** | 1 | Lỗi CSDL ánh xạ cố định (§5). Trigger bảo vệ sổ ném lỗi bằng câu tiếng Việt: câu đó là `message`, không thành 500 | `core/http.ts`; test |
+| **R-ERR-9** | 2 | Mỗi mã có số đo `bizcity_http_errors_total{code}` và log `errCode` (OBSERVABILITY). Cảnh báo dựa trên mã, không dựa trên câu chữ | `/metrics` |
+| **R-ERR-10** | 2 | Tiếng Anh (`message_en`) là tuỳ chọn, cho tích hợp ngoài; tiếng Việt luôn có | catalog |
+| **R-ERR-11** | 1 | Mọi `reason` viết bằng chữ trong mã (`reason: '…'`) có trong `ERROR_REASONS` và bảng §4 / §4c <!-- [2026-11-09 10:42 PM Johnny Chu - Chu Hoàng Anh] PHASE-022 — S022-21 --> | SC-ERR-2 |
+
+## 3. Bảng mã lỗi
+
+| `code` | HTTP | Nhóm | Thử lại | Chủ | Thông báo mặc định | Gợi ý (hint) |
+|---|---|---|---|---|---|---|
+| `VALIDATION_ERROR` | 400 | input | không | core | Dữ liệu gửi lên không hợp lệ | Sửa các trường nêu trong error.details rồi gửi lại; gửi y nguyên sẽ bị từ chối tiếp. |
+| `UNAUTHORIZED` | 401 | auth | không | core | Chưa đăng nhập hoặc phiên đã hết hạn | Đăng nhập lại, hoặc kiểm khoá API còn hiệu lực. |
+| `FORBIDDEN` | 403 | auth | không | core | Bạn không có quyền truy cập chức năng này | Nhờ chủ đơn vị cấp quyền, hoặc dùng khoá API có phạm vi phù hợp. |
+| `NOT_FOUND` | 404 | input | không | core | Không tìm thấy dữ liệu | Kiểm lại mã hoặc đường dẫn; dữ liệu có thể đã bị huỷ. |
+| `CONFLICT` | 409 | state | không | core | Thao tác xung đột với trạng thái hiện tại của dữ liệu | Đọc lại dữ liệu mới nhất rồi làm lại; gửi chứng từ thì tăng version. |
+| `PERIOD_LOCKED` | 409 | ledger | không | kernel | Kỳ kế toán đã khoá | Nhờ kế toán trưởng mở kỳ, hoặc chọn ngày thuộc kỳ còn mở. |
+| `POSTING_FAILED` | 422 | ledger | không | kernel | Chưa định khoản được chứng từ | Kế toán bổ sung cấu hình định khoản ở ACC14 rồi định khoản lại; bên gửi không cần gửi lại. |
+| `UNBALANCED_ENTRY` | 422 | ledger | không | kernel | Bút toán không cân Nợ = Có | Lỗi luật định khoản: báo nhóm Lõi kèm requestId; không tự sửa sổ. |
+| `IDEMPOTENCY_CONFLICT` | 409 | input | không | platform | Idempotency-Key đã dùng cho yêu cầu có nội dung khác | Sinh khoá mới cho thao tác mới; gửi lại thì giữ nguyên cả khoá lẫn nội dung. |
+| `CAPABILITY_MISSING` | 501 | platform | không | platform | Core chưa có năng lực mà module cần | Nâng cấp Core lên bản có năng lực này, hoặc tắt module (xem /system/capabilities). |
+| `MODULE_DISABLED` | 403 | platform | không | platform | Phân hệ chưa bật cho đơn vị | Chủ đơn vị bật phân hệ trong cấu hình. |
+| `RATE_LIMITED` | 429 | platform | có | platform | Gọi quá nhiều lần | Chờ theo header Retry-After rồi gửi lại, giãn nhịp gọi. |
+| `NOT_READY` | 503 | platform | có | platform | Hệ thống chưa sẵn sàng | Chờ vận hành áp migration hoặc khôi phục CSDL rồi thử lại. |
+| `GATEWAY_UNAVAILABLE` | 503 | platform | có | platform | Không kết nối được máy chủ phần mềm | Thử lại sau ít phút. Lặp lại thì báo quản trị chạy ./scripts/lay-log.sh và gửi gói log (logs/goi-bao-loi-*.tar.gz). |
+| `INTERNAL_ERROR` | 500 | server | có | core | Lỗi hệ thống | Thử lại sau ít phút; lặp lại thì gửi requestId cho bộ phận hỗ trợ. |
+
+<!-- [2026-11-22 11:20 AM Johnny Chu - Chu Hoàng Anh] PHASE-038 — B2 (S038-6): GATEWAY_UNAVAILABLE — cổng vào (nginx, docker/nginx.conf) trả khi api không trả lời; api không bao giờ trả mã này -->
+`GATEWAY_UNAVAILABLE` do **cổng vào** (nginx của container `web`) trả khi api dừng, đang khởi động lại hoặc quá giờ — api không bao giờ trả mã này. `requestId` là mã yêu cầu của nginx; tra trong `logs/web/<ngày>.log` (PHASE-038).
+
+**Mã của giao thức MCP** (chỉ trong kết quả công cụ, không phải HTTP — [BIZCITY-MCP-v1](BIZCITY-MCP-v1.md) STD-MCP-4):
+
+| `code` | Thử lại | Thông báo | Gợi ý |
+|---|---|---|---|
+| `MCP_CONFIRM_INVALID` | không | Token xác nhận sai, hết hạn, đã dùng, hoặc không thuộc công cụ / người gọi này | Gọi lại không kèm confirm_token để xem trước và xin xác nhận lại. |
+| `MCP_CONFIRM_ARGS_CHANGED` | không | Tham số khác bản đã xem trước | Gọi lại không kèm confirm_token để xem trước bản mới. |
+
+## 4. Mã chi tiết (`details.reason`)
+
+| `reason` | Đi với `code` | Khi nào |
+|---|---|---|
+| `LEDGER_DIAGNOSTICS_FAILED` | `CONFLICT` | Khoá kỳ bị chặn vì tự chẩn đoán L3 có lỗi trong kỳ (R-DIAG-4); `details.diagnostics` có `runId`, danh sách lỗi |
+| `LEDGER_APPEND_ONLY` | `CONFLICT` | Trigger chặn sửa / xoá sổ cái hoặc bằng chứng (R-LEDGER-1, STD-EVD-2) |
+| `DB_UNIQUE_VIOLATION` | `CONFLICT` | Trùng mã / khoá duy nhất |
+| `DB_IN_USE` | `CONFLICT` | Xoá một mã còn dữ liệu khác trỏ tới |
+| `VERSION_CONTENT_MISMATCH` | `CONFLICT` | Cùng `docKey` và `version` nhưng băm nội dung khác bản đã ghi sổ / chờ ghi; `details` có `docKey`, `version`, `existingHash`, `incomingHash` ([DOCUMENT §7.3](BIZCITY-DOCUMENT-v1.md)) |
+| `DB_REFERENCE_MISSING` | `VALIDATION_ERROR` | Tham chiếu tới mã chưa khai báo |
+
+## 4b. Ngữ cảnh chuẩn `details.context` và `details.remedy` (RV-R1-06, 1.4.0-draft) <!-- [2026-11-10 09:00 AM Johnny Chu - Chu Hoàng Anh] PHASE-022 — chữ chốt R-FLOW-2 theo chủ dự án (2026-11-10) -->
+
+**Vấn đề (review R1, RV-R1-06).** Lỗi của Kernel trả `UNBALANCED_ENTRY.details = { debit, credit }` còn `PERIOD_LOCKED` không có `details`: không mã nào nói **chứng từ nào, kỳ nào, bước nào**, cũng không chỉ **làm gì tiếp** — người và Cell phải đoán từ câu chữ.
+
+**Quy ước (thêm, không đổi mã, HTTP hay `reason` đã phát hành — minor):**
+
+1. `details.context` — object, mọi khoá **tuỳ chọn**, chỉ đặt khi biết, **không** chứa SQL, tên bảng, đường dẫn, dữ liệu cá nhân hay số tài khoản ngân hàng (R-ERR-3):
+
+| Khoá | Kiểu | Ý nghĩa |
+|---|---|---|
+| `docKey` | chuỗi | khoá chứng từ nguồn |
+| `docType` | chuỗi | loại chứng từ |
+| `docNo` | chuỗi | số chứng từ |
+| `eventId` | chuỗi số | sự việc kế toán (`accounting_events.id`) |
+| `version` | số | phiên bản chứng từ đang xử lý |
+| `entryNo` | chuỗi | số bút toán (khi lỗi nói về một bút toán đã có) |
+| `period` | `YYYY-MM` | kỳ kế toán |
+| `branchCode` | chuỗi | chi nhánh |
+| `postingDate` | `YYYY-MM-DD` | ngày hạch toán |
+| `step` | enum đóng | bước của đường ghi sổ: `intake` · `posting-rules` · `ledger-validate` · `ledger-insert` · `period-check` · `db-trigger` |
+
+2. `details.remedy` — phương án khắc phục dạng `bizcity_remedy@1` ([`packages/contracts/src/remedy.ts`](https://github.com/hoanganh8389/open-ketoan/blob/main/packages/contracts/src/remedy.ts): `steps`, `owner`, `verify`, `stopTheLine`, `forbid`). Lấy từ bảng **`ERROR_REMEDY`** ở `packages/contracts/src/errors.ts`, khoá theo `code` hoặc `reason` (reason thắng): do mã quyết định, không do chỗ ném, để mọi nơi trả cùng một lời khuyên. Bước dẫn tới màn dùng `SCREENS` (SC-FIX-1 đối chiếu menu).
+
+3. Mã Kernel mang `context` khi biết (kiểm bằng test):
+
+| `code` / `reason` | `context` tối thiểu | Thêm vào `details` |
+|---|---|---|
+| `UNBALANCED_ENTRY` | `docKey`, `docType`, `step` | `debit`, `credit`, `difference` (giữ `debit` / `credit` cũ — tương thích) |
+| `PERIOD_LOCKED` | `period`, `branchCode`, `docType`, `postingDate` | `scope`: `period` · `branch` · `doc-type` |
+| `POSTING_FAILED` | `docKey`, `docType`, `step` | — |
+| `LEDGER_APPEND_ONLY` | `step = db-trigger` | — |
+| `LEDGER_DIAGNOSTICS_FAILED` | `period` | `diagnostics` (đã có) |
+
+4. **Một chỗ gắn ngữ cảnh.** Nơi biết chứng từ (cửa `postDocumentIn`, `eventStore`, `unpostIn`) bọc lỗi bằng `withErrorContext(err, context)` của Platform: chỉ **bổ sung** khoá còn thiếu vào `details.context`, không đổi `code`, `message` hay `details` khác; lỗi không phải `AppError` đi qua nguyên vẹn. Hàm ánh xạ lỗi CSDL (§5) đặt `step = db-trigger` và `remedy`; `http.ts` không tự sinh ngữ cảnh.
+
+5. **Lộ ra ngoài.** `details.context` và `details.remedy` đi nguyên ra REST (`error.details`) và MCP (`error.details`); trace giữ `errCode` như hiện nay; ghi thêm các khoá `context` vào trace là bước sau (S022-18, không thuộc đợt này). Giao diện hiện `remedy.steps` dưới `message` là bước sau (PHASE-019).
+
+6. **Giới hạn đợt này** <!-- [2026-11-10 11:50 AM Johnny Chu - Chu Hoàng Anh] PHASE-022 — S022-17: ghi rõ phần chưa làm -->: `details` dạng **mảng câu** (lỗi kiểm dữ liệu, vd "Bút toán không hợp lệ" kèm danh sách) giữ nguyên — không có `context` / `remedy`; kết quả nạp theo lô (`IngestResult.error { code, message }`, HTTP 200) chưa mang `details` — người gọi đã biết `docKey` của mình; mở rộng khuôn đó là việc riêng (cần sửa `bizcity_ledger_intake@1`).
+
+**Kiểm bằng:** `apps/api/test/error-context.test.ts` (từng mã ở bảng trên có đủ khoá — `PERIOD_LOCKED` qua REST thật (phiếu kế toán), `UNBALANCED_ENTRY` và lỗi trigger qua bộ xử lý lỗi thật; `remedy` khớp `ERROR_REMEDY`; `withErrorContext` không ghi đè khoá có sẵn; lỗi lạ không đổi) và SC-FIX-1 (màn trong `remedy` có ở menu).
+
+Module thêm mã chi tiết của mình ở mục này (tiền tố = key module viết hoa, `-` → `_`, vd `HOP_DONG_INSTALLMENT_ALREADY_PAID`).
+
+## 4c. Mã chi tiết theo vùng mới (1.6.0-draft — chủ dự án duyệt 2026-11-09) <!-- [2026-11-09 10:30 PM Johnny Chu - Chu Hoàng Anh] PHASE-022 — rà soát mã lỗi sau thư viện, phân quyền, chính sách, chứng từ nhiều phiên bản -->
+
+**Vì sao (rà soát ngày 2026-11-09).** Mã `code` vẫn đủ (14 mã, không thêm). Thiếu là ở `details.reason`: trong ≈ 780 chỗ `Errors.*` của `packages/` và `apps/api/src`, chỉ 2 chỗ mang `reason` (`LEDGER_APPEND_ONLY` và `POLICY_REVIEW_NOT_OPEN`; mã sau chưa khai ở §4). Bên gọi và khay Mã tra cứu chỉ có câu chữ để rẽ nhánh. Cụ thể:
+
+- **Phân hệ quyền** (`packages/platform/src/core/authz/`): máy quyết định quyền đã có 12 mã quyết định `AUTHZ-*`, nhưng `scope.ts` nhét mã vào **câu thông báo** (`Errors.forbidden(\`… (${d.reasonCode})\`)`), không vào `details`. Khay Mã tra cứu không đọc được (nó chỉ nhận `reason` dạng `UPPER_SNAKE`).
+- **Kho thư viện** (`core/libraries/context.ts`): mục thư viện chặn trả `VALIDATION_ERROR` với `details.code = LIB-…`, không có `reason`.
+- **Chính sách** (`core/policies.ts`): bốn trường hợp `CONFLICT` / `VALIDATION_ERROR` khác nhau (bản không nối tiếp, bản đã đóng, chính sách đã ngừng, ngày áp lùi) cùng không `reason`.
+- **Chứng từ / phiên bản** (`kernel/.../document.service.ts`, `voucher.service.ts`, `intake/repair.ts`): "đã có phiên bản mới hơn", "phiếu đã huỷ", "không phải phiếu nháp", "chứng từ nhận từ hệ thống khác", "mục bể chờ đã đóng" đều là `CONFLICT` trống.
+- **Định khoản** (`kernel/.../posting/`): 22 chỗ `POSTING_FAILED` — thiếu luật, thiếu cấu hình lý do / tài khoản, lý do sai loại — không phân biệt được.
+- **Kho / giá vốn** (`kernel/.../inventory/costing.service.ts`): chỉ có lỗi khuôn đầu vào (`VALIDATION_ERROR`). Khi có lớp giá vốn và cổng Gate C (RV-R1-17) mới cần họ `COSTING_` — chưa khai ở bản này.
+
+**Quy ước thêm (minor, không đổi mã / HTTP / reason đã phát hành):**
+
+1. Mã quyết định quyền `AUTHZ-X-Y` đi ra `details.reason = AUTHZ_X_Y` (đổi `-` thành `_`, 1 : 1), kèm `details.permission` và, khi có, `details.condition` (điều kiện trượt, không giá trị dữ liệu). Câu thông báo không chứa mã nữa.
+2. Thư viện chặn: `details.reason = LIBRARY_BLOCKED`, giữ `details.library`, `details.code` (`LIB-…`), `details.path`.
+3. **R-ERR-11:** mọi `reason` viết bằng chữ trong mã phải có trong `ERROR_REASONS` (check **SC-ERR-2**, quét `reason: '…'`). Họ mã của module dùng tiền tố key module như R-ERR-6.
+
+| `reason` | Đi với `code` | Khi nào | Chỗ ném hiện nay |
+|---|---|---|---|
+| **Chứng từ, phiên bản** | | | |
+| `VERSION_STALE` | `CONFLICT` | Đã có phiên bản mới hơn bản gửi lên | `document.service.ts` (kiểm `existing.version > doc.version`) |
+| `VERSION_CONTENT_MISMATCH` | `CONFLICT` | (đã chốt ở §4, [DOCUMENT §7.3](BIZCITY-DOCUMENT-v1.md)) | chưa nối — S029-34 |
+| `DOC_NOT_DRAFT` | `CONFLICT` | Thao tác chỉ cho phiếu nháp; phiếu đã ghi sổ / chờ huỷ | `voucher.service.ts` |
+| `SETUP_NOT_EMPTY` | `CONFLICT` | Nạp gói mẫu vào đơn vị đã có dữ liệu nghiệp vụ (chưa từng chạy cùng gói) — PHASE-036 · 00 §11 <!-- [2026-11-14 05:53 PM Johnny Chu - Chu Hoàng Anh] PHASE-036 — S036-4 --> | `modules/system/setup-run.ts` |
+| `SETUP_RUNNING` | `CONFLICT` | Đơn vị đang chạy một gói mẫu | `modules/system/setup-run.ts` |
+| `SAMPLE_TENANT` <!-- [2026-11-17 11:21 AM Johnny Chu - Chu Hoàng Anh] PHASE-036 — S036-7 --> | `CONFLICT` | Công ty Mẫu (`tenants.is_sample`): action gửi ra ngoài (`sideEffects: external`) hoặc kết nối ứng dụng ngoài | `packages/platform/src/core/actions.ts` (`assertNotSampleTenant`) |
+| `SAMPLE_EXISTS` <!-- [2026-11-17 09:10 PM Johnny Chu - Chu Hoàng Anh] PHASE-036 — S036-7 B5b --> | `CONFLICT` | Bản cài đã có Công ty Mẫu — không tạo thêm (`POST /api/v1/setup/sample-tenant`) | `apps/api/src/modules/system/setup-run.ts` |
+| `DOC_CANCELLED` | `CONFLICT` | Phiếu đã huỷ | `voucher.service.ts` |
+| `DOC_SOURCE_READONLY` | `CONFLICT` | Chứng từ nhận từ hệ thống khác: sửa ở nguồn rồi gửi lại | `voucher.service.ts`, `intake/repair.ts` (khoá app) |
+| `DOC_ALREADY_CONFIRMED` | `CONFLICT` | Đã xác nhận nhận tiền trước đó | `document.service.ts` |
+| `INTAKE_ITEM_CLOSED` | `CONFLICT` | Mục bể chờ đã đóng, không sửa được | `intake/repair.ts` |
+| **Sổ cái** | | | |
+| `LEDGER_ALREADY_REVERSED` | `CONFLICT` | Bút toán đã đảo trước đó | `ledger.service.ts` |
+| `LEDGER_NO_SOURCE_EVENT` | `POSTING_FAILED` | Bút toán không gắn sự việc gốc (không ghi / không đảo được) | `ledger.service.ts` |
+| `LEDGER_HEADER_EDIT_FROM_APP` | `VALIDATION_ERROR` | Xác nhận một lần sửa đầu bút toán đã đi qua ứng dụng (không cần xác nhận) | `ledger-entry-edits.ts` |
+| **Định khoản** | | | |
+| `POSTING_RULE_MISSING` | `POSTING_FAILED` | Chưa có luật định khoản cho loại chứng từ | `posting.service.ts` |
+| `POSTING_CONFIG_MISSING` | `POSTING_FAILED` | Thiếu lý do / tài khoản / nhóm hạch toán mặc định; `details` là danh sách thiếu | `account-resolver.ts` |
+| `POSTING_REASON_KIND` | `POSTING_FAILED` | Lý do sai loại cho chứng từ (vd lý do ghi nợ dùng cho phiếu tiền) | `cash.rule.ts`, `journal.rule.ts` |
+| **Phân quyền** (1 : 1 với mã quyết định `AUTHZ-*`) | | | |
+| `AUTHZ_PERM_UNKNOWN` · `AUTHZ_PERM_REMOVED` · `AUTHZ_PERM_NOT_GRANTED_YET` | `FORBIDDEN` | Quyền không có trong sổ / đã bỏ / chưa duyệt cấp | `authz/engine.ts` |
+| `AUTHZ_HIGH_RISK_DELEGATION` | `FORBIDDEN` | Quyền rủi ro cao, người gọi là khoá API / trợ lý | `authz/engine.ts`, `actions.ts` |
+| `AUTHZ_DENIED_BY_RULE` · `AUTHZ_CONDITION` · `AUTHZ_NO_ALLOW` · `AUTHZ_NO_ASSIGNMENT` | `FORBIDDEN` | Luật cấm; điều kiện trượt; không luật cho; chưa gán vai | `authz/engine.ts` |
+| `AUTHZ_SCOPE_NO_LOCATION` · `AUTHZ_SCOPE_NOT_USER` · `AUTHZ_SCOPE_TENANT` | `FORBIDDEN` | Tài nguyên không có vị trí; phạm vi chỉ cho người dùng; khác đơn vị | `authz/scope.ts` |
+| `AUTHZ_USER_ONLY` | `FORBIDDEN` | Thao tác chỉ cho người đăng nhập, không qua khoá API | `auth.ts`, `ledger.routes.ts`, `ledger-entry-edits.ts`, `access.service.ts` |
+| `AUTHZ_OWN_DOCUMENT_ONLY` | `FORBIDDEN` | Chỉ thao tác trên phiếu do mình lập | `auth.ts` |
+| `AUTHZ_SELF_ASSIGN` · `AUTHZ_ROLE_EXCEEDS_GRANTOR` | `FORBIDDEN` | Tự gán vai cho mình; vai có quyền người gán không có | `role-assignment.service.ts` |
+| `AUTHZ_LAST_OWNER` | `CONFLICT` | Phải còn ít nhất một chủ sở hữu | `access.service.ts` |
+| **Thư viện** | | | |
+| `LIBRARY_BLOCKED` | `VALIDATION_ERROR` | Mục thư viện chặn giá trị; `details.code = LIB-…` | `libraries/context.ts` |
+| `LIBRARY_DISABLED` | `NOT_FOUND` | Đơn vị đã tắt thư viện | `libraries.routes.ts` |
+| `LIBRARY_PROPOSAL_STATE` | `CONFLICT` | Phiếu đề xuất không chuyển được từ trạng thái hiện tại | `libraries/proposals.ts` |
+| **Chính sách** | | | |
+| `POLICY_VERSION_GAP` | `CONFLICT` | Bản không nối tiếp bản trước (có người vừa lưu) | `policies.ts` |
+| `POLICY_VERSION_CLOSED` | `CONFLICT` | Bản trước đã đóng `effective_to` | `policies.ts` |
+| `POLICY_RETIRED` | `CONFLICT` | Chính sách đã ngừng, dùng mã mới | `policies.ts` |
+| `POLICY_BACKDATED` | `VALIDATION_ERROR` | Ngày áp sớm hơn bản trước (không viết lại quá khứ) | `policies.ts` |
+| `POLICY_REVIEW_NOT_OPEN` | `CONFLICT` | Sự việc không có phát hiện chính sách cần xem (**đã dùng trong mã, chưa khai**) | `queue.routes.ts` |
+| **Máy bán POS** (`modules/pos`, 1.7.0-draft) <!-- [2026-11-10 04:10 PM Võ Hoàng] POS-W1 — module pos: họ mã POS_* (đề xuất P-MP-5, đóng góp) --> | | | |
+| `POS_NOT_SUPPORTED_YET` | `VALIDATION_ERROR` | Máy chủ POS chưa nhận loại đơn / dòng / thanh toán này ở đợt hiện tại (khuyến mại, quà, QR, ghi nợ, bill Z); kèm `field`, `billZ` | module `pos` (đề xuất, chưa gộp) |
+| `POS_UNKNOWN_SKU` | `VALIDATION_ERROR` | Mã hàng không có (hoặc ngừng bán) trong danh mục kế toán; `items: [{ sku }]` | module `pos` (đề xuất, chưa gộp) |
+| `POS_TAX_NOT_DECLARED` | `VALIDATION_ERROR` | Mặt hàng chưa khai mã thuế đầu ra; `items: [{ sku }]` | module `pos` (đề xuất, chưa gộp) |
+| `POS_PRICE_CHANGED` | `CONFLICT` | Giá / tổng máy bán tính khác máy chủ (hàng Nội bộ phải 0đ); kèm `clientTotal`, `total` hoặc `items` | module `pos` (đề xuất, chưa gộp) |
+| `POS_DISCOUNT_TOO_LARGE` | `VALIDATION_ERROR` | Tiền giảm tay lớn hơn thành tiền dòng | module `pos` (đề xuất, chưa gộp) |
+| `POS_CASH_INSUFFICIENT` | `VALIDATION_ERROR` | Tiền khách đưa ít hơn số phải thu | module `pos` (đề xuất, chưa gộp) |
+| `POS_NO_CASH_METHOD` | `VALIDATION_ERROR` | Danh mục hình thức thanh toán chưa có tiền mặt | module `pos` (đề xuất, chưa gộp) |
+| `POS_UNKNOWN_METHOD` | `VALIDATION_ERROR` | Hình thức thanh toán không có trong danh mục | module `pos` (đề xuất, chưa gộp) |
+| `POS_DUPLICATE_METHOD` | `VALIDATION_ERROR` | Một hình thức thanh toán lặp lại trong chia tiền | module `pos` (đề xuất, chưa gộp) |
+| `POS_SPLIT_MISMATCH` | `VALIDATION_ERROR` | Các phần chia tiền cộng không bằng tổng đơn | module `pos` (đề xuất, chưa gộp) |
+| `POS_UNKNOWN_CUSTOMER` | `VALIDATION_ERROR` | Mã khách không có trong danh mục | module `pos` (đề xuất, chưa gộp) |
+| `POS_BAD_PHONE` | `VALIDATION_ERROR` | SĐT khách mới sai khuôn | module `pos` (đề xuất, chưa gộp) |
+| `POS_MISSING_NAME` | `VALIDATION_ERROR` | Khách mới thiếu tên | module `pos` (đề xuất, chưa gộp) |
+| `POS_UNKNOWN_BRANCH` | `VALIDATION_ERROR` | Chi nhánh máy gửi không có trong danh mục / đơn vị chưa khai chi nhánh | module `pos` (đề xuất, chưa gộp) |
+| `POS_BRANCH_REQUIRED` | `VALIDATION_ERROR` | Đơn vị nhiều chi nhánh mà máy không gửi `branchCode` / mã phiếu có ở nhiều chi nhánh | module `pos` (đề xuất, chưa gộp) |
+| `POS_ORDER_ID_REUSED` | `CONFLICT` | Cùng id đơn đã nhận với nội dung khác (máy phải tạo đơn mới) | module `pos` (đề xuất, chưa gộp) |
+| `POS_CODE_TAKEN` | `CONFLICT` | Mã phiếu / id đơn vừa được máy khác dùng đồng thời (gửi lại) | module `pos` (đề xuất, chưa gộp) |
+| **Máy bán POS – hoàn / đổi / huỷ** (1.8.0-draft) <!-- [2026-11-11 03:30 PM Võ Hoàng] POS-W2 — họ mã POS_* đợt W2 (phiếu NT-BH-005, đóng góp) --> | | | |
+| `POS_RETURN_QTY` | `VALIDATION_ERROR` | Trả quá số còn trả được của dòng, hoặc dòng không có trong đơn gốc | module `pos` (đề xuất, chưa gộp) |
+| `POS_RETURN_EXPIRED` | `VALIDATION_ERROR` | Quá hạn trả (hạn của cửa hàng nhận: `bizcity.pos.return_days`, riêng shop `bizcity.pos.return_days_by_shop`) mà không kèm yêu cầu trả quá hạn đã duyệt (`approvalId`, 1.19.0-draft; trước đó: thiếu người duyệt / lý do gõ tay); kèm `deadline` | module `pos` (đề xuất, chưa gộp) |
+| `POS_RETURN_OTHER_SHOP` | `CONFLICT` | Đơn gốc của cửa hàng khác mà hai cửa hàng khác MST chi nhánh hoặc một bên chưa khai MST (1.19.0-draft: cùng MST thì trả được); kèm `orderBranch`, `cause` (`TAX_CODE_DIFFERENT` / `TAX_CODE_MISSING`) | module `pos` (đề xuất, chưa gộp) |
+| `POS_ORDER_NOT_RETURNABLE` | `CONFLICT` | Đơn gốc chưa hoàn tất / đã huỷ: không trả hàng | module `pos` (đề xuất, chưa gộp) |
+| `POS_RETURN_REASON` | `VALIDATION_ERROR` | Thiếu lý do trả hàng | module `pos` (đề xuất, chưa gộp) |
+| `POS_REFUND_METHOD` | `VALIDATION_ERROR` | Hình thức trả tiền khách không phải tiền mặt / chuyển khoản (đối trừ chỉ trong đổi hàng) | module `pos` (đề xuất, chưa gộp) |
+| `POS_GIFT_REQUIRED` | `VALIDATION_ERROR` | Trả hàng chính mà không trả kèm phần quà vượt suất; kèm `gifts` | module `pos` (đề xuất, chưa gộp) |
+| `POS_EXCHANGE_LOWER` | `VALIDATION_ERROR` | Đổi hàng: đơn mới thấp hơn giá trị hàng trả; kèm `credit`, `total` | module `pos` (đề xuất, chưa gộp) |
+| `POS_EXCHANGE_CUSTOMER` | `VALIDATION_ERROR` | Đổi hàng: khách của đơn mới khác khách của đơn gốc | module `pos` (đề xuất, chưa gộp) |
+| `POS_CANCEL_COMPLETED` | `CONFLICT` | Đơn đã thu tiền xong không huỷ được — lập phiếu trả hàng | module `pos` (đề xuất, chưa gộp) |
+| `POS_RETURN_ID_REUSED` | `CONFLICT` | Cùng id phiếu trả đã nhận với nội dung khác (máy phải lập phiếu mới) | module `pos` (đề xuất, chưa gộp) |
+| **Máy bán POS – ca bán** (1.9.0-draft) <!-- [2026-11-12 03:30 PM Võ Hoàng] POS-W3 — họ mã ca bán của module pos (phiếu NT-BH-007, đóng góp) --> | | | |
+| `POS_SHIFT_ALREADY_OPEN` | `CONFLICT` | Chi nhánh đang có ca mở: không mở ca thứ hai; kèm `shiftId` | module `pos` (đề xuất, chưa gộp) |
+| `POS_SHIFT_CLOSED` | `CONFLICT` | Ca đã chốt: không chốt lại (gửi lại cùng khoá idempotency thì nhận biên bản cũ) | module `pos` (đề xuất, chưa gộp) |
+| `POS_SHIFT_BLOCKED` | `CONFLICT` | Còn việc dở (đơn chờ trả tiền QR…) mà chốt ca không chọn chốt bất chấp + lý do; kèm `items` | module `pos` (đề xuất, chưa gộp) |
+| **Máy bán POS – QR, ca bắt buộc** (1.10.0-draft) <!-- [2026-11-12 11:55 PM Võ Hoàng] POS-QR — họ mã QR / ca bắt buộc của module pos (phiếu NT-BH-009, NT-BH-011, đóng góp) --> | | | |
+| `POS_QR_EXPIRED` | `CONFLICT` | Mã QR / xác nhận bấm tay sau ngày bán của đơn: không gia hạn, không nhận bấm tay (ngân hàng báo có vẫn nhận) | module `pos` (đề xuất, chưa gộp) |
+| `POS_PAYMENT_MISMATCH` | `VALIDATION_ERROR` | Số tiền báo về khác phần QR của đơn; kèm `expected`, `amount` | module `pos` (đề xuất, chưa gộp) |
+| `POS_ORDER_CANCELLED` | `CONFLICT` | Đơn đã huỷ: không nhận tiền về / không lập hoá đơn (kế toán hoàn tiền tay) | module `pos` (đề xuất, chưa gộp) |
+| `POS_SHIFT_REQUIRED` | `CONFLICT` | Cài đặt bán hàng bắt buộc mở ca mà chi nhánh chưa có ca mở | module `pos` (đề xuất, chưa gộp) |
+| **Máy bán POS – khuyến mại** (1.11.0-draft) <!-- [2026-11-12 08:50 PM Võ Hoàng] POS-KM — mã khuyến mại của module pos (phiếu NT-BH-003, đóng góp) --> | | | |
+| `POS_GIFT_WITHOUT_POLICY` | `VALIDATION_ERROR` | Dòng quà tặng / dòng giảm giá theo chương trình mà không nêu chương trình (`policyRef`): quà 0đ phải có căn cứ; kèm `items: [{ lineId, sku }]` | module `pos` (đề xuất, chưa gộp) |
+| **Chặn bán quá tồn** (1.12.0-draft) <!-- [2026-11-16 06:00 PM Võ Hoàng] NGHIEM-THU — NT-BH-021 chặn bán quá tồn (đóng góp) --> | | | |
+| `POS_STOCK_SHORT` | `VALIDATION_ERROR` | Máy bán bán quá tồn của cửa hàng (chặn cứng; cộng theo mã, quy ĐVT nhỏ nhất, gồm quà / bill Z); kèm `items: [{ sku, need, have }]` | module `pos` (đề xuất, chưa gộp) |
+| `PHIEU_BAN_STOCK_SHORT` | `VALIDATION_ERROR` | Phiếu bán nhập tay (BH10) xuất quá tồn của kho trên phiếu khi bật công tắc `bizcity.phieu_ban.block_negative_stock`; kèm `items: [{ sku, need, have }]` | module `phieu-ban` (đề xuất, chưa gộp) |
+| `KHO_STOCK_SHORT` | `VALIDATION_ERROR` | Phiếu chuyển kho lập trong kế toán (KHO01) xuất quá tồn của kho xuất tại ngày phiếu khi công tắc `bizcity.kho.negative_stock` = `block` (cộng theo mã, không tính chính phiếu đang sửa; ghi nháp không kiểm); kèm `items: [{ sku, need, have }]` <!-- [2026-11-27 kiennt] NGHIEM-THU — NT-KHO-003 (đóng góp) --> | phân hệ `kho` (đề xuất, chưa gộp) |
+| **Đơn đặt hàng** (1.14.0-draft) <!-- [2026-11-17 01:10 PM Võ Hoàng] NGHIEM-THU — NT-BH-023 đơn đặt hàng (đóng góp) --> | | | |
+| `PHIEU_BAN_ORDER_EXPIRED` | `VALIDATION_ERROR` | Gửi đơn đặt hàng nháp (báo giá) đã quá hạn hiệu lực — gia hạn hoặc lập đơn mới; kèm `validUntil` | module `phieu-ban` (đề xuất, chưa gộp) |
+| `PHIEU_BAN_NO_HOLD_WAREHOUSE` | `VALIDATION_ERROR` | Cửa hàng chưa khai kho KCB (hàng chờ bán) giữ hàng cho đơn đặt hàng (`bizcity.phieu_ban.hold_warehouses`); kèm `branchCode` | module `phieu-ban` (đề xuất, chưa gộp) |
+| `PHIEU_BAN_OVER_REMAINING` | `VALIDATION_ERROR` | Giao đơn đặt hàng vượt số còn lại của dòng (kể cả hai người giao cùng lúc — khoá theo đơn); kèm `items: [{ lineKey, sku, qty, remaining }]` | module `phieu-ban` (đề xuất, chưa gộp) |
+| `PHIEU_BAN_ORDER_STATE` | `CONFLICT` | Trạng thái đơn đặt hàng không cho thao tác (huỷ đơn đã giao một phần → dùng Đóng đơn; gửi / giao / duyệt sai trạng thái); kèm `status` | module `phieu-ban` (đề xuất, chưa gộp) |
+| **Trả lại hàng bán đợt 2** (1.15.0-draft) <!-- [2026-11-18 10:00 AM Võ Hoàng] NGHIEM-THU — NT-BH-024 trả lại hàng bán đợt 2 (đóng góp) --> | | | |
+| `POS_RETURN_TAX_INVOICE` | `CONFLICT` | Trả / đổi tại máy bán đơn có người mua hoá đơn kèm MST (`invoiceBuyer.taxCode`, coi là đã xuất hoá đơn): kế toán lập phiếu trả BH11 kèm hoá đơn điều chỉnh; kèm `taxCode` | module `pos` (đề xuất, chưa gộp) |
+| `POS_RETURN_LOYALTY_GIFT` | `VALIDATION_ERROR` | Dòng quà đổi bằng điểm (NT-BH-020, `giftKey` `lp:…`) không trả được; kèm `lineId`, `sku` | module `pos` (đề xuất, chưa gộp) |
+| `POS_RETURN_NO_BAD_WAREHOUSE` | `VALIDATION_ERROR` | Dòng trả `condition: 'bad'` mà cửa hàng chưa khai kho KTL (`bizcity.pos.return_bad_warehouses`, BH17) hoặc kho đã khai không thuộc cửa hàng / ngừng dùng / là kho bán; kèm `branchCode` | module `pos` (đề xuất, chưa gộp) |
+| `POS_RETURN_CONDITION` | `VALIDATION_ERROR` | Cùng một dòng đơn gửi hai tình trạng khác nhau trên một phiếu trả (một dòng phiếu = một kho nhận) — phần lỗi lập phiếu riêng; kèm `lineId` | module `pos` (đề xuất, chưa gộp) |
+| **Chương trình khuyến mại: duyệt, hạn mức lượt** (1.16.0-draft) <!-- [2026-11-18 03:00 PM Võ Hoàng] NGHIEM-THU — NT-BH-025 CTKM duyệt, hạn mức lượt (đóng góp) --> | | | |
+| `POS_PROMO_QUOTA` | `VALIDATION_ERROR` | Máy bán gửi đơn áp chương trình khuyến mại đã hết lượt (số đơn) ở cửa hàng — đếm chung đơn máy bán + phiếu bán BH10 chưa trả lượt, khoá cửa hàng × chương trình; đơn mất mạng gửi bù vẫn nhận, đánh dấu `promoQuotaOffline`; kèm `items: [{ key, quota, used }]` | module `pos` (đề xuất, chưa gộp) |
+| `PHIEU_BAN_PROMO_QUOTA` | `VALIDATION_ERROR` | Duyệt phiếu bán nhập tay (BH10) áp chương trình khuyến mại đã hết lượt ở cửa hàng (hỏi action đọc `pos.promo.quota`); kèm `items: [{ key, quota, used }]` | module `phieu-ban` (đề xuất, chưa gộp) |
+| `POS_PROMO_DRAFT_STATE` | `CONFLICT` | Thao tác sai trạng thái bản nháp khuyến mại (sửa nháp đã duyệt / đã phát hành, lập nháp mới cho mã đang có nháp mở, duyệt nháp đã duyệt); kèm `status` | module `pos` (đề xuất, chưa gộp) |
+| **Voucher 3 loại** (1.17.0-draft) <!-- [2026-11-18 03:00 PM Võ Hoàng] NGHIEM-THU — NT-BH-026 voucher (đóng góp) --> | | | |
+| `VOUCHER_NOT_FOUND` | `VALIDATION_ERROR` | Không có mã voucher — máy bán (`pos.order.create`) / duyệt BH10 (`phieu-ban.doc.approve`) hỏi action đọc `voucher.order.quote`; kèm `items: [{ code, reason, message }]` | module `voucher` (pos, phieu-ban trả lại; đề xuất, chưa gộp) |
+| `VOUCHER_NOT_OWNER` | `VALIDATION_ERROR` | Mã không thuộc khách của đơn / phiếu (voucher gắn SĐT khách; SĐT khách lấy từ đơn và danh mục đối tượng); kèm `items` | module `voucher` (đề xuất, chưa gộp) |
+| `VOUCHER_USED` | `VALIDATION_ERROR` | Mã đã dùng (dùng một lần, phần dư mất) — câu lỗi nêu đơn / phiếu, ngày, cửa hàng; kèm `items: [{ code, usedIn: { source, refCode, branch, date } }]` | module `voucher` (đề xuất, chưa gộp) |
+| `VOUCHER_REVOKED` | `VALIDATION_ERROR` | Mã đã thu hồi (trả cả đơn gốc của voucher lần mua sau, thu hồi tay) hoặc đợt phát đã ngừng; kèm `items` | module `voucher` (đề xuất, chưa gộp) |
+| `VOUCHER_EXPIRED` | `VALIDATION_ERROR` | Ngày bán ngoài thời hạn của mã (trước ngày bắt đầu đợt / sau ngày hết hạn mã); kèm `items` | module `voucher` (đề xuất, chưa gộp) |
+| `VOUCHER_MIN_ORDER` | `VALIDATION_ERROR` | Tổng đơn (sau khuyến mại, trước voucher) dưới đơn tối thiểu của đợt; kèm `items` | module `voucher` (đề xuất, chưa gộp) |
+| `VOUCHER_NOT_APPLICABLE` | `VALIDATION_ERROR` | Voucher lần mua sau sản phẩm / nhãn mà giỏ không có sản phẩm / nhãn áp dụng; kèm `items` | module `voucher` (đề xuất, chưa gộp) |
+| `VOUCHER_NO_ROOM` | `VALIDATION_ERROR` | Đơn / phiếu đã trừ hết số phải trả, mã sau không còn gì để trừ (tổng trừ ≤ số phải trả); kèm `code` | module `pos`, `phieu-ban` (đề xuất, chưa gộp) |
+| `VOUCHER_NEED_CUSTOMER` | `VALIDATION_ERROR` | Đơn / phiếu có mã voucher mà chưa chọn khách | module `pos`, `phieu-ban` (đề xuất, chưa gộp) |
+| `VOUCHER_UNAVAILABLE` | `VALIDATION_ERROR` | Đơn / phiếu có mã voucher mà module voucher chưa bật / người bán thiếu quyền `voucher:use` | module `pos`, `phieu-ban` (đề xuất, chưa gộp) |
+| `VOUCHER_PAYMENT_METHOD` | `VALIDATION_ERROR` | Voucher hãng: hình thức thanh toán của đợt không có / ngừng dùng (tài khoản phải thu hãng khai ở hình thức, không ở module); kèm `method` | module `voucher`, `pos`, `phieu-ban` (đề xuất, chưa gộp) |
+| `VOUCHER_CAMPAIGN_STATE` | `CONFLICT` | Sai trạng thái đợt phát / mã: mã đợt đã có, đổi loại / người phát / mệnh giá / phạm vi khi đợt đã phát mã (ECP-13), phát mã đợt đã ngừng / hết hạn, thu hồi mã đã dùng; kèm `status` | module `voucher` (đề xuất, chưa gộp) |
+| **Quà trừ kho khuyến mại** (1.18.0-draft) <!-- [2026-11-18 10:00 AM Võ Hoàng] NGHIEM-THU — NT-BH-028 quà trừ kho khuyến mại (đóng góp) --> | | | |
+| `POS_GIFT_WAREHOUSE` | `VALIDATION_ERROR` | Đơn máy bán / phiếu bán BH10 có dòng quà mà kho quà khai cho cửa hàng (`bizcity.pos.gift_warehouses`, BH17) không dùng được — không thuộc cửa hàng, ngừng dùng, không phải kho khuyến mại (KKM), trùng kho bán; kèm `branchCode`. Cửa hàng chưa khai kho quà: không lỗi, quà trừ kho bán như cũ | module `pos`, `phieu-ban` (đề xuất, chưa gộp) |
+| `POS_GIFT_STOCK_SHORT` | `VALIDATION_ERROR` | Máy bán: dòng quà thiếu tồn ở kho quà của cửa hàng (hết quà thì không tặng; tồn kho bán cùng mã không dùng thay); hàng bán thiếu ở kho bán vẫn là `POS_STOCK_SHORT`; kèm `items: [{ sku, need, have, warehouse, gift }]` | module `pos` (đề xuất, chưa gộp) |
+| **Trả lại hàng bán đợt 3** (1.19.0-draft) <!-- [2026-11-18 10:00 PM Võ Hoàng] NGHIEM-THU — NT-BH-030 trả hàng đợt 3; đổi nghĩa POS_RETURN_EXPIRED, POS_RETURN_OTHER_SHOP ở trên (đóng góp) --> | | | |
+| `POS_RETURN_APPROVAL_STATE` | `CONFLICT` | Yêu cầu trả quá hạn không ở trạng thái cho thao tác: lập phiếu theo yêu cầu chưa duyệt / bị từ chối (kèm `rejectReason`) / đã dùng; duyệt / từ chối yêu cầu không còn chờ; gửi yêu cầu cho đơn còn trong hạn (`status: 'not_late'`) hoặc đơn đã có yêu cầu đang mở; kèm `status`, `approvalId` | module `pos` (đề xuất, chưa gộp) |
+| `POS_RETURN_APPROVAL_MISMATCH` | `VALIDATION_ERROR` | Phiếu trả quá hạn khác nội dung yêu cầu đã duyệt (khác đơn, cửa hàng nhận, dòng, số lượng, tình trạng); kèm `approvalId`, `approved` (dòng đã duyệt) | module `pos` (đề xuất, chưa gộp) |
+| **Kênh bán hàng** (1.20.0-draft) <!-- [2026-11-18 11:00 PM Võ Hoàng] NGHIEM-THU — NT-BH-031 kênh bán hàng (đóng góp) --> | | | |
+| `POS_SALE_SOURCE` | `VALIDATION_ERROR` | Đơn máy bán / phiếu bán BH10 mang kênh bán (mã, hoặc tên với máy bán cũ) không có trong danh mục Kênh bán hàng hoặc kênh đã ngừng dùng; kèm `saleSource`, `cause` (`unknown` / `inactive`). Đơn không gửi kênh → kênh mặc định (Gần shop), không lỗi; đơn bán lúc mất mạng gửi bù → nhận | module `pos`, `phieu-ban` (đề xuất, chưa gộp) |
+| `POS_SALE_SOURCE_EXISTS` | `CONFLICT` | Thêm / sửa kênh bán hàng trùng mã hoặc tên kênh đã có (kênh đã ngừng thì Dùng lại); kèm `field` | module `pos` (đề xuất, chưa gộp) |
+| **Giao hàng đơn đặt hàng, copy đơn** (1.21.0-draft) <!-- [2026-11-18 11:30 PM Võ Hoàng] NGHIEM-THU — NT-BH-032 giao hàng đơn đặt hàng + copy đơn (đóng góp) --> | | | |
+| `PHIEU_BAN_NO_SHIP_WAREHOUSE` | `VALIDATION_ERROR` | Lập chuyến giao / đi giao mà cửa hàng chưa khai kho KHG "Kho hàng gửi bán" (`bizcity.phieu_ban.ship_warehouses`, BH17) hoặc kho khai không thuộc cửa hàng / ngừng dùng / trùng kho bán, kho giữ hàng; kèm `branchCode` | module `phieu-ban` (đề xuất, chưa gộp) |
+| `PHIEU_BAN_NO_SHIP_FEE_ITEM` | `VALIDATION_ERROR` | Chuyến giao có phí ship thu khách mà chưa khai mã dịch vụ phí ship (`bizcity.phieu_ban.ship_fee_sku`, BH17) hoặc mã không có / ngừng / không bán; kèm `fee` hoặc `sku` | module `phieu-ban` (đề xuất, chưa gộp) |
+| `PHIEU_BAN_NO_COD_METHOD` | `VALIDATION_ERROR` | Chuyến giao có tiền COD mà hãng chưa có hình thức thanh toán "COD — <hãng>" (`bizcity.phieu_ban.cod_methods`, BH17; tài khoản phải thu hãng khai ở hình thức, không ở module); kèm `carrier` | module `phieu-ban` (đề xuất, chưa gộp) |
+| `PHIEU_BAN_SHIPMENT_STATE` | `CONFLICT` | Đổi trạng thái chuyến giao sai bước (Chờ lấy → Đang giao / Hoàn; Đang giao → Đã giao / Hoàn; Đã giao, Hoàn là cuối) hoặc sửa số lượng hàng của phiếu bán sinh từ chuyến; kèm `status` | module `phieu-ban` (đề xuất, chưa gộp) |
+| `PHIEU_BAN_COPY_SOURCE` | `VALIDATION_ERROR` | Copy đơn: không có đơn đặt hàng / phiếu bán BH10 / đơn máy bán gốc, phiếu BH10 chưa duyệt, đơn máy bán chưa hoàn tất / đã huỷ, số đơn có ở nhiều cửa hàng, không còn dòng hàng; kèm `status` khi có | module `phieu-ban` (đề xuất, chưa gộp) |
+| **Khoá cài đặt open-pos** (1.23.0-draft) <!-- [2026-11-23 10:30 AM Johnny Chu - Chu Hoàng Anh] OKT-SET-1 — ADR-0037 --> | | | |
+| `BLOG_UNKNOWN` | `FORBIDDEN` | Blog mang `X-OKT-Blog` chưa đăng ký với khoá cài đặt — bridge gọi `POST /api/v1/pos-installation/blogs` trước; kèm `blogId` | `packages/platform/src/core/auth.ts` |
+| `BLOG_NOT_LINKED` | `FORBIDDEN` | Blog của khoá cài đặt chưa được kế toán nối vào sổ (chờ mã nối) hoặc đã thu hồi — bridge xếp hàng, không mất đơn (R-OKT-CONN-11); kèm `blogId`, `status` | `packages/platform/src/core/auth.ts` |
+| `BLOG_REQUIRED` | `FORBIDDEN` | Khoá cài đặt không mang `X-OKT-Blog` gọi route ngoài route của bản cài (`/api/v1/pos-installation/*`) | `packages/platform/src/core/auth.ts` |
+| `POS_LINK_CODE_INVALID` | `VALIDATION_ERROR` | Nhận cửa hàng (`core.pos-installation.link`): mã nối sai khuôn / không có / đã dùng / hết hạn, hoặc khoá cài đặt đã thu hồi | `apps/api/src/modules/connections/pos-installation.service.ts` |
+| `TENANT_ALREADY_LINKED` | `CONFLICT` | Nhận cửa hàng vào sổ đã nối một blog khác — một blog = một tenant (ADR-0037, P-0) | `apps/api/src/modules/connections/pos-installation.service.ts` |
+| **Hoá đơn tại quầy** (1.22.0-draft) <!-- [2026-11-19 03:30 PM Võ Hoàng] NGHIEM-THU — NT-BH-034 người mua hoá đơn tại quầy (đóng góp) --> | | | |
+| `POS_INVOICE_BUYER` | `VALIDATION_ERROR` | Lưu người mua hoá đơn điện tử của đơn máy bán (`pos.order.invoice-buyer`) thiếu / sai theo luật POS cũ: có mã số thuế (10 / 12 / 13 số) thì tên người mua không được là nhãn "Khách lẻ" (thiếu tên chỉ nhận khi có tên công ty) và phải có địa chỉ; căn cước 12 số phải có email; email đã gõ phải đúng định dạng; kèm `field` (`name` / `address` / `email` / `taxCode`) | module `pos` (đề xuất, chưa gộp) |
+| **Máy bán bán đúng bảng giá** (1.13.0-draft) <!-- [2026-11-17 Võ Hoàng] NGHIEM-THU — NT-BH-022 (đóng góp) --> | | | |
+| `POS_MANUAL_DISCOUNT` | `VALIDATION_ERROR` | Dòng có giảm tay: thu ngân không giảm tay, chỉ giảm theo chương trình khuyến mại; kèm `items: [{ lineId, sku }]` | module `pos` (đề xuất, chưa gộp) |
+| `POS_NO_PRICE` | `VALIDATION_ERROR` | Mã × ĐVT chưa có giá ở bảng giá cửa hàng (trừ quà, hàng Nội bộ, bill Z 0đ); kèm `items: [{ sku, unit }]` | module `pos` (đề xuất, chưa gộp) |
+
+**Thứ tự làm:** (1) duyệt (2026-11-09); (2) S022-21: thêm các mã vào `ERROR_REASONS` + SC-ERR-2 (một PR, chỉ hằng số và check); (3) nối từng vùng ở PR của chủ tệp — phân quyền (PHASE-028), thư viện (PHASE-030), chính sách (PHASE-031), chứng từ / sổ cái / định khoản (PHASE-029 / 004) — mỗi chỗ ném thêm `{ reason }`, không đổi `code` / HTTP / câu chữ.
+
+## 5. Ánh xạ lỗi CSDL (R-ERR-8)
+
+| SQLSTATE | Nguồn | `code` (HTTP) | `reason` | `message` |
+|---|---|---|---|---|
+| `23505` | khoá duy nhất | `CONFLICT` (409) | `DB_UNIQUE_VIOLATION` | Dữ liệu bị trùng (mã đã tồn tại) |
+| `23503` + `update or delete` | khoá ngoại khi xoá | `CONFLICT` (409) | `DB_IN_USE` | Mã đang được dùng ở dữ liệu khác nên không xoá được |
+| `23503` | khoá ngoại khi thêm | `VALIDATION_ERROR` (422) | `DB_REFERENCE_MISSING` | Tham chiếu tới mã chưa khai báo trong danh mục |
+| `23514` + "không cân" | trigger `assert_entry_balanced` (ném `check_violation`) | `UNBALANCED_ENTRY` (422) | — | câu của trigger |
+| `23514` + tiền tố `PERIOD_LOCKED:` | trigger `ledger_entries_period_lock` (ném `check_violation`) | `PERIOD_LOCKED` (409) | — | câu của trigger |
+| `42501` + "chỉ được thêm" hoặc "chỉ thêm" | trigger bảo vệ sổ / bằng chứng / chứng từ chỉ thêm (ném `insufficient_privilege`) | `CONFLICT` (409) | `LEDGER_APPEND_ONLY` | câu của trigger (tiếng Việt) |
+| `23514`, `42501` còn lại | CHECK, quyền | `POSTING_FAILED` (422) | — | câu của ràng buộc |
+| `P0001` + "không cân" | trigger ném `P0001` mà câu có "không cân" | `UNBALANCED_ENTRY` (422) | — | câu của trigger |
+| `P0001` khác | trigger bảo vệ (`forbid_*`: sổ chỉ thêm, bằng chứng chỉ thêm…) | `CONFLICT` (409) | `LEDGER_APPEND_ONLY` | câu của trigger (tiếng Việt) |
+| khác | — | `INTERNAL_ERROR` (500) | — | Lỗi hệ thống (chi tiết chỉ ở log) |
+
+Quy tắc đọc bảng §5 (chữ chốt S029-33, 1.3.0-draft):
+
+- Xét theo thứ tự từ trên xuống; dòng cụ thể thắng dòng chung. **Trigger của sổ cái ném `check_violation` (`23514`) và `insufficient_privilege` (`42501`)**, không ném `P0001`; vì vậy điều kiện nhận ra trigger nằm ở **câu chữ** của nó. Câu chữ đó là một phần của hợp đồng: đổi câu của `assert_entry_balanced`, `ledger_entries_period_lock` hay các trigger chỉ thêm thì phải đổi bảng này cùng PR (R-REL-3).
+- Một nơi duy nhất quyết định (hàm dùng chung của Platform), cả `core/http.ts` lẫn `errorCodeOf` (trace) gọi nó, để lỗi trả cho người gọi và lỗi ghi vào trace luôn cùng mã.
+- Test dùng **SQLSTATE thật** của trigger (`23514` / `42501`), không dùng `P0001` giả.
+
+## 6. Giao diện và bên tích hợp xử lý theo mã
+
+| `code` | Giao diện | Hệ thống tích hợp (POS, WooCommerce…) | Cell / AI |
+|---|---|---|---|
+| `UNAUTHORIZED` | về màn đăng nhập | dừng, báo quản trị khoá | báo người dùng kết nối lại |
+| `VALIDATION_ERROR` | đánh dấu trường theo `details` | ghi lỗi, **không** gửi lại y nguyên | đọc `hint`, hỏi lại người dùng |
+| `PERIOD_LOCKED`, `POSTING_FAILED` | hiện `message` + nút tới ACC14 / kỳ | chứng từ đã lưu, chờ kế toán; không gửi lại | báo người dùng, không tự thử lại |
+| `CONFLICT` | tải lại dữ liệu | đọc lại phiên bản, tăng `version` | đọc lại rồi đề xuất lại |
+| `RATE_LIMITED`, `NOT_READY`, `INTERNAL_ERROR` | thông báo, nút "thử lại" | thử lại có giãn nhịp, giữ `Idempotency-Key` | thử lại một lần, rồi báo |
+
+## 7. Changelog
+
+<!-- [2026-11-11 03:30 PM Võ Hoàng] POS-W2 — 1.8.0-draft (đóng góp, chờ chủ dự án duyệt) -->
+<!-- [2026-11-23 10:30 AM Johnny Chu - Chu Hoàng Anh] OKT-SET-1 — 1.23.0-draft (chờ chủ dự án duyệt cùng PR) -->
+- **1.23.0-draft (2026-11-23, khoá cài đặt open-pos — ADR-0037):** §4c thêm `BLOG_UNKNOWN`, `BLOG_NOT_LINKED`, `BLOG_REQUIRED`, `POS_LINK_CODE_INVALID`, `TENANT_ALREADY_LINKED`. Không thêm `code`, không đổi HTTP.
+<!-- [2026-11-19 03:30 PM Võ Hoàng] NGHIEM-THU — 1.22.0-draft (đóng góp, chờ chủ dự án duyệt) -->
+- **1.22.0-draft (2026-11-19, hoá đơn tại quầy):** §4c thêm `POS_INVOICE_BUYER` (module pos, phiếu NT-BH-034); `pos.order.invoice-buyer` nhận căn cước 12 số. Không thêm `code`, không đổi HTTP.
+<!-- [2026-11-18 11:30 PM Võ Hoàng] NGHIEM-THU — 1.21.0-draft (đóng góp, chờ chủ dự án duyệt) -->
+- **1.21.0-draft (2026-11-18, giao hàng đơn đặt hàng, copy đơn):** §4c thêm `PHIEU_BAN_NO_SHIP_WAREHOUSE`, `PHIEU_BAN_NO_SHIP_FEE_ITEM`, `PHIEU_BAN_NO_COD_METHOD`, `PHIEU_BAN_SHIPMENT_STATE`, `PHIEU_BAN_COPY_SOURCE` (module phieu-ban, phiếu NT-BH-032). Không thêm `code`, không đổi HTTP.
+<!-- [2026-11-18 11:00 PM Võ Hoàng] NGHIEM-THU — 1.20.0-draft (đóng góp, chờ chủ dự án duyệt) -->
+- **1.20.0-draft (2026-11-18, kênh bán hàng):** §4c thêm `POS_SALE_SOURCE` (module pos, phieu-ban), `POS_SALE_SOURCE_EXISTS` (module pos) (phiếu NT-BH-031). Không thêm `code`, không đổi HTTP.
+<!-- [2026-11-18 10:00 PM Võ Hoàng] NGHIEM-THU — 1.19.0-draft (đóng góp, chờ chủ dự án duyệt) -->
+- **1.19.0-draft (2026-11-18, trả hàng đợt 3):** §4c thêm `POS_RETURN_APPROVAL_STATE`, `POS_RETURN_APPROVAL_MISMATCH`; đổi nghĩa `POS_RETURN_EXPIRED` (quá hạn cần yêu cầu trả quá hạn đã duyệt, bỏ người duyệt gõ tay) và `POS_RETURN_OTHER_SHOP` (chỉ chặn khi khác / chưa khai MST chi nhánh, kèm `cause`) (module pos, phiếu NT-BH-030). Không thêm `code`, không đổi HTTP.
+<!-- [2026-11-18 10:00 AM Võ Hoàng] NGHIEM-THU — 1.18.0-draft (đóng góp, chờ chủ dự án duyệt) -->
+- **1.18.0-draft (2026-11-18, quà trừ kho khuyến mại):** §4c thêm `POS_GIFT_WAREHOUSE` (module pos, phieu-ban), `POS_GIFT_STOCK_SHORT` (module pos) (phiếu NT-BH-028). Không thêm `code`, không đổi HTTP.
+<!-- [2026-11-18 03:00 PM Võ Hoàng] NGHIEM-THU — 1.17.0-draft (đóng góp, chờ chủ dự án duyệt) -->
+- **1.17.0-draft (2026-11-18, voucher 3 loại):** §4c thêm `VOUCHER_NOT_FOUND`, `VOUCHER_NOT_OWNER`, `VOUCHER_USED`, `VOUCHER_REVOKED`, `VOUCHER_EXPIRED`, `VOUCHER_MIN_ORDER`, `VOUCHER_NOT_APPLICABLE`, `VOUCHER_CAMPAIGN_STATE` (module voucher), `VOUCHER_NO_ROOM`, `VOUCHER_NEED_CUSTOMER`, `VOUCHER_UNAVAILABLE`, `VOUCHER_PAYMENT_METHOD` (module pos, phieu-ban, voucher) (phiếu NT-BH-026). Không thêm `code`, không đổi HTTP.
+<!-- [2026-11-18 03:00 PM Võ Hoàng] NGHIEM-THU — 1.16.0-draft (đóng góp, chờ chủ dự án duyệt) -->
+- **1.16.0-draft (2026-11-18, chương trình khuyến mại: duyệt, hạn mức lượt):** §4c thêm `POS_PROMO_QUOTA`, `POS_PROMO_DRAFT_STATE` (module pos), `PHIEU_BAN_PROMO_QUOTA` (module phieu-ban) (phiếu NT-BH-025). Không thêm `code`, không đổi HTTP.
+<!-- [2026-11-18 10:00 AM Võ Hoàng] NGHIEM-THU — 1.15.0-draft (đóng góp, chờ chủ dự án duyệt) -->
+- **1.15.0-draft (2026-11-18, trả lại hàng bán đợt 2):** §4c thêm `POS_RETURN_TAX_INVOICE`, `POS_RETURN_LOYALTY_GIFT`, `POS_RETURN_NO_BAD_WAREHOUSE`, `POS_RETURN_CONDITION` (module pos, phiếu NT-BH-024). Không thêm `code`, không đổi HTTP.
+<!-- [2026-11-17 01:10 PM Võ Hoàng] NGHIEM-THU — 1.14.0-draft (đóng góp, chờ chủ dự án duyệt) -->
+- **1.14.0-draft (2026-11-17, đơn đặt hàng):** §4c thêm `PHIEU_BAN_ORDER_EXPIRED`, `PHIEU_BAN_NO_HOLD_WAREHOUSE`, `PHIEU_BAN_OVER_REMAINING`, `PHIEU_BAN_ORDER_STATE` (module phieu-ban, phiếu NT-BH-023). Không thêm `code`, không đổi HTTP.
+<!-- [2026-11-17 Võ Hoàng] NGHIEM-THU — 1.13.0-draft (đóng góp, chờ chủ dự án duyệt) -->
+- **1.13.0-draft (2026-11-17, máy bán bán đúng bảng giá):** §4c thêm `POS_MANUAL_DISCOUNT`, `POS_NO_PRICE` (phiếu NT-BH-022); `POS_PRICE_CHANGED` nay cũng dùng khi giá dòng khác bảng giá cửa hàng (`items: [{ sku, unit, price, ratio, clientPrice, clientRatio }]`). Không thêm `code`, không đổi HTTP.
+<!-- [2026-11-16 06:00 PM Võ Hoàng] NGHIEM-THU — 1.12.0-draft (đóng góp, chờ chủ dự án duyệt) -->
+- **1.12.0-draft (2026-11-16, chặn bán quá tồn):** §4c thêm `POS_STOCK_SHORT` (module pos), `PHIEU_BAN_STOCK_SHORT` (module phieu-ban) (phiếu NT-BH-021). Không thêm `code`, không đổi HTTP.
+- **1.12.0-draft bổ sung (2026-11-27, chặn xuất âm phiếu chuyển kho):** §4c thêm `KHO_STOCK_SHORT` (phân hệ kho, phiếu NT-KHO-003). Không thêm `code`, không đổi HTTP.
+<!-- [2026-11-12 08:50 PM Võ Hoàng] POS-KM — 1.11.0-draft (đóng góp, chờ chủ dự án duyệt) -->
+- **1.11.0-draft (2026-11-12, module pos — khuyến mại):** §4c thêm `POS_GIFT_WITHOUT_POLICY` (phiếu NT-BH-003). Không thêm `code`, không đổi HTTP.
+<!-- [2026-11-12 11:55 PM Võ Hoàng] POS-QR — 1.10.0-draft (đóng góp, chờ chủ dự án duyệt) -->
+- **1.10.0-draft (2026-11-12, module pos — QR, ca bắt buộc):** §4c thêm `POS_QR_EXPIRED`, `POS_PAYMENT_MISMATCH`, `POS_ORDER_CANCELLED`, `POS_SHIFT_REQUIRED` (phiếu NT-BH-009, NT-BH-011). Không thêm `code`, không đổi HTTP.
+<!-- [2026-11-12 03:30 PM Võ Hoàng] POS-W3 — 1.9.0-draft (đóng góp, chờ chủ dự án duyệt) -->
+- **1.9.0-draft (2026-11-12, module pos đợt W3):** §4c thêm 3 mã `POS_SHIFT_*` của ca bán (phiếu NT-BH-007). Không thêm `code`, không đổi HTTP.
+- **1.8.0-draft (2026-11-11, module pos đợt W2):** §4c thêm 11 mã `POS_*` của hoàn hàng / đổi hàng / huỷ đơn (phiếu NT-BH-005). Không thêm `code`, không đổi HTTP.
+<!-- [2026-11-10 04:10 PM Võ Hoàng] POS-W1 — module pos: 1.7.0-draft (đóng góp, chờ chủ dự án duyệt) -->
+- **1.7.0-draft (2026-11-10, đề xuất P-MP-5 của module pos):** §4c thêm họ mã `POS_*` của module `pos` (17 mã, R-ERR-6 tiền tố key module). Dữ liệu kèm lỗi đặt cạnh `reason` (danh sách ở `items`), không dùng `details.context` (§4b chỉ dành cho ngữ cảnh chứng từ). Không thêm `code`, không đổi HTTP.
+- **1.6.0-draft (2026-11-09):** §4c — mã chi tiết theo vùng (chứng từ / phiên bản, sổ cái, định khoản, phân quyền, thư viện, chính sách), R-ERR-11 / SC-ERR-2; chủ dự án duyệt 2026-11-09. Hằng số + SC-ERR-2 ở S022-21; nối từng chỗ ném ở PR của chủ tệp. Không thêm `code`.
+- **1.5.0-draft (2026-11-09, PHASE-029 S029-34):** thêm `details.reason` `VERSION_CONTENT_MISMATCH` (`CONFLICT` 409) cho cùng phiên bản khác nội dung ([DOCUMENT §7.3](BIZCITY-DOCUMENT-v1.md)). Không thêm mã `code`. **Ảnh hưởng:** bên gửi nào gửi lại cùng `version` với nội dung đổi sẽ nhận 409 thay vì bị ghi đè im lặng; xử lý theo cột "CONFLICT" ở §6 (tăng `version`).
+<!-- [2026-11-10 09:00 AM Johnny Chu - Chu Hoàng Anh] PHASE-022 — RV-R1-06 -->
+- **1.4.0-draft (2026-11-10, RV-R1-06):** thêm `details.context` (khoá tuỳ chọn: `docKey`, `docType`, `docNo`, `eventId`, `version`, `entryNo`, `period`, `branchCode`, `postingDate`, `step`) và `details.remedy` (`bizcity_remedy@1`, bảng `ERROR_REMEDY`); `UNBALANCED_ENTRY` thêm `difference`, `PERIOD_LOCKED` thêm `scope`. Không đổi mã, HTTP, `reason` đã phát hành.
+
+- 1.0.0 (2026-10-30): khởi tạo. Có 14 mã HTTP và 2 mã MCP. Thêm `error.requestId`, `details.reason`, ánh xạ `P0001`.
+<!-- [2026-11-02 11:50 PM Johnny Chu - Chu Hoàng Anh] R-ERR — details lỗi sai khuôn thống nhất mảng câu -->
+- **1.2.1-draft (2026-11-02):** `details` của `VALIDATION_ERROR` do sai khuôn luôn là **mảng câu** (`<trường>: <vì sao>`), như lỗi kiểm của route. Năm chỗ trước trả object `flatten()` của zod (nộp chứng từ trong giao dịch, gói định khoản, phiếu nháp, phân hệ mua hàng) — giao diện không hiện được trường sai. Không đổi mã, HTTP.
+- **1.2.0-draft (2026-11-02, ADR-0014):** thêm trường tuỳ chọn `error.intake` cho lỗi cửa nạp chứng từ (bể chờ). Không đổi mã, HTTP, `details`.
+- **1.1.0-draft (2026-11-01, ADR-0010):** thêm trường tuỳ chọn `error.traceId` (tương thích: bên gọi cũ bỏ qua được). Không đổi mã, HTTP, nghĩa.
+<!-- [2026-11-08 01:45 PM Johnny Chu - Chu Hoàng Anh] PHASE-029 — S029-33: chữ chốt ánh xạ SQLSTATE của trigger sổ cái (review R1, RV-R1-02) -->
+- **1.3.0-draft (2026-11-08, PHASE-029 S029-33):** §5 tách ba dòng cụ thể khỏi dòng chung `23514` / `42501`: `23514` + "không cân" → `UNBALANCED_ENTRY` (422); `23514` + `PERIOD_LOCKED:` → `PERIOD_LOCKED` (409); `42501` + "chỉ được thêm" / "chỉ thêm" → `CONFLICT` (409) + `LEDGER_APPEND_ONLY`. Dòng cũ `P0001` + "không cân" giữ. **Thực tế trước đây:** các trigger sổ cái ném `23514` / `42501` nên mọi lỗi cân, khoá kỳ, sửa sổ ở tầng CSDL đều ra `POSTING_FAILED` (422), trái ý các dòng trigger đã ghi ở bản 1.0.0 (chúng viết điều kiện `P0001` trong khi trigger không dùng `P0001`). **Ảnh hưởng:** bên gọi rẽ nhánh theo `code` sẽ thấy `PERIOD_LOCKED` / `CONFLICT` / `UNBALANCED_ENTRY` thay cho `POSTING_FAILED` ở ba trường hợp này (HTTP 422 → 409 với hai trường hợp đầu); `POSTING_FAILED` vẫn cho CHECK / quyền khác. Không thêm mã, không thêm `reason` mới. Mã: S029-33.
