@@ -80,6 +80,7 @@ Dời nguyên văn từ open-ketoan `docs/contracts/` @ `4e5cbc8` (đợt D1, D2
 | [SETTINGS-MATRIX](BIZCITY-SETTINGS-MATRIX-v1.md) | `bizcity_settings@1`: lớp A / B / C, thang phạm vi (Q-PIL-6) | P-8 |
 | [SECRETS](BIZCITY-SECRETS-v1.md) | bí mật mã hoá theo đơn vị (`platform.secrets`) | T-9 |
 | [SITE-PROVISIONING](BIZCITY-SITE-PROVISIONING-v1.md) | `/_sites/v1` cho open-setup (Q-CORE-5) | T10 |
+| [LIST](BIZCITY-LIST-v1.md) | **mới** — danh sách dữ liệu chung: lọc `f.<cột>.<phép>`, tìm, sắp xếp, con trỏ, xuất CSV / XLSX, bộ lọc đã lưu (`bizcity_list@1`) <!-- [2026-11-28 06:32 PM Johnny Chu - Chu Hoàng Anh] STD-LIST-1 --> | T2, T9 |
 | [MASTER-DATA](BIZCITY-MASTER-DATA-v1.md) | danh mục cho phân hệ / plugin: đối tượng, chi nhánh, kho, changefeed <!-- [2026-11-28 03:35 PM Johnny Chu - Chu Hoàng Anh] D2 --> | P-1, P-4 |
 | [ITEM-MASTER](BIZCITY-ITEM-MASTER-v1.md) | `item_id` bất biến, mã có phiên bản, phân loại theo ngày  | P-1 |
 | [MODULE](BIZCITY-MODULE-v1.md) | manifest module `bizcity.module.json`, `defineModule`  | T1 |
