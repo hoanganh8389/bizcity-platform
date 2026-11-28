@@ -9,6 +9,6 @@
     "node": ">=22.12"
   },
   "scripts": {
-    "test": "node tools/spine-check.mjs && node tools/standard-check.mjs && node tools/users-check.mjs && node tools/no-chuan.mjs --check && node tools/delivery-check.mjs --self-test && node tools/failure-check.mjs --self-test && node tools/loi.mjs --self-test && node tools/order-flow-check.mjs --self-test"
+    "test": "node tools/spine-check.mjs && node tools/standard-check.mjs && node tools/users-check.mjs && node tools/no-chuan.mjs --check && node tools/delivery-check.mjs --self-test && node tools/failure-check.mjs --self-test && node tools/loi.mjs --self-test && node tools/order-flow-check.mjs --self-test && node tools/list-check.mjs --self-test"
   }
 }

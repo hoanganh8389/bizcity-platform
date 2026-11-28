@@ -620,6 +620,24 @@
       ],
       "checks": [],
       "moved_from": "open-ketoan docs/contracts/BIZCITY-DATA-v1.md@4e5cbc8"
+    },
+    {
+      "id": "bizcity_list@1",
+      "file": "BIZCITY-LIST-v1.md",
+      "version": "0.2.0-draft",
+      "status": "draft",
+      "pillar": "T2",
+      "reference": [
+        "open-ketoan",
+        "open-cake",
+        "open-core"
+      ],
+      "checks": [
+        "SC-LIST-1",
+        "SC-LIST-2",
+        "SC-LIST-3"
+      ],
+      "tool": "tools/list-check.mjs"
     }
   ],
   "decisions": {
